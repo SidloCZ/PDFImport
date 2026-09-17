@@ -273,8 +273,28 @@
     "message": "RETRY INSERT",
     "description": "Debug panel retry button"
   },
+  "debugPanelCopy": {
+    "message": "COPY LOGS",
+    "description": "Debug panel copy logs button"
+  },
+  "debugPanelCopied": {
+    "message": "COPIED TO CLIPBOARD",
+    "description": "Feedback message when debug logs are copied"
+  },
+  "debugPanelTest": {
+    "message": "TEST INSERTION",
+    "description": "Debug panel test insertion button"
+  },
   "debugWaitingActivity": {
     "message": "Waiting for activity...",
     "description": "Debug panel initial state text"
+  },
+  "prefDebugModeTitle": {
+    "message": "Debug Mode (On-Screen HUD)",
+    "description": "Title for debug mode toggle"
+  },
+  "prefDebugModeDesc": {
+    "message": "Show floating debug HUD on AI chat pages with real-time logs and one-click log export.",
+    "description": "Description for debug mode toggle"
   }
 }

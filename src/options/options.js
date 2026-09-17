@@ -4,6 +4,7 @@ let selectedAi = "gemini";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const reuseTabEl = document.getElementById("reuseTab");
+  const debugModeEl = document.getElementById("debugMode");
   const defaultPromptEl = document.getElementById("defaultPrompt");
   const saveBtn = document.getElementById("saveBtn");
   const saveStatus = document.getElementById("saveStatus");
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     targetAi: "gemini",
     customAiUrl: "https://openrouter.ai/chat",
     reuseTab: true,
+    debugMode: true,
     defaultPrompt: "",
     userLanguage: "auto"
   });
@@ -46,6 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   localizePage(currentLang);
 
   reuseTabEl.checked = settings.reuseTab;
+  if (debugModeEl) debugModeEl.checked = settings.debugMode !== false;
   defaultPromptEl.value = settings.defaultPrompt;
 
   // AI card selection handler
@@ -115,6 +118,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       targetAi: selectedAi,
       customAiUrl: customUrlVal,
       reuseTab: reuseTabEl.checked,
+      debugMode: debugModeEl ? debugModeEl.checked : true,
       defaultPrompt: defaultPromptEl.value,
       userLanguage: currentLang
     });

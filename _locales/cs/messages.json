@@ -273,8 +273,28 @@
     "message": "OPAKOVAT VLOŽENÍ",
     "description": "Debug panel retry button"
   },
+  "debugPanelCopy": {
+    "message": "KOPÍROVAT LOG",
+    "description": "Debug panel copy logs button"
+  },
+  "debugPanelCopied": {
+    "message": "ZOPÍROVÁNO DO SCHRÁNKY",
+    "description": "Feedback message when debug logs are copied"
+  },
+  "debugPanelTest": {
+    "message": "TEST VLOŽENÍ PDF",
+    "description": "Debug panel test insertion button"
+  },
   "debugWaitingActivity": {
     "message": "Čekám na aktivitu...",
     "description": "Debug panel initial state text"
+  },
+  "prefDebugModeTitle": {
+    "message": "Vývojářský režim (Debug HUD)",
+    "description": "Title for debug mode toggle"
+  },
+  "prefDebugModeDesc": {
+    "message": "Zobrazit plovoucí ladicí panel na stránkách AI s podrobnými logy a exportem do schránky.",
+    "description": "Description for debug mode toggle"
   }
 }

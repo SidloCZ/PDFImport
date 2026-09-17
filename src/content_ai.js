@@ -1,11 +1,12 @@
 /**
- * Content Script for PDFImport - Multi-AI Platform Support
- * Supports Top 10 AI platforms (Claude, ChatGPT, Kimi, Hy4/Yuanbao, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok) + Custom URLs (OpenRouter, etc.)
+ * Content Script for PDFImport - Multi-AI Platform Support (Debug Enabled)
+ * Supports Top 10 AI platforms (Claude, ChatGPT, Kimi, Hy4/Yuanbao, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, Perplexity) + Custom URLs (OpenRouter, etc.)
  */
 
 (() => {
   let isProcessing = false;
   let lastReceivedFile = null;
+  let debugModeEnabled = true;
   const debugLogs = [];
 
   const hostname = window.location.hostname.toLowerCase();
@@ -37,13 +38,23 @@
     updateDebugUI();
   }
 
-  // Initialize Neo-brutalist Debug HUD
-  createDebugPanel();
+  // Load debug settings and initialize HUD
+  chrome.storage.sync.get({ debugMode: true }).then((settings) => {
+    debugModeEnabled = settings.debugMode !== false;
+    createDebugPanel();
+    createDebugTogglePill();
+    log(`Platform initialized: ${currentPlatform.name} (${window.location.hostname})`);
+  }).catch(() => {
+    createDebugPanel();
+    createDebugTogglePill();
+    log(`Platform initialized: ${currentPlatform.name}`);
+  });
 
   // Message listener from background worker
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     log(`Received action message: ${message.action}`);
     if (message.action === "PROCESS_PENDING_PDF") {
+      openDebugHud();
       checkAndInsertPdf();
       sendResponse({ status: "processing" });
     }
@@ -64,6 +75,11 @@
       if (msg) return msg;
     }
     return fallback || key;
+  }
+
+  function openDebugHud() {
+    const hud = document.getElementById("pdf-import-debug-hud");
+    if (hud) hud.style.display = "flex";
   }
 
   /**
@@ -90,6 +106,7 @@
       }
 
       isProcessing = true;
+      openDebugHud();
       const targetAiName = pending.targetAiName || currentPlatform.name;
       log(`Pending PDF found: ${pending.filename} (${(pending.size / 1024).toFixed(1)} KB) targeting ${targetAiName}`);
       showToast(i18n("toastProcessing", [escapeHtml(pending.filename)], `Processing: <strong>${escapeHtml(pending.filename)}</strong>...`), "info");
@@ -141,6 +158,10 @@
     const inputs = Array.from(document.querySelectorAll('input[type="file"]'));
     log(`Found ${inputs.length} input[type='file'] element(s) on page.`);
 
+    inputs.forEach((inp, i) => {
+      log(`  Input #${i}: id="${inp.id || ''}", accept="${inp.accept || ''}", visible=${inp.offsetParent !== null}`);
+    });
+
     const chatInput = inputs.find(inp => {
       const acc = (inp.accept || "").toLowerCase();
       return acc.includes("pdf") || acc.includes("*") || acc.includes("document") || inp.multiple;
@@ -155,6 +176,8 @@
         if (checkIfAttachmentAppeared()) {
           log("[OK] File detected in chat interface after input change!", "success");
           success = true;
+        } else {
+          log("Input change did not result in confirmed attachment chip, trying Step 2.");
         }
       }
     }
@@ -164,12 +187,13 @@
       log("STEP 2: Searching for attach / upload button...");
       const attachBtn = findAttachButton();
       if (attachBtn) {
-        log(`Attach button found (<${attachBtn.tagName.toLowerCase()}>). Clicking...`);
+        const btnLabel = attachBtn.getAttribute("aria-label") || attachBtn.getAttribute("title") || attachBtn.textContent.trim();
+        log(`Attach button found (<${attachBtn.tagName.toLowerCase()}> label="${btnLabel}"). Clicking...`);
         attachBtn.click();
         await sleep(600);
 
         const newInputs = Array.from(document.querySelectorAll('input[type="file"]'));
-        log(`After click, ${newInputs.length} input[type='file'] element(s) found.`);
+        log(`After click, ${newInputs.length} input[type='file'] element(s) present.`);
 
         const menuItems = Array.from(document.querySelectorAll('[role="menuitem"], .mat-mdc-menu-item, button, li, a'));
         const uploadItem = menuItems.find(el => {
@@ -189,9 +213,12 @@
           assignFilesToInput(freshInput, file);
           await sleep(1500);
           if (checkIfAttachmentAppeared()) {
+            log("[OK] File detected in chat interface after attach button trigger!", "success");
             success = true;
           }
         }
+      } else {
+        log("Attach button not found.");
       }
     }
 
@@ -210,7 +237,7 @@
       ].filter(Boolean);
 
       for (const target of targets) {
-        log(`Simulating drop on <${target.tagName.toLowerCase()}>...`);
+        log(`Simulating drop on <${target.tagName.toLowerCase()} class="${(target.className || '').slice(0, 30)}">...`);
         simulateDrop(target, file);
         await sleep(800);
         if (checkIfAttachmentAppeared()) {
@@ -245,13 +272,15 @@
     }
 
     // Evaluate result
+    const displayAi = targetAiName || currentPlatform.name;
     if (success) {
-      const displayAi = targetAiName || currentPlatform.name;
       showToast(i18n("toastSuccess", [escapeHtml(file.name), displayAi], `File <strong>${escapeHtml(file.name)}</strong> was inserted into ${displayAi}!`), "success");
       if (optionalPrompt && optionalPrompt.trim().length > 0) {
+        log(`Typing prompt text into chat input...`);
         await insertPromptText(optionalPrompt.trim());
       }
     } else {
+      openDebugHud();
       showToast(i18n("toastFallbackWarning", null, "Could not insert file automatically. See Debug panel for details."), "warning");
       log("[FAIL] Automatic attachment insertion was not confirmed by DOM.", "error");
     }
@@ -337,7 +366,6 @@
         return true;
       }
 
-      // Paperclip or plus SVG
       return btn.querySelectorAll("svg").length > 0;
     });
   }
@@ -390,6 +418,127 @@
   }
 
   /**
+   * Generates an in-memory valid PDF file for immediate testing
+   */
+  function createSamplePdfFile() {
+    const minimalPdf = `%PDF-1.4
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >> endobj
+4 0 obj << /Length 44 >> stream
+BT /F1 24 Tf 100 700 Td (PDFImport Test Document) ET
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f 
+0000000010 00000 n 
+0000000060 00000 n 
+0000000117 00000 n 
+0000000213 00000 n 
+trailer << /Size 5 /Root 1 0 R >>
+startxref
+306
+%%EOF`;
+    const blob = new Blob([minimalPdf], { type: "application/pdf" });
+    return new File([blob], `test_sample_${Date.now().toString().slice(-4)}.pdf`, {
+      type: "application/pdf",
+      lastModified: Date.now()
+    });
+  }
+
+  /**
+   * Exports full diagnostic report to clipboard
+   */
+  function copyDebugLogs() {
+    const time = new Date().toISOString();
+    const chatInput = findChatInput();
+    const attachBtn = findAttachButton();
+    const inputs = Array.from(document.querySelectorAll('input[type="file"]'));
+
+    let report = `=== PDFIMPORT DIAGNOSTIC REPORT ===\n`;
+    report += `Timestamp: ${time}\n`;
+    report += `Platform: ${currentPlatform.name} (id: ${currentPlatform.id})\n`;
+    report += `URL: ${window.location.href}\n`;
+    report += `Title: ${document.title}\n`;
+    report += `User-Agent: ${navigator.userAgent}\n`;
+    report += `Viewport: ${window.innerWidth}x${window.innerHeight}\n\n`;
+
+    report += `--- DOM ELEMENTS ---\n`;
+    report += `File inputs count: ${inputs.length}\n`;
+    inputs.forEach((inp, idx) => {
+      report += `  [Input #${idx}] accept="${inp.accept || ''}" id="${inp.id || ''}" class="${inp.className || ''}" visible=${inp.offsetParent !== null}\n`;
+    });
+
+    report += `Chat input: ${chatInput ? `<${chatInput.tagName.toLowerCase()} id="${chatInput.id || ''}" class="${chatInput.className || ''}" contenteditable="${chatInput.getAttribute('contenteditable')}">` : "NOT FOUND"}\n`;
+    report += `Attach button: ${attachBtn ? `<${attachBtn.tagName.toLowerCase()} aria-label="${attachBtn.getAttribute('aria-label') || ''}" class="${attachBtn.className || ''}">` : "NOT FOUND"}\n\n`;
+
+    report += `--- CHRONOLOGICAL LOGS (${debugLogs.length}) ---\n`;
+    debugLogs.forEach(entry => {
+      report += `[${entry.time}] [${entry.type}] ${entry.msg}\n`;
+    });
+    report += `===================================\n`;
+
+    navigator.clipboard.writeText(report).then(() => {
+      const copyBtn = document.getElementById("pdf-debug-copy");
+      if (copyBtn) {
+        const origText = copyBtn.textContent;
+        copyBtn.textContent = i18n("debugPanelCopied", null, "COPIED!");
+        copyBtn.style.background = "#00f59b";
+        setTimeout(() => {
+          copyBtn.textContent = origText;
+          copyBtn.style.background = "#ffe600";
+        }, 2000);
+      }
+      showToast("Diagnostic logs copied to clipboard!", "success");
+    }).catch((err) => {
+      log(`Clipboard copy failed: ${err.message}`, "error");
+    });
+  }
+
+  /**
+   * Floating toggle badge in bottom-right corner
+   */
+  function createDebugTogglePill() {
+    if (document.getElementById("pdf-import-debug-pill")) return;
+    const pill = document.createElement("button");
+    pill.id = "pdf-import-debug-pill";
+    pill.type = "button";
+    pill.textContent = "DEBUG HUD";
+    pill.style.cssText = `
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      z-index: 9999998;
+      background: #000000;
+      color: #ffffff;
+      border: 2px solid #000000;
+      box-shadow: 2px 2px 0px 0px #ffe600;
+      padding: 4px 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: transform 0.1s ease;
+    `;
+    pill.addEventListener("mouseenter", () => {
+      pill.style.transform = "translate(-1px, -1px)";
+    });
+    pill.addEventListener("mouseleave", () => {
+      pill.style.transform = "none";
+    });
+    pill.addEventListener("click", () => {
+      const hud = document.getElementById("pdf-import-debug-hud");
+      if (hud) {
+        hud.style.display = hud.style.display === "none" ? "flex" : "none";
+      }
+    });
+    document.body.appendChild(pill);
+  }
+
+  /**
    * Neo-Brutalist Debug HUD Panel
    */
   function createDebugPanel() {
@@ -401,7 +550,7 @@
       position: fixed;
       top: 16px;
       right: 16px;
-      width: 440px;
+      width: 460px;
       max-height: 85vh;
       background: #f4efe6;
       border: 3px solid #000000;
@@ -423,16 +572,20 @@
           <span style="font-weight: 700; font-size: 12px; letter-spacing: -0.5px;">${escapeHtml(currentPlatform.name)} DEBUG HUD</span>
         </div>
         <div style="display: flex; gap: 6px;">
-          <button id="pdf-debug-clear" style="background: #ffffff; border: 2px solid #000; padding: 2px 6px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelClear", null, "CLEAR")}</button>
-          <button id="pdf-debug-close" style="background: #ffffff; border: 2px solid #000; padding: 2px 6px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelHide", null, "HIDE")}</button>
+          <button id="pdf-debug-copy" style="background: #ffe600; color: #000; border: 2px solid #000; box-shadow: 1px 1px 0px 0px #000; padding: 3px 8px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelCopy", null, "COPY LOGS")}</button>
+          <button id="pdf-debug-clear" style="background: #ffffff; border: 2px solid #000; padding: 3px 6px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelClear", null, "CLEAR")}</button>
+          <button id="pdf-debug-close" style="background: #ffffff; border: 2px solid #000; padding: 3px 6px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelHide", null, "HIDE")}</button>
         </div>
       </div>
       <div id="pdf-debug-logs" style="padding: 12px; max-height: 48vh; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; background: #ffffff;">
         <div style="color: #666; font-style: italic;">${i18n("debugWaitingActivity", null, "Waiting for activity...")}</div>
       </div>
-      <div style="padding: 10px 14px; background: #f4efe6; border-top: 3px solid #000000; display: flex; gap: 8px; justify-content: flex-end;">
-        <button id="pdf-debug-inspect" style="background: #00d2ff; color: #000; border: 2px solid #000; box-shadow: 2px 2px 0px 0px #000; padding: 6px 10px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelInspect", null, "INSPECT DOM")}</button>
-        <button id="pdf-debug-retry" style="background: #00f59b; color: #000; border: 2px solid #000; box-shadow: 2px 2px 0px 0px #000; padding: 6px 10px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelRetry", null, "RETRY INSERT")}</button>
+      <div style="padding: 10px 14px; background: #f4efe6; border-top: 3px solid #000000; display: flex; gap: 8px; justify-content: space-between; align-items: center;">
+        <button id="pdf-debug-test" style="background: #00f59b; color: #000; border: 2px solid #000; box-shadow: 2px 2px 0px 0px #000; padding: 6px 12px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelTest", null, "TEST INSERTION")}</button>
+        <div style="display: flex; gap: 6px;">
+          <button id="pdf-debug-inspect" style="background: #00d2ff; color: #000; border: 2px solid #000; box-shadow: 2px 2px 0px 0px #000; padding: 6px 10px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelInspect", null, "INSPECT DOM")}</button>
+          <button id="pdf-debug-retry" style="background: #ffffff; color: #000; border: 2px solid #000; box-shadow: 2px 2px 0px 0px #000; padding: 6px 10px; font-weight: 700; font-size: 10px; cursor: pointer;">${i18n("debugPanelRetry", null, "RETRY INSERT")}</button>
+        </div>
       </div>
     `;
 
@@ -448,8 +601,19 @@
       if (logContainer) logContainer.innerHTML = `<div style="color: #666; font-style: italic;">${i18n("debugWaitingActivity", null, "Waiting for activity...")}</div>`;
     });
 
+    document.getElementById("pdf-debug-copy").addEventListener("click", () => {
+      copyDebugLogs();
+    });
+
     document.getElementById("pdf-debug-inspect").addEventListener("click", () => {
       inspectPlatformDOM();
+    });
+
+    document.getElementById("pdf-debug-test").addEventListener("click", () => {
+      log("--- Initiating Test Insertion with Sample PDF ---");
+      const sampleFile = createSamplePdfFile();
+      lastReceivedFile = sampleFile;
+      executeUploadWorkflow(sampleFile, "Please analyze and summarize this sample PDF document:", currentPlatform.name);
     });
 
     document.getElementById("pdf-debug-retry").addEventListener("click", () => {
@@ -495,19 +659,19 @@
     const inputs = document.querySelectorAll('input[type="file"]');
     log(`File inputs count: ${inputs.length}`);
     inputs.forEach((inp, idx) => {
-      log(`  Input #${idx}: accept="${inp.accept}", id="${inp.id}", class="${inp.className.slice(0, 30)}"`);
+      log(`  Input #${idx}: accept="${inp.accept || ''}", id="${inp.id || ''}", class="${inp.className.slice(0, 30)}", visible=${inp.offsetParent !== null}`);
     });
 
     const chatInput = findChatInput();
     if (chatInput) {
-      log(`Chat input element: <${chatInput.tagName.toLowerCase()}> class="${(chatInput.className || '').slice(0, 40)}"`);
+      log(`Chat input element: <${chatInput.tagName.toLowerCase()}> id="${chatInput.id || ''}" class="${(chatInput.className || '').slice(0, 40)}" contenteditable="${chatInput.getAttribute('contenteditable')}"`);
     } else {
       log(`Chat input element NOT found.`, "warning");
     }
 
     const attachBtn = findAttachButton();
     if (attachBtn) {
-      log(`Attach button: <${attachBtn.tagName.toLowerCase()}> aria-label="${attachBtn.getAttribute('aria-label') || ''}"`);
+      log(`Attach button: <${attachBtn.tagName.toLowerCase()}> aria-label="${attachBtn.getAttribute('aria-label') || ''}" class="${attachBtn.className.slice(0, 30)}"`);
     } else {
       log(`Attach button NOT found.`, "warning");
     }
