@@ -27,11 +27,11 @@ body {
   background-color: var(--bg-clay);
   color: var(--color-black);
   line-height: 1.5;
-  padding: 24px 16px;
+  padding: 36px 20px;
 }
 
 .container {
-  max-width: 660px;
+  max-width: 680px;
   margin: 0 auto;
 }
 
