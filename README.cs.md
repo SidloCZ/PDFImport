@@ -57,7 +57,7 @@ Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journ
 
 Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Options*):
 
-* Můžete nastavit **výchozí prompt**, který se po vložení souboru automaticky vyplní do chatu (např. *„Shrň klíčová zjištění a metodiku tohoto článku:“*).
+* Můžete nastavit **výchozí prompt**, který se po vložení souboru automaticky vyplní do chatu (k dispozici jsou předvolby **Rychlé shrnutí**, **Klíčové body**, **Peer Review** a **Feynman**).
 * Můžete zvolit, zda se má vždy přepnout do již otevřené záložky Gemini, nebo otevírat nová.
 
 ---

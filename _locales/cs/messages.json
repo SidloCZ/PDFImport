@@ -128,19 +128,19 @@
     "description": "Placeholder for prompt textarea"
   },
   "presetSummaryBtn": {
-    "message": "SHRNUTÍ ČLÁNKU",
-    "description": "Label for summary preset button"
+    "message": "RYCHLÉ SHRNUTÍ",
+    "description": "Label for quick summary preset button"
   },
   "presetSummaryText": {
-    "message": "Shrň hlavní zjištění a metodiku tohoto vědeckého článku:",
-    "description": "Text filled by summary preset button"
+    "message": "Vytvoř stručné a přehledné shrnutí přiloženého dokumentu:\n\n1. Přehled: Hlavní téma a cíl v 1–2 větách.\n2. Klíčové poznatky: 3–4 nejdůležitější zjištění či myšlenky.\n3. Závěr: Hlavní dopad nebo praktický význam.\n4. Limity a omezení: Zásadní omezení, metodická úskalí či limity platnosti v 1–2 větách.\n\nPiš věcně, srozumitelně a k věci.",
+    "description": "Text filled by quick summary preset button"
   },
   "presetPointsBtn": {
     "message": "KLÍČOVÉ BODY",
     "description": "Label for key points preset button"
   },
   "presetPointsText": {
-    "message": "Vypiš klíčové body a závěry z tohoto dokumentu v češtině:",
+    "message": "Extrahuj nejdůležitější klíčové body z přiloženého dokumentu do přehledných odrážek:\n\n• Hlavní poznatky: Zásadní myšlenky, argumenty a fakta.\n• Data a důkazy: Konkrétní čísla, zjištění a podklady.\n• Praktické závěry: Přímé dopady, doporučení či důsledky.\n• Limity a omezení: Zásadní omezení, metodická úskalí či limity platnosti v 1–2 větách.\n\nFormuluj v češtině, konkrétně, stručně a bez obecných frází.",
     "description": "Text filled by key points preset button"
   },
   "presetPeerReviewBtn": {

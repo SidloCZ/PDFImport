@@ -57,7 +57,7 @@ When viewing any PDF article (e.g. [AEM Journal PDF](https://journals.asm.org/do
 
 Right-click the extension icon and select **Options**:
 
-* **Default prompt**: Configure a template prompt that is automatically typed into Gemini after the PDF is attached (e.g., *"Summarize the key findings, methodology, and conclusions of this paper:"*).
+* **Default prompt**: Configure a template prompt that is automatically typed into Gemini after the PDF is attached (with built-in presets for **Quick Summary**, **Key Points**, **Peer Review**, and **Feynman**).
 * **Tab reuse**: Choose whether to switch to an already opened Gemini tab or always open a new tab.
 
 ---

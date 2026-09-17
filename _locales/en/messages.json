@@ -128,19 +128,19 @@
     "description": "Placeholder for prompt textarea"
   },
   "presetSummaryBtn": {
-    "message": "ARTICLE SUMMARY",
-    "description": "Label for summary preset button"
+    "message": "QUICK SUMMARY",
+    "description": "Label for quick summary preset button"
   },
   "presetSummaryText": {
-    "message": "Summarize the key findings and methodology of this scientific article:",
-    "description": "Text filled by summary preset button"
+    "message": "Provide a concise executive summary of the attached document:\n\n1. Overview: Core topic and objective in 1–2 sentences.\n2. Key Takeaways: Top 3–4 essential findings or insights.\n3. Bottom Line: Main implication or practical conclusion.\n4. Limitations & Constraints: Key caveats, limitations, or scope boundaries in 1–2 sentences.\n\nKeep it structured, clear, and scannable.",
+    "description": "Text filled by quick summary preset button"
   },
   "presetPointsBtn": {
     "message": "KEY POINTS",
     "description": "Label for key points preset button"
   },
   "presetPointsText": {
-    "message": "List key points and conclusions from this document:",
+    "message": "Extract the key points from the attached document into structured bullet points:\n\n• Core Insights: Most critical ideas, facts, or arguments.\n• Evidence & Data: Specific figures, findings, or proof points.\n• Practical Takeaways: Direct conclusions or actionable implications.\n• Limitations & Constraints: Key caveats, limitations, or scope boundaries in 1–2 sentences.\n\nBe specific, concise, and avoid generic filler.",
     "description": "Text filled by key points preset button"
   },
   "presetPeerReviewBtn": {
