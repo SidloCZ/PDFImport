@@ -106,10 +106,6 @@
    */
   async function executeUploadWorkflow(file, optionalPrompt) {
     log(`--- Zahajuji vkládání: ${file.name} ---`);
-    
-    // Otevřeme debug panel, aby uživatel viděl přesný postup
-    showDebugPanel();
-
     let success = false;
 
     // KROK 1: Analýza stávajících inputů
@@ -365,7 +361,7 @@
       font-family: 'Space Mono', monospace;
       font-size: 11px;
       z-index: 9999999;
-      display: flex;
+      display: none;
       flex-direction: column;
       overflow: hidden;
       transition: transform 0.15s ease;
@@ -375,7 +371,7 @@
       <div style="background: #fef08a; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000000;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="background: #000000; color: #ffffff; font-size: 10px; font-weight: 900; padding: 1px 5px;">DEBUG</span>
-          <strong style="color: #000000; font-size: 13px; font-family: 'Space Grotesk', sans-serif; font-weight: 900;">PDF TO AI // PANEL</strong>
+          <strong style="color: #000000; font-size: 13px; font-family: 'Space Grotesk', sans-serif; font-weight: 900;">PDF TO AI // PANEL (Alt+D)</strong>
         </div>
         <div style="display: flex; gap: 6px;">
           <button id="pdf-debug-clear" style="background: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; color: #000000; font-weight: bold; padding: 3px 8px; cursor: pointer; font-size: 10px; font-family: inherit;">VYČISTIT</button>
@@ -399,12 +395,7 @@
     });
 
     document.getElementById("pdf-debug-toggle").addEventListener("click", () => {
-      const logsEl = document.getElementById("pdf-debug-logs");
-      const btnsEl = hud.querySelector("div:last-child");
-      const isHidden = logsEl.style.display === "none";
-      logsEl.style.display = isHidden ? "flex" : "none";
-      btnsEl.style.display = isHidden ? "flex" : "none";
-      document.getElementById("pdf-debug-toggle").textContent = isHidden ? "SKRÝT" : "ZOBRAZIT";
+      toggleDebugHUD();
     });
 
     document.getElementById("pdf-btn-inspect").addEventListener("click", inspectDOM);
@@ -417,16 +408,31 @@
         log("Nemám uložený žádný soubor v paměti. Stiskněte Alt+G na PDF stránce.", "warning");
       }
     });
+
+    // Klávesová zkratka Alt+D nebo Ctrl+Shift+D pro zobrazení/skrytí Debug Panelu
+    window.addEventListener("keydown", (e) => {
+      if ((e.altKey && e.key.toLowerCase() === "d") || (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "d")) {
+        e.preventDefault();
+        toggleDebugHUD();
+      }
+    });
+  }
+
+  function toggleDebugHUD() {
+    const hud = document.getElementById("pdf-import-debug-hud");
+    if (!hud) return;
+    const isHidden = hud.style.display === "none";
+    hud.style.display = isHidden ? "flex" : "none";
+    if (isHidden) {
+      updateDebugUI();
+    }
   }
 
   function showDebugPanel() {
     const hud = document.getElementById("pdf-import-debug-hud");
     if (hud) {
-      const logsEl = document.getElementById("pdf-debug-logs");
-      const btnsEl = hud.querySelector("div:last-child");
-      logsEl.style.display = "flex";
-      btnsEl.style.display = "flex";
-      document.getElementById("pdf-debug-toggle").textContent = "SKRÝT";
+      hud.style.display = "flex";
+      updateDebugUI();
     }
   }
 

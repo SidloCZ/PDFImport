@@ -2,20 +2,26 @@
  * Background Service Worker pro PDF to Gemini Fast Import
  */
 
-// Inicializace kontextového menu při instalaci / startu
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: "send_current_pdf",
-    title: "✨ Odeslat toto PDF do Gemini (Alt+G)",
-    contexts: ["page", "action"]
-  });
+// Inicializace kontextového menu (používáme "all", aby se menu zobrazilo i v PDF prohlížeči a na všech prvcích)
+function setupContextMenus() {
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({
+      id: "send_current_pdf",
+      title: "✨ Odeslat PDF do Gemini (Alt+G)",
+      contexts: ["all"]
+    });
 
-  chrome.contextMenus.create({
-    id: "send_link_pdf",
-    title: "✨ Odeslat odkazované PDF do Gemini",
-    contexts: ["link"]
+    chrome.contextMenus.create({
+      id: "send_link_pdf",
+      title: "✨ Odeslat odkazované PDF do Gemini",
+      contexts: ["link"]
+    });
   });
-});
+}
+
+chrome.runtime.onInstalled.addListener(setupContextMenus);
+chrome.runtime.onStartup.addListener(setupContextMenus);
+setupContextMenus();
 
 // Obsluha kliknutí na ikonu na liště
 chrome.action.onClicked.addListener(async (tab) => {
