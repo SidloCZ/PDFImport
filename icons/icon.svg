@@ -1,31 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- Barva 1: Cerne zaoblene pozadi -->
+  <!-- Cerne zaoblene pozadi -->
   <rect width="128" height="128" rx="28" fill="#000000" />
 
-  <!-- 1. SOUBOR (zmensena, elegantni ikona na leve strane, x: 14 az 42) -->
+  <!-- 1. SOUBOR (bily obrys, leva strana) -->
   <g fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M16 40 C16 36 19 33 23 33 L34 33 L44 43 L44 87 C44 91 41 94 37 94 L23 94 C19 94 16 91 16 87 Z" />
-    <path d="M34 33 L34 43 L44 43" />
-    <line x1="23" y1="58" x2="34" y2="58" stroke-width="4.5" />
-    <line x1="23" y1="72" x2="37" y2="72" stroke-width="4.5" />
+    <path d="M16 38 C16 34 19 31 23 31 L34 31 L44 41 L44 89 C44 93 41 96 37 96 L23 96 C19 96 16 93 16 89 Z" />
+    <path d="M34 31 L34 41 L44 41" />
+    <line x1="23" y1="56" x2="34" y2="56" stroke-width="4.5" />
+    <line x1="23" y1="70" x2="37" y2="70" stroke-width="4.5" />
   </g>
 
-  <!-- 2. SPEED ARROW (stred, x: 52 az 86 - zadny prekryv) -->
-  <g fill="#FFFFFF">
-    <!-- Hrot sipky a stredove telo -->
-    <path d="M74 52 L88 64 L74 76 L74 70 L64 70 L64 58 L74 58 Z" />
+  <!-- 2. SPEED ARROW (barevna - elektricka cyan, stred) -->
+  <g fill="#00D2FF">
+    <!-- Hrot a stredove telo -->
+    <path d="M72 50 L88 64 L72 78 L72 70 L60 70 L60 58 L72 58 Z" />
 
-    <!-- Trailing speed pruhy s mezerami -->
-    <!-- Radek 1 -->
-    <rect x="52" y="55" width="8" height="3.5" rx="1.75" />
-    <!-- Radek 2 -->
-    <rect x="47" y="60.5" width="12" height="3.5" rx="1.75" />
-    <!-- Radek 3 -->
-    <rect x="53" y="66" width="8" height="3.5" rx="1.75" />
-    <!-- Radek 4 -->
-    <rect x="48" y="71.5" width="10" height="3.5" rx="1.75" />
+    <!-- Aerodynamicke motion pruhy s plynulym odsazenim -->
+    <rect x="52" y="53" width="9" height="4" rx="2" />
+    <rect x="46" y="62" width="12" height="4" rx="2" />
+    <rect x="52" y="71" width="9" height="4" rx="2" />
   </g>
 
-  <!-- 3. AI SPARKLE (prava strana, stred x: 110, y: 64 - velkorysy odstup) -->
-  <path d="M110 48 C110 57 114 64 122 64 C114 64 110 71 110 80 C110 71 106 64 98 64 C106 64 110 57 110 48 Z" fill="#FFFFFF" />
+  <!-- 3. TEXT "AI" (ciste bily, prava strana) -->
+  <text x="105" y="73" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Space Grotesk', sans-serif" font-size="25" font-weight="900" text-anchor="middle" letter-spacing="-0.5">AI</text>
 </svg>
