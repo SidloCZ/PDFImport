@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF to Gemini - Nastavení</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-brand">
+        <img src="icons/icon48.png" alt="Logo" class="logo">
+        <div>
+          <h1>PDF to Gemini Import</h1>
+          <p class="subtitle">Rychlý import PDF dokumentů do chatu</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Sekce: Klávesové zkratky a ovládání -->
+      <section class="card">
+        <h2>⚡ Jak používat</h2>
+        <div class="shortcut-box">
+          <div class="shortcut-item">
+            <span class="badge">Alt + G</span>
+            <span>Výchozí klávesová zkratka na jakékoliv stránce či PDF</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="badge">Ikona v liště</span>
+            <span>1 kliknutí na ikonu rozšíření v pravém horním rohu Opeře</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="badge">Pravé tlačítko</span>
+            <span>Kontextové menu na odkazu nebo v PDF dokumentu</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sekce: Nastavení chování -->
+      <section class="card">
+        <h2>⚙️ Předvolby</h2>
+        
+        <div class="form-group">
+          <label class="toggle-label">
+            <input type="checkbox" id="reuseTab" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">
+              <strong>Použít již otevřenou záložku Gemini</strong>
+              <small>Pokud je Gemini již otevřeno, přepne se na něj. Jinak otevře novou záložku.</small>
+            </span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="defaultPrompt">
+            <strong>Automatický výchozí prompt (volitelné):</strong>
+            <small>Tento text se po vložení souboru automaticky vepíše do zprávy.</small>
+          </label>
+          <textarea id="defaultPrompt" rows="3" placeholder="Např.: Analyzuj tento PDF dokument a shrň hlavní zjištění, metodiku a závěr:"></textarea>
+          <div class="prompt-presets">
+            <button type="button" class="preset-btn" data-text="Shrň hlavní zjištění a metodiku tohoto vědeckého článku:">🔬 Shrnutí článku</button>
+            <button type="button" class="preset-btn" data-text="Vypiš klíčové body a závěry z tohoto dokumentu v češtině:">📝 Klíčové body</button>
+            <button type="button" class="preset-btn" data-text="">❌ Vymazat</button>
+          </div>
+        </div>
+
+        <button id="saveBtn" class="btn primary-btn">Uložit nastavení</button>
+        <span id="saveStatus" class="status-msg"></span>
+      </section>
+
+      <!-- Důležité upozornění pro soubory na disku (file:///) -->
+      <section class="card alert-card">
+        <h3>📂 Použití s lokálními soubory na disku (file:///)</h3>
+        <p>Pro fungování s lokálními PDF soubory otevřenými v Opeře (např. <code>file:///C:/Users/...</code>):</p>
+        <ol>
+          <li>Otevřete v Opeře stránku <code>opera://extensions</code></li>
+          <li>Najděte <strong>PDF to Gemini Fast Import</strong> a klikněte na <strong>Podrobnosti</strong></li>
+          <li>Zaškrtněte volbu <strong>„Povolit přístup k adresám URL souborů“</strong></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>PDF to Gemini Fast Import • Vyvinuto pro efektivní práci bez zbytečného stahování</p>
+    </footer>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
