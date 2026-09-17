@@ -345,7 +345,7 @@
   }
 
   /**
-   * Vytvoření interaktivního Debug Panelu na stránce
+   * Vytvoření interaktivního Debug Panelu na stránce (Neo-Brutalist Design)
    */
   function createDebugPanel() {
     if (document.getElementById("pdf-import-debug-hud")) return;
@@ -356,37 +356,38 @@
       position: fixed;
       top: 16px;
       right: 16px;
-      width: 420px;
-      max-height: 80vh;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid #334155;
-      border-radius: 12px;
-      color: #F8FAFC;
-      font-family: monospace;
+      width: 440px;
+      max-height: 85vh;
+      background: #f4efe6;
+      border: 3px solid #000000;
+      box-shadow: 5px 5px 0px 0px #000000;
+      color: #000000;
+      font-family: 'Space Mono', monospace;
       font-size: 11px;
       z-index: 9999999;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: transform 0.25s ease;
+      transition: transform 0.15s ease;
     `;
 
     hud.innerHTML = `
-      <div style="background: #1E293B; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
-        <strong style="color: #38BDF8; font-size: 12px; font-family: sans-serif;">🛠️ PDF Import - Debug Panel</strong>
-        <div style="display: flex; gap: 8px;">
-          <button id="pdf-debug-clear" style="background: #334155; border: none; color: #E2E8F0; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 10px;">Vyčistit</button>
-          <button id="pdf-debug-toggle" style="background: #334155; border: none; color: #E2E8F0; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 10px;">Skrýt</button>
+      <div style="background: #fef08a; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000000;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="background: #000000; color: #ffffff; font-size: 10px; font-weight: 900; padding: 1px 5px;">DEBUG</span>
+          <strong style="color: #000000; font-size: 13px; font-family: 'Space Grotesk', sans-serif; font-weight: 900;">PDF TO AI // PANEL</strong>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button id="pdf-debug-clear" style="background: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; color: #000000; font-weight: bold; padding: 3px 8px; cursor: pointer; font-size: 10px; font-family: inherit;">VYČISTIT</button>
+          <button id="pdf-debug-toggle" style="background: #ffe600; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; color: #000000; font-weight: bold; padding: 3px 8px; cursor: pointer; font-size: 10px; font-family: inherit;">SKRÝT</button>
         </div>
       </div>
-      <div id="pdf-debug-logs" style="padding: 12px; flex: 1; overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; gap: 4px; line-height: 1.4;">
-        <div style="color: #94A3B8;">Čekám na aktivitu...</div>
+      <div id="pdf-debug-logs" style="padding: 12px; flex: 1; overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; gap: 6px; line-height: 1.4; background: #ffffff; font-weight: 700;">
+        <div style="color: #666666;">Čekám na aktivitu...</div>
       </div>
-      <div style="padding: 10px; background: #1E293B; border-top: 1px solid #334155; display: flex; gap: 6px; flex-wrap: wrap;">
-        <button id="pdf-btn-inspect" style="flex: 1; background: #2563EB; color: white; border: none; padding: 6px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 10px;">🔍 Prozkoumat DOM</button>
-        <button id="pdf-btn-retry" style="flex: 1; background: #10B981; color: white; border: none; padding: 6px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 10px;">▶ Opakovat vložení</button>
+      <div style="padding: 10px; background: #fef08a; border-top: 3px solid #000000; display: flex; gap: 8px; flex-wrap: wrap;">
+        <button id="pdf-btn-inspect" style="flex: 1; background: #00d2ff; color: #000000; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">🔍 PROZKOUMAT DOM</button>
+        <button id="pdf-btn-retry" style="flex: 1; background: #ff2a85; color: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">▶ OPAKOVAT VLOŽENÍ</button>
       </div>
     `;
 
@@ -403,7 +404,7 @@
       const isHidden = logsEl.style.display === "none";
       logsEl.style.display = isHidden ? "flex" : "none";
       btnsEl.style.display = isHidden ? "flex" : "none";
-      document.getElementById("pdf-debug-toggle").textContent = isHidden ? "Skrýt" : "Zobrazit";
+      document.getElementById("pdf-debug-toggle").textContent = isHidden ? "SKRÝT" : "ZOBRAZIT";
     });
 
     document.getElementById("pdf-btn-inspect").addEventListener("click", inspectDOM);
@@ -425,7 +426,7 @@
       const btnsEl = hud.querySelector("div:last-child");
       logsEl.style.display = "flex";
       btnsEl.style.display = "flex";
-      document.getElementById("pdf-debug-toggle").textContent = "Skrýt";
+      document.getElementById("pdf-debug-toggle").textContent = "SKRÝT";
     }
   }
 
@@ -434,11 +435,25 @@
     if (!logsEl) return;
 
     logsEl.innerHTML = debugLogs.map(item => {
-      let color = "#CBD5E1";
-      if (item.type === "error") color = "#EF4444";
-      if (item.type === "warning") color = "#F59E0B";
-      if (item.type === "success") color = "#10B981";
-      return `<div style="color: ${color}; word-break: break-all;"><span style="color: #64748B;">[${item.time}]</span> ${escapeHtml(item.msg)}</div>`;
+      let bg = "#f8fafc";
+      let border = "#000000";
+      let color = "#000000";
+
+      if (item.type === "error") {
+        bg = "#fee2e2";
+        border = "#ef4444";
+        color = "#991b1b";
+      } else if (item.type === "warning") {
+        bg = "#fef3c7";
+        border = "#f59e0b";
+        color = "#92400e";
+      } else if (item.type === "success") {
+        bg = "#dcfce7";
+        border = "#10b981";
+        color = "#065f46";
+      }
+
+      return `<div style="background: ${bg}; border: 1px solid ${border}; border-left: 4px solid ${border}; padding: 4px 8px; color: ${color}; word-break: break-all;"><span style="color: #64748b; font-size: 10px;">[${item.time}]</span> ${escapeHtml(item.msg)}</div>`;
     }).join("");
 
     logsEl.scrollTop = logsEl.scrollHeight;
@@ -470,6 +485,9 @@
     });
   }
 
+  /**
+   * Neo-Brutalist Toast notifikace
+   */
   function showToast(htmlContent, type = "info") {
     let container = document.getElementById("pdf-import-toast-container");
     if (!container) {
@@ -482,38 +500,44 @@
         z-index: 999999;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
         pointer-events: none;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'Space Grotesk', -apple-system, sans-serif;
       `;
       document.body.appendChild(container);
     }
 
     const toast = document.createElement("div");
     const colors = {
-      info: { bg: "#1E293B", border: "#3B82F6", text: "#F8FAFC" },
-      success: { bg: "#064E3B", border: "#10B981", text: "#ECFDF5" },
-      warning: { bg: "#78350F", border: "#F59E0B", text: "#FFFBEB" },
-      error: { bg: "#7F1D1D", border: "#EF4444", text: "#FEF2F2" }
+      info: { bg: "#fef08a", tag: "#000000", tagColor: "#ffffff", title: "INFO" },
+      success: { bg: "#86efac", tag: "#000000", tagColor: "#ffffff", title: "SUCCESS" },
+      warning: { bg: "#fde047", tag: "#ff6b35", tagColor: "#000000", title: "POZOR" },
+      error: { bg: "#fca5a5", tag: "#ff2a85", tagColor: "#ffffff", title: "CHYBA" }
     };
     const c = colors[type] || colors.info;
 
     toast.style.cssText = `
       background: ${c.bg};
-      color: ${c.text};
-      border-left: 4px solid ${c.border};
-      padding: 12px 18px;
-      border-radius: 8px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
-      font-size: 14px;
-      line-height: 1.5;
-      max-width: 360px;
+      color: #000000;
+      border: 3px solid #000000;
+      box-shadow: 4px 4px 0px 0px #000000;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+      max-width: 380px;
       opacity: 0;
-      transform: translateY(12px);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(14px);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: auto;
     `;
-    toast.innerHTML = htmlContent;
+    toast.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+        <span style="background: ${c.tag}; color: ${c.tagColor}; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 900; padding: 1px 5px; border: 1px solid #000000;">${c.title}</span>
+        <span style="font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;">PDF TO AI</span>
+      </div>
+      <div>${htmlContent}</div>
+    `;
     container.appendChild(toast);
 
     requestAnimationFrame(() => {
@@ -524,7 +548,7 @@
     setTimeout(() => {
       toast.style.opacity = "0";
       toast.style.transform = "translateY(10px)";
-      setTimeout(() => toast.remove(), 350);
+      setTimeout(() => toast.remove(), 250);
     }, type === "error" ? 6000 : 3500);
   }
 

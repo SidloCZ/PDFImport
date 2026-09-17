@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="cs">
+
 <head>
   <meta charset="UTF-8">
-  <title>PDF to Gemini - Nastavení</title>
+  <title>PDF to AI Chat - Nastavení</title>
   <link rel="stylesheet" href="options.css">
 </head>
+
 <body>
   <div class="container">
     <header class="header">
       <div class="header-brand">
         <img src="icons/icon48.png" alt="Logo" class="logo">
         <div>
-          <h1>PDF to Gemini Import</h1>
+          <h1>PDF to AI Chat Import</h1>
           <p class="subtitle">Rychlý import PDF dokumentů do chatu</p>
         </div>
       </div>
@@ -40,7 +42,7 @@
       <!-- Sekce: Nastavení chování -->
       <section class="card">
         <h2>⚙️ Předvolby</h2>
-        
+
         <div class="form-group">
           <label class="toggle-label">
             <input type="checkbox" id="reuseTab" checked>
@@ -57,10 +59,13 @@
             <strong>Automatický výchozí prompt (volitelné):</strong>
             <small>Tento text se po vložení souboru automaticky vepíše do zprávy.</small>
           </label>
-          <textarea id="defaultPrompt" rows="3" placeholder="Např.: Analyzuj tento PDF dokument a shrň hlavní zjištění, metodiku a závěr:"></textarea>
+          <textarea id="defaultPrompt" rows="3"
+            placeholder="Např.: Analyzuj tento PDF dokument a shrň hlavní zjištění, metodiku a závěr:"></textarea>
           <div class="prompt-presets">
-            <button type="button" class="preset-btn" data-text="Shrň hlavní zjištění a metodiku tohoto vědeckého článku:">🔬 Shrnutí článku</button>
-            <button type="button" class="preset-btn" data-text="Vypiš klíčové body a závěry z tohoto dokumentu v češtině:">📝 Klíčové body</button>
+            <button type="button" class="preset-btn"
+              data-text="Shrň hlavní zjištění a metodiku tohoto vědeckého článku:">🔬 Shrnutí článku</button>
+            <button type="button" class="preset-btn"
+              data-text="Vypiš klíčové body a závěry z tohoto dokumentu v češtině:">📝 Klíčové body</button>
             <button type="button" class="preset-btn" data-text="">❌ Vymazat</button>
           </div>
         </div>
@@ -75,17 +80,18 @@
         <p>Pro fungování s lokálními PDF soubory otevřenými v Opeře (např. <code>file:///C:/Users/...</code>):</p>
         <ol>
           <li>Otevřete v Opeře stránku <code>opera://extensions</code></li>
-          <li>Najděte <strong>PDF to Gemini Fast Import</strong> a klikněte na <strong>Podrobnosti</strong></li>
+          <li>Najděte <strong>PDF to AI Chat Fast Import</strong> a klikněte na <strong>Podrobnosti</strong></li>
           <li>Zaškrtněte volbu <strong>„Povolit přístup k adresám URL souborů“</strong></li>
         </ol>
       </section>
     </main>
 
     <footer class="footer">
-      <p>PDF to Gemini Fast Import • Vyvinuto pro efektivní práci bez zbytečného stahování</p>
+      <p>PDF to AI Chat Fast Import • Vyvinuto pro efektivní práci bez zbytečného stahování</p>
     </footer>
   </div>
 
   <script src="options.js"></script>
 </body>
+
 </html>
