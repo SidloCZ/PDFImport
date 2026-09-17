@@ -78,13 +78,13 @@ Do `viewer.html` se umístí plovoucí widget (Fab button) s moderními glassmor
     <!-- Rozbalovací nabídka cílů -->
     <div id="ai-fab-menu" class="ai-fab-menu hidden">
         <button data-target="gemini" class="ai-menu-item">
-            <span class="ai-icon">✨</span> Google Gemini
+            <span class="ai-badge">GEMINI</span> Google Gemini
         </button>
         <button data-target="claude" class="ai-menu-item">
-            <span class="ai-icon">🟣</span> Claude
+            <span class="ai-badge">CLAUDE</span> Claude
         </button>
         <button data-target="chatgpt" class="ai-menu-item">
-            <span class="ai-icon">🟢</span> ChatGPT
+            <span class="ai-badge">GPT</span> ChatGPT
         </button>
     </div>
 </div>

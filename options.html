@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <title>PDF to AI Chat - Nastavení</title>
+  <title data-i18n="optionsTitle">PDFImport - Settings</title>
   <link rel="stylesheet" href="options.css">
 </head>
 
@@ -13,81 +13,104 @@
       <div class="header-brand">
         <img src="icons/icon48.png" alt="Logo" class="logo">
         <div>
-          <h1>PDF to AI Chat Import</h1>
-          <p class="subtitle">Rychlý import PDF dokumentů do chatu</p>
+          <h1 data-i18n="optionsHeaderTitle">PDFImport</h1>
+          <p class="subtitle" data-i18n="optionsHeaderSubtitle">PDF to AI – Fast Import</p>
         </div>
       </div>
     </header>
 
     <main class="content">
-      <!-- Sekce: Klávesové zkratky a ovládání -->
+      <!-- Section: How to use -->
       <section class="card">
-        <h2>JAK POUŽÍVAT</h2>
+        <h2 data-i18n="sectionHowToUse">HOW TO USE</h2>
         <div class="shortcut-box">
           <div class="shortcut-item">
             <span class="badge">Alt + G</span>
-            <span>Výchozí klávesová zkratka na jakékoliv stránce či PDF</span>
+            <span data-i18n="shortcutKeyDesc">Default keyboard shortcut on any page or PDF</span>
           </div>
           <div class="shortcut-item">
-            <span class="badge">Ikona v liště</span>
-            <span>1 kliknutí na ikonu rozšíření v pravém horním rohu Opeře</span>
+            <span class="badge">Toolbar Icon</span>
+            <span data-i18n="shortcutIconDesc">1 click on the extension icon in browser toolbar</span>
           </div>
           <div class="shortcut-item">
-            <span class="badge">Pravé tlačítko</span>
-            <span>Kontextové menu na odkazu nebo v PDF dokumentu</span>
+            <span class="badge">Right Click</span>
+            <span data-i18n="shortcutContextDesc">Context menu on link or in PDF document</span>
           </div>
         </div>
       </section>
 
-      <!-- Sekce: Nastavení chování -->
+      <!-- Section: Preferences -->
       <section class="card">
-        <h2>PŘEDVOLBY</h2>
+        <h2 data-i18n="sectionPreferences">PREFERENCES</h2>
+
+        <!-- Language Selector -->
+        <div class="form-group lang-group">
+          <label class="input-label">
+            <strong data-i18n="prefLanguageTitle">Extension Language</strong>
+            <small data-i18n="prefLanguageDesc">Choose between English and Czech for the extension interface.</small>
+          </label>
+          <div class="lang-switch-buttons">
+            <button type="button" class="lang-btn" id="langBtnEn" data-lang="en">English (EN)</button>
+            <button type="button" class="lang-btn" id="langBtnCs" data-lang="cs">Čeština (CS)</button>
+          </div>
+        </div>
 
         <div class="form-group">
           <label class="toggle-label">
             <input type="checkbox" id="reuseTab" checked>
             <span class="toggle-slider"></span>
             <span class="toggle-text">
-              <strong>Použít již otevřenou záložku Gemini</strong>
-              <small>Pokud je Gemini již otevřeno, přepne se na něj. Jinak otevře novou záložku.</small>
+              <strong data-i18n="prefReuseTabTitle">Reuse existing Gemini tab</strong>
+              <small data-i18n="prefReuseTabDesc">If Gemini is already open, switches to it. Otherwise opens a new tab.</small>
             </span>
           </label>
         </div>
 
         <div class="form-group">
-          <label for="defaultPrompt">
-            <strong>Automatický výchozí prompt (volitelné):</strong>
-            <small>Tento text se po vložení souboru automaticky vepíše do zprávy.</small>
+          <label for="defaultPrompt" class="input-label">
+            <strong data-i18n="prefDefaultPromptTitle">Automatic default prompt (optional):</strong>
+            <small data-i18n="prefDefaultPromptDesc">This text will be automatically inserted into the chat message after attaching the file.</small>
           </label>
           <textarea id="defaultPrompt" rows="3"
-            placeholder="Např.: Analyzuj tento PDF dokument a shrň hlavní zjištění, metodiku a závěr:"></textarea>
+            data-i18n-placeholder="prefDefaultPromptPlaceholder"
+            placeholder="E.g.: Analyze this PDF document and summarize key findings, methodology, and conclusion:"></textarea>
           <div class="prompt-presets">
             <button type="button" class="preset-btn"
-              data-text="Shrň hlavní zjištění a metodiku tohoto vědeckého článku:">SHRNUTÍ ČLÁNKU</button>
+              data-preset-key="presetSummaryText"
+              data-i18n="presetSummaryBtn">ARTICLE SUMMARY</button>
             <button type="button" class="preset-btn"
-              data-text="Vypiš klíčové body a závěry z tohoto dokumentu v češtině:">KLÍČOVÉ BODY</button>
-            <button type="button" class="preset-btn" data-text="">VYMAZAT</button>
+              data-preset-key="presetPointsText"
+              data-i18n="presetPointsBtn">KEY POINTS</button>
+            <button type="button" class="preset-btn"
+              data-preset-key="presetPeerReviewText"
+              data-i18n="presetPeerReviewBtn">PEER REVIEW</button>
+            <button type="button" class="preset-btn"
+              data-preset-key="presetFeynmanText"
+              data-i18n="presetFeynmanBtn">FEYNMAN</button>
+            <button type="button" class="preset-btn"
+              data-preset-key=""
+              data-i18n="presetClearBtn">CLEAR</button>
           </div>
         </div>
 
-        <button id="saveBtn" class="btn primary-btn">Uložit nastavení</button>
+        <button id="saveBtn" class="btn primary-btn" data-i18n="btnSaveSettings">Save settings</button>
         <span id="saveStatus" class="status-msg"></span>
       </section>
 
-      <!-- Důležité upozornění pro soubory na disku (file:///) -->
+      <!-- Section: Local files (file:///) -->
       <section class="card alert-card">
-        <h3>SOUBORY NA DISKU (file:///)</h3>
-        <p>Pro fungování s lokálními PDF soubory otevřenými v Opeře (např. <code>file:///C:/Users/...</code>):</p>
+        <h3 data-i18n="sectionLocalFiles">LOCAL FILES (file:///)</h3>
+        <p data-i18n="localFilesDesc">To work with local PDF files opened in browser (e.g. file:///...):</p>
         <ol>
-          <li>Otevřete v Opeře stránku <code>opera://extensions</code></li>
-          <li>Najděte <strong>PDF to AI Chat Fast Import</strong> a klikněte na <strong>Podrobnosti</strong></li>
-          <li>Zaškrtněte volbu <strong>„Povolit přístup k adresám URL souborů“</strong></li>
+          <li data-i18n="localFilesStep1">Open the extensions page in your browser (e.g. opera://extensions or chrome://extensions)</li>
+          <li data-i18n="localFilesStep2">Find PDFImport and click Details</li>
+          <li data-i18n="localFilesStep3">Enable "Allow access to file URLs"</li>
         </ol>
       </section>
     </main>
 
     <footer class="footer">
-      <p>PDF to AI Chat Fast Import • Vyvinuto pro efektivní práci bez zbytečného stahování</p>
+      <p data-i18n="optionsFooter">PDFImport • Designed for efficient workflows without manual downloads</p>
     </footer>
   </div>
 

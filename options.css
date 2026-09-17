@@ -27,10 +27,7 @@ body {
   background-color: var(--bg-clay);
   color: var(--color-black);
   line-height: 1.5;
-  padding: 32px 16px;
-  background-image:
-    radial-gradient(#000000 1px, transparent 1px);
-  background-size: 24px 24px;
+  padding: 24px 16px;
 }
 
 .container {
@@ -100,6 +97,7 @@ h1 {
 
 /* CARDS */
 .card {
+  background: #ffffff;
   border: var(--border-thick);
   box-shadow: var(--shadow-brutal);
   padding: 24px;
@@ -206,23 +204,75 @@ h3 {
 
 /* FORM ELEMENTS */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
-.input-label strong {
+.input-label,
+label[for="defaultPrompt"] {
   display: block;
+  margin-bottom: 8px;
+}
+
+.input-label strong,
+label[for="defaultPrompt"] strong {
+  display: block;
+  font-family: var(--font-geom);
   font-size: 14px;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--color-black);
   margin-bottom: 4px;
 }
 
-.input-label small {
+.input-label small,
+label[for="defaultPrompt"] small {
   display: block;
-  font-family: var(--font-mono);
+  font-family: var(--font-geom);
+  font-size: 13px;
+  font-weight: 400;
+  color: #555555;
+  line-height: 1.45;
+  margin-bottom: 4px;
+}
+
+/* LANGUAGE SWITCHER BUTTONS */
+.lang-group {
+  padding-bottom: 18px;
+  border-bottom: 2px solid #eeeeee;
+}
+
+.lang-switch-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.lang-btn {
+  padding: 8px 16px;
+  font-family: var(--font-geom);
   font-size: 12px;
-  color: #444444;
-  margin-bottom: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 2px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 2px 2px 0px 0px #000000;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.lang-btn:hover {
+  background: #f4f4f4;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.lang-btn.active {
+  background: #000000;
+  color: #ffffff;
+  box-shadow: 2px 2px 0px 0px #000000;
 }
 
 /* BRUTAL CHECKBOX */
@@ -245,47 +295,55 @@ h3 {
   display: none;
 }
 
+.toggle-slider,
 .brutal-checkbox {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   background: #ffffff;
   border: var(--border-thick);
   box-shadow: 2px 2px 0px 0px #000000;
   display: inline-block;
   flex-shrink: 0;
   position: relative;
+  margin-top: 2px;
   transition: background 0.1s ease;
 }
 
+.toggle-label input[type="checkbox"]:checked+.toggle-slider,
 .toggle-label input[type="checkbox"]:checked+.brutal-checkbox {
-  background: var(--color-lime);
+  background: #000000;
 }
 
+.toggle-label input[type="checkbox"]:checked+.toggle-slider::after,
 .toggle-label input[type="checkbox"]:checked+.brutal-checkbox::after {
-  content: "✓";
+  content: "";
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
-  transform: translate(-50%, -55%);
-  font-family: var(--font-mono);
-  font-size: 18px;
-  font-weight: 900;
-  color: #000000;
+  width: 5px;
+  height: 11px;
+  border: solid #ffffff;
+  border-width: 0 3px 3px 0;
+  transform: translate(-50%, -55%) rotate(45deg);
 }
 
 .toggle-text strong {
   display: block;
+  font-family: var(--font-geom);
   font-size: 14px;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: uppercase;
-  line-height: 1.2;
+  letter-spacing: 0.3px;
+  line-height: 1.25;
 }
 
 .toggle-text small {
   display: block;
-  font-family: var(--font-mono);
-  font-size: 12px;
+  font-family: var(--font-geom);
+  font-size: 13px;
+  font-weight: 400;
   color: #555555;
+  line-height: 1.45;
   margin-top: 4px;
 }
 
@@ -370,18 +428,21 @@ textarea:focus {
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
+.primary-btn,
 .btn-primary {
-  background: var(--color-pink);
+  background: #000000;
   color: #ffffff;
   box-shadow: var(--shadow-brutal);
 }
 
+.primary-btn:hover,
 .btn-primary:hover {
-  background: #ff006e;
+  background: #222222;
   transform: translate(-2px, -2px);
   box-shadow: var(--shadow-brutal-hover);
 }
 
+.primary-btn:active,
 .btn-primary:active {
   transform: translate(2px, 2px);
   box-shadow: var(--shadow-brutal-active);

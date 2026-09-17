@@ -1,67 +1,68 @@
-# PDF to AI Chat Fast Import (Opera / Chromium Rozšíření)
+# PDFImport – PDF to AI – Fast Import (Opera / Chromium Extension)
 
-Rozšíření pro prohlížeč **Opera** (a jakýkoliv Chromium prohlížeč), které umožňuje na **1 kliknutí nebo klávesovou zkratku** automaticky načíst a vložit otevřený PDF dokument přímo do **Google Gemini** chatu – bez nutnosti ručního stahování souboru na disk a jeho následného nahrávání.
+[English](README.md) | [Čeština](README.cs.md)
 
-Funguje jak pro **online vědecké články a weby** (např. *ASM Journals, ScienceDirect, arXiv, Nature*), tak pro **lokální PDF soubory z disku** (`file:///...`).
+Browser extension for **Opera** (and any Chromium-based browser) that enables you to instantly load and attach any opened PDF document directly into **Google Gemini** chat with **1 click or a keyboard shortcut** - without having to download files to disk and manually re-upload them.
+
+Works seamlessly with **online scientific papers and websites** (e.g., *ASM Journals, ScienceDirect, arXiv, Nature*) as well as **local PDF files on your disk** (`file:///...`).
 
 ---
 
-## Jak nainstalovat rozšíření do Opery
+## Installation Guide (Opera & Chromium Browsers)
 
-1. Otevřete prohlížeč **Opera**.
-2. Do adresního řádku zadejte:
+1. Open **Opera** (or Chrome, Brave, Edge).
+2. Enter the following URL into your address bar:
    ```text
    opera://extensions
    ```
-
-   *(Případně klikněte na ikonu kostičky rozšíření vpravo nahoře a zvolte **Spravovat rozšíření**).*
-3. V pravém horním rohu stránky zapněte přepínač **Vývojářský režim** (*Developer Mode*).
-4. Klikněte na nově zobrazené tlačítko **Načíst rozbalené** (*Load unpacked*).
-5. Vyberte složku s tímto staženým projektem (kde se nachází soubor `manifest.json`).
-6. Rozšíření se ihned načte a objeví se v seznamu!
-
----
-
-## DŮLEŽITÉ: Povolení pro lokální soubory (file:///)
-
-Pokud chcete odesílat i PDF soubory, které máte uložené v počítači a otevřené v Opeře (cesta začínající na `file:///`):
-
-1. Na stránce `opera://extensions` najděte kartu **PDF to AI Chat Fast Import**.
-2. Klikněte na tlačítko **Podrobnosti** (*Details*).
-3. Zapněte přepínač **„Povolit přístup k adresám URL souborů“** (*Allow access to file URLs*).
-   *(Tuto bezpečnostní volbu vyžaduje jádro Chromium pro všechna rozšíření přistupující k lokálnímu disku).*
+   *(Or click the extensions cube icon in the top right corner and select **Manage extensions**).*
+3. Toggle on **Developer mode** in the top right corner.
+4. Click the **Load unpacked** button.
+5. Select this project directory (the folder containing `manifest.json`).
+6. The extension is installed and ready to use.
 
 ---
 
-## Jak rozšíření používat
+## IMPORTANT: Local File Access (file:///)
 
-Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journals.asm.org/doi/pdf/10.1128/aem.00763-26)) nebo lokální PDF:
+If you want to import local PDF files opened from your hard drive (`file:///...` paths):
 
-### Možnost 1: Klávesová zkratka (Nejrychlejší)
-
-* Stiskněte **`Alt + G`**.
-* Rozšíření stáhne PDF data na pozadí, aktivuje záložku Gemini a soubor ihned vloží do zprávy.
-
-### Možnost 2: Ikona v liště
-
-* Klikněte na ikonu rozšíření v pravém horním rohu lišty prohlížeče.
-
-### Možnost 3: Kontextové menu
-
-* Kdekoliv na stránce nebo na odkazu vedoucím na PDF klikněte pravým tlačítkem myši a zvolte **Odeslat PDF do Gemini (Alt+G)**.
+1. Go to `opera://extensions` (or your browser's extensions page).
+2. Find **PDFImport** and click **Details**.
+3. Toggle on **"Allow access to file URLs"**.
+   *(This security permission is required by Chromium for any extension accessing local files).*
 
 ---
 
-## Předvolby a automatický prompt
+## How to Use
 
-Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Options*):
+When viewing any PDF article (e.g. [AEM Journal PDF](https://journals.asm.org/doi/pdf/10.1128/aem.00763-26)) or a local PDF file:
 
-* Můžete nastavit **výchozí prompt**, který se po vložení souboru automaticky vyplní do chatu (např. *„Shrň klíčová zjištění a metodiku tohoto článku:“*).
-* Můžete zvolit, zda se má vždy přepnout do již otevřené záložky Gemini, nebo otevírat nová.
+### Option 1: Keyboard Shortcut (Fastest)
+
+* Press **`Alt + G`**.
+* The extension fetches the PDF data in the background, focuses or opens Gemini, and attaches the file directly into the chat prompt.
+
+### Option 2: Toolbar Icon
+
+* Click the extension icon in your browser's extension toolbar.
+
+### Option 3: Context Menu
+
+* Right-click anywhere on a PDF page or on a link pointing to a PDF, and select **Send PDF to Gemini (Alt+G)**.
 
 ---
 
-## Varianta B (Vlastní PDF Viewer)
+## Preferences and Default Prompt
 
-Kompletní technická dokumentace a návrh na nahrazení nativního PDF prohlížeče vlastním HTML5 PDF.js viewerem s plovoucím SVG tlačítkem přímo přes dokument se nachází v souboru:
+Right-click the extension icon and select **Options**:
+
+* **Default prompt**: Configure a template prompt that is automatically typed into Gemini after the PDF is attached (e.g., *"Summarize the key findings, methodology, and conclusions of this paper:"*).
+* **Tab reuse**: Choose whether to switch to an already opened Gemini tab or always open a new tab.
+
+---
+
+## Architecture: Custom PDF Viewer (Variant B)
+
+Technical documentation and architectural design for replacing the browser's built-in PDF viewer with an HTML5 PDF.js viewer featuring a floating action button directly overlaid on the document is available in:
 * [DOCS_VARIANTA_B.md](DOCS_VARIANTA_B.md)

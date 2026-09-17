@@ -2,18 +2,32 @@
  * Background Service Worker pro PDF to Gemini Fast Import
  */
 
-// Inicializace kontextového menu (používáme "all", aby se menu zobrazilo i v PDF prohlížeči a na všech prvcích)
-function setupContextMenus() {
+// Context menu setup
+async function setupContextMenus() {
+  let lang = "en";
+  try {
+    const settings = await chrome.storage.sync.get({ userLanguage: "auto" });
+    if (settings.userLanguage && settings.userLanguage !== "auto") {
+      lang = settings.userLanguage;
+    } else {
+      const uiLang = (chrome.i18n.getUILanguage() || "en").toLowerCase();
+      lang = uiLang.startsWith("cs") ? "cs" : "en";
+    }
+  } catch (e) {}
+
+  const titleCurrent = lang === "cs" ? "Odeslat PDF do Gemini (Alt+G)" : "Send PDF to Gemini (Alt+G)";
+  const titleLink = lang === "cs" ? "Odeslat odkazované PDF do Gemini" : "Send linked PDF to Gemini";
+
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
       id: "send_current_pdf",
-      title: "Odeslat PDF do Gemini (Alt+G)",
+      title: titleCurrent,
       contexts: ["all"]
     });
 
     chrome.contextMenus.create({
       id: "send_link_pdf",
-      title: "Odeslat odkazované PDF do Gemini",
+      title: titleLink,
       contexts: ["link"]
     });
   });
@@ -21,6 +35,11 @@ function setupContextMenus() {
 
 chrome.runtime.onInstalled.addListener(setupContextMenus);
 chrome.runtime.onStartup.addListener(setupContextMenus);
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.action === "LANGUAGE_CHANGED") {
+    setupContextMenus();
+  }
+});
 setupContextMenus();
 
 // Obsluha kliknutí na ikonu na liště
@@ -198,7 +217,8 @@ function extractFilename(response, url, fallbackTitle) {
     }
   }
 
-  return "dokument_" + Date.now().toString().slice(-4) + ".pdf";
+  const prefix = chrome.i18n.getMessage("defaultFileNamePrefix") || "document_";
+  return prefix + Date.now().toString().slice(-4) + ".pdf";
 }
 
 /**
@@ -234,11 +254,11 @@ function showFileAccessWarning() {
   chrome.notifications.create({
     type: "basic",
     iconUrl: "icons/icon128.png",
-    title: "Vyžadováno oprávnění pro lokální soubory",
-    message: "Pro import souborů 'file:///' povolte v Opeře na stránce opera://extensions volbu 'Povolit přístup k adresám URL souborů'."
+    title: chrome.i18n.getMessage("fileAccessWarningTitle") || "File URL permission required",
+    message: chrome.i18n.getMessage("fileAccessWarningMessage") || "To import 'file:///' local files, please enable 'Allow access to file URLs' on the browser extensions page."
   }).catch(() => {
     // Fallback pokud notifications API není dostupné
-    console.warn("Povolte 'Povolit přístup k adresám URL souborů' v opera://extensions");
+    console.warn("[PDF Import] Please enable 'Allow access to file URLs' in extension settings");
   });
 }
 

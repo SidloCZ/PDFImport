@@ -1,0 +1,224 @@
+{
+  "extensionName": {
+    "message": "PDF to AI – Fast Import",
+    "description": "The title of the extension"
+  },
+  "extensionShortName": {
+    "message": "PDFImport",
+    "description": "The short name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Instantly imports opened PDF documents directly into Google Gemini chat without manual downloading.",
+    "description": "The description of the extension"
+  },
+  "actionTitle": {
+    "message": "Send PDF to Gemini (Alt+G)",
+    "description": "Tooltip title for action icon"
+  },
+  "commandDescription": {
+    "message": "Send current PDF document to Gemini chat",
+    "description": "Description of shortcut command"
+  },
+  "contextMenuSendCurrentPdf": {
+    "message": "Send PDF to Gemini (Alt+G)",
+    "description": "Context menu item for current page/PDF"
+  },
+  "contextMenuSendLinkPdf": {
+    "message": "Send linked PDF to Gemini",
+    "description": "Context menu item for links"
+  },
+  "fileAccessWarningTitle": {
+    "message": "File URL permission required",
+    "description": "Notification title for missing file:// permission"
+  },
+  "fileAccessWarningMessage": {
+    "message": "To import 'file:///' local files, please enable 'Allow access to file URLs' on the browser extensions page.",
+    "description": "Notification message for missing file:// permission"
+  },
+  "defaultFileNamePrefix": {
+    "message": "document_",
+    "description": "Prefix used when generating a fallback PDF filename"
+  },
+  "optionsTitle": {
+    "message": "PDFImport - Settings",
+    "description": "Title of the options page"
+  },
+  "optionsHeaderTitle": {
+    "message": "PDFImport",
+    "description": "Main heading in options header"
+  },
+  "optionsHeaderSubtitle": {
+    "message": "PDF to AI – Fast Import",
+    "description": "Subtitle in options header"
+  },
+  "sectionHowToUse": {
+    "message": "HOW TO USE",
+    "description": "Heading for how-to section"
+  },
+  "shortcutKeyDesc": {
+    "message": "Default keyboard shortcut on any page or PDF",
+    "description": "Description for keyboard shortcut"
+  },
+  "shortcutIconDesc": {
+    "message": "1 click on the extension icon in browser toolbar",
+    "description": "Description for toolbar button"
+  },
+  "shortcutContextDesc": {
+    "message": "Context menu on link or in PDF document",
+    "description": "Description for context menu"
+  },
+  "sectionPreferences": {
+    "message": "PREFERENCES",
+    "description": "Heading for preferences section"
+  },
+  "prefReuseTabTitle": {
+    "message": "Reuse existing Gemini tab",
+    "description": "Title for tab reuse toggle"
+  },
+  "prefReuseTabDesc": {
+    "message": "If Gemini is already open, switches to it. Otherwise opens a new tab.",
+    "description": "Description for tab reuse toggle"
+  },
+  "prefLanguageTitle": {
+    "message": "Extension Language",
+    "description": "Label for extension language selector"
+  },
+  "prefLanguageDesc": {
+    "message": "Choose between English and Czech for the extension interface.",
+    "description": "Description for extension language selector"
+  },
+  "prefDefaultPromptTitle": {
+    "message": "Automatic default prompt (optional):",
+    "description": "Label for default prompt textarea"
+  },
+  "prefDefaultPromptDesc": {
+    "message": "This text will be automatically inserted into the chat message after attaching the file.",
+    "description": "Sublabel for default prompt"
+  },
+  "prefDefaultPromptPlaceholder": {
+    "message": "E.g.: Analyze this PDF document and summarize key findings, methodology, and conclusion:",
+    "description": "Placeholder for prompt textarea"
+  },
+  "presetSummaryBtn": {
+    "message": "ARTICLE SUMMARY",
+    "description": "Label for summary preset button"
+  },
+  "presetSummaryText": {
+    "message": "Summarize the key findings and methodology of this scientific article:",
+    "description": "Text filled by summary preset button"
+  },
+  "presetPointsBtn": {
+    "message": "KEY POINTS",
+    "description": "Label for key points preset button"
+  },
+  "presetPointsText": {
+    "message": "List key points and conclusions from this document:",
+    "description": "Text filled by key points preset button"
+  },
+  "presetPeerReviewBtn": {
+    "message": "PEER REVIEW",
+    "description": "Label for peer review preset button"
+  },
+  "presetPeerReviewText": {
+    "message": "Act as an expert scientific researcher and critical peer reviewer. Read the attached research paper (or text provided below) and generate an in-depth, rigorous summary using the exact structure below. Rely strictly on the provided text; do not extrapolate, assume, or add external references.\n\n1. Metadata\nTitle, Journal, & Year: [Extract]\nAuthors & Institutions: [Extract]\n\n2. Research Core\nMain Research Question/Objective: [1–2 sentences defining what the study aims to find out]\nCore Hypothesis / Central Thesis: [What specific prediction or premise is tested]\n\n3. Methodology & Data\nStudy Design: [e.g., randomized controlled trial, in vitro, observational, computational model]\nSample Size & Data Source: [Exact numbers, organisms, materials, or datasets used]\nAnalytical Approach: [Statistical tests or computational methods applied]\n\n4. Key Findings & Evidence\nPresent the top 3–5 primary findings. For each finding, provide a short paraphrased summary followed by a direct verbatim quote (1–2 sentences) from the paper that supports it.\n\n5. Limitations & Constraints\nMethodological/Data Limitations: [Explicit constraints or unaddressed confounding variables noted by authors]\nGeneralizability: [Limits on where or to whom these findings apply]\n\n6. Significance\nField Impact: [1 sentence on how this materially advances the discipline]",
+    "description": "Text filled by peer review preset button"
+  },
+  "presetFeynmanBtn": {
+    "message": "FEYNMAN",
+    "description": "Label for Feynman technique preset button"
+  },
+  "presetFeynmanText": {
+    "message": "Explain this paper to me in depth using the Feynman technique, as if you were its author.",
+    "description": "Text filled by Feynman technique preset button"
+  },
+  "presetClearBtn": {
+    "message": "CLEAR",
+    "description": "Label for clear preset button"
+  },
+  "btnSaveSettings": {
+    "message": "Save settings",
+    "description": "Label for save settings button"
+  },
+  "btnSaving": {
+    "message": "Saving...",
+    "description": "Button label while saving"
+  },
+  "statusSaved": {
+    "message": "Settings saved!",
+    "description": "Status message after saving"
+  },
+  "sectionLocalFiles": {
+    "message": "LOCAL FILES (file:///)",
+    "description": "Heading for local files section"
+  },
+  "localFilesDesc": {
+    "message": "To work with local PDF files opened in browser (e.g. file:///...):",
+    "description": "Intro text for local files instruction"
+  },
+  "localFilesStep1": {
+    "message": "Open the extensions page in your browser (e.g. opera://extensions or chrome://extensions)",
+    "description": "Step 1 for local files"
+  },
+  "localFilesStep2": {
+    "message": "Find PDFImport and click Details",
+    "description": "Step 2 for local files"
+  },
+  "localFilesStep3": {
+    "message": "Enable 'Allow access to file URLs'",
+    "description": "Step 3 for local files"
+  },
+  "optionsFooter": {
+    "message": "PDFImport • Designed for efficient workflows without manual downloads",
+    "description": "Footer text"
+  },
+  "toastProcessing": {
+    "message": "Processing: <strong>$FILENAME$</strong>...",
+    "description": "Toast message while processing file",
+    "placeholders": {
+      "filename": {
+        "content": "$1"
+      }
+    }
+  },
+  "toastSuccess": {
+    "message": "File <strong>$FILENAME$</strong> was inserted into Gemini!",
+    "description": "Toast message when file insertion succeeds",
+    "placeholders": {
+      "filename": {
+        "content": "$1"
+      }
+    }
+  },
+  "toastChatNotFound": {
+    "message": "Gemini chat input was not found within timeout.",
+    "description": "Toast message when chat input is missing"
+  },
+  "toastError": {
+    "message": "An error occurred while inserting the PDF.",
+    "description": "Toast message on error"
+  },
+  "toastFallbackWarning": {
+    "message": "Could not insert file automatically. See Debug panel for details.",
+    "description": "Toast message when automatic upload fails"
+  },
+  "debugPanelClear": {
+    "message": "CLEAR",
+    "description": "Debug panel clear button"
+  },
+  "debugPanelHide": {
+    "message": "HIDE",
+    "description": "Debug panel hide button"
+  },
+  "debugPanelInspect": {
+    "message": "INSPECT DOM",
+    "description": "Debug panel inspect DOM button"
+  },
+  "debugPanelRetry": {
+    "message": "RETRY INSERT",
+    "description": "Debug panel retry button"
+  },
+  "debugWaitingActivity": {
+    "message": "Waiting for activity...",
+    "description": "Debug panel initial state text"
+  }
+}

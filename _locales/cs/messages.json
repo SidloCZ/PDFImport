@@ -1,0 +1,224 @@
+{
+  "extensionName": {
+    "message": "PDF to AI – Fast Import",
+    "description": "The title of the extension"
+  },
+  "extensionShortName": {
+    "message": "PDFImport",
+    "description": "The short name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Automaticky a bleskově vloží otevřený PDF dokument do Google Gemini chatu bez nutnosti ručního stahování.",
+    "description": "The description of the extension"
+  },
+  "actionTitle": {
+    "message": "Odeslat PDF do Gemini (Alt+G)",
+    "description": "Tooltip title for action icon"
+  },
+  "commandDescription": {
+    "message": "Odeslat aktuální PDF dokument do chatu Gemini",
+    "description": "Description of shortcut command"
+  },
+  "contextMenuSendCurrentPdf": {
+    "message": "Odeslat PDF do Gemini (Alt+G)",
+    "description": "Context menu item for current page/PDF"
+  },
+  "contextMenuSendLinkPdf": {
+    "message": "Odeslat odkazované PDF do Gemini",
+    "description": "Context menu item for links"
+  },
+  "fileAccessWarningTitle": {
+    "message": "Vyžadováno oprávnění pro lokální soubory",
+    "description": "Notification title for missing file:// permission"
+  },
+  "fileAccessWarningMessage": {
+    "message": "Pro import souborů 'file:///' povolte na stránce rozšíření volbu 'Povolit přístup k adresám URL souborů'.",
+    "description": "Notification message for missing file:// permission"
+  },
+  "defaultFileNamePrefix": {
+    "message": "dokument_",
+    "description": "Prefix used when generating a fallback PDF filename"
+  },
+  "optionsTitle": {
+    "message": "PDFImport - Nastavení",
+    "description": "Title of the options page"
+  },
+  "optionsHeaderTitle": {
+    "message": "PDFImport",
+    "description": "Main heading in options header"
+  },
+  "optionsHeaderSubtitle": {
+    "message": "PDF to AI – Fast Import",
+    "description": "Subtitle in options header"
+  },
+  "sectionHowToUse": {
+    "message": "JAK POUŽÍVAT",
+    "description": "Heading for how-to section"
+  },
+  "shortcutKeyDesc": {
+    "message": "Výchozí klávesová zkratka na jakékoliv stránce či PDF",
+    "description": "Description for keyboard shortcut"
+  },
+  "shortcutIconDesc": {
+    "message": "1 kliknutí na ikonu rozšíření v liště prohlížeče",
+    "description": "Description for toolbar button"
+  },
+  "shortcutContextDesc": {
+    "message": "Kontextové menu na odkazu nebo v PDF dokumentu",
+    "description": "Description for context menu"
+  },
+  "sectionPreferences": {
+    "message": "PŘEDVOLBY",
+    "description": "Heading for preferences section"
+  },
+  "prefReuseTabTitle": {
+    "message": "Použít již otevřenou záložku Gemini",
+    "description": "Title for tab reuse toggle"
+  },
+  "prefReuseTabDesc": {
+    "message": "Pokud je Gemini již otevřeno, přepne se na něj. Jinak otevře novou záložku.",
+    "description": "Description for tab reuse toggle"
+  },
+  "prefLanguageTitle": {
+    "message": "Jazyk rozšíření",
+    "description": "Label for extension language selector"
+  },
+  "prefLanguageDesc": {
+    "message": "Zvolte jazyk rozhraní rozšíření mezi češtinou a angličtinou.",
+    "description": "Description for extension language selector"
+  },
+  "prefDefaultPromptTitle": {
+    "message": "Automatický výchozí prompt (volitelné):",
+    "description": "Label for default prompt textarea"
+  },
+  "prefDefaultPromptDesc": {
+    "message": "Tento text se po vložení souboru automaticky vepíše do zprávy.",
+    "description": "Sublabel for default prompt"
+  },
+  "prefDefaultPromptPlaceholder": {
+    "message": "Např.: Analyzuj tento PDF dokument a shrň hlavní zjištění, metodiku a závěr:",
+    "description": "Placeholder for prompt textarea"
+  },
+  "presetSummaryBtn": {
+    "message": "SHRNUTÍ ČLÁNKU",
+    "description": "Label for summary preset button"
+  },
+  "presetSummaryText": {
+    "message": "Shrň hlavní zjištění a metodiku tohoto vědeckého článku:",
+    "description": "Text filled by summary preset button"
+  },
+  "presetPointsBtn": {
+    "message": "KLÍČOVÉ BODY",
+    "description": "Label for key points preset button"
+  },
+  "presetPointsText": {
+    "message": "Vypiš klíčové body a závěry z tohoto dokumentu v češtině:",
+    "description": "Text filled by key points preset button"
+  },
+  "presetPeerReviewBtn": {
+    "message": "PEER REVIEW",
+    "description": "Label for peer review preset button"
+  },
+  "presetPeerReviewText": {
+    "message": "Chovej se jako odborný vědecký výzkumník a kritický recenzent (peer reviewer). Přečti si přiložený vědecký článek (nebo níže uvedený text) a vytvoř hloubkové, rigorózní shrnutí s použitím přesně následující struktury. Vycházej striktně z poskytnutého textu; neextrapoluj, nepředpokládej ani nepřidávej externí reference.\n\n1. Metadata\nNázev, časopis a rok vydání: [Extrahuj]\nAutoři a instituce: [Extrahuj]\n\n2. Podstata výzkumu\nHlavní výzkumná otázka / cíl: [1–2 věty definující, co se studie snaží zjistit]\nHlavní hypotéza / ústřední teze: [Jaká konkrétní predikce či předpoklad se testuje]\n\n3. Metodologie a data\nDesign studie: [např. randomizovaná kontrolovaná studie, in vitro, observační, výpočetní model]\nVelikost vzorku a zdroj dat: [Přesná čísla, organismy, materiály nebo použité datové sady]\nAnalytický přístup: [Aplikované statistické testy nebo výpočetní metody]\n\n4. Klíčová zjištění a důkazy\nUveď 3–5 hlavních zjištění. U každého zjištění uveď krátké parafrázované shrnutí následované přímou doslovnou citací (1–2 věty) z článku, která toto zjištění dokládá.\n\n5. Limity a omezení\nMetodologická/datová omezení: [Výslovná omezení nebo neřešené zavádějící proměnné uvedené autory]\nZobecnitelnost: [Omezení toho, kde nebo na koho se tato zjištění vztahují]\n\n6. Význam\nDopad na obor: [1 věta o tom, jak tento článek věcně posouvá danou vědeckou disciplínu]",
+    "description": "Text filled by peer review preset button"
+  },
+  "presetFeynmanBtn": {
+    "message": "FEYNMAN",
+    "description": "Label for Feynman technique preset button"
+  },
+  "presetFeynmanText": {
+    "message": "Vysvětli mi tento článek do hloubky pomocí Feynmanovy metody, jako bys byl jeho autorem.",
+    "description": "Text filled by Feynman technique preset button"
+  },
+  "presetClearBtn": {
+    "message": "VYMAZAT",
+    "description": "Label for clear preset button"
+  },
+  "btnSaveSettings": {
+    "message": "Uložit nastavení",
+    "description": "Label for save settings button"
+  },
+  "btnSaving": {
+    "message": "Ukládám...",
+    "description": "Button label while saving"
+  },
+  "statusSaved": {
+    "message": "Nastavení uloženo!",
+    "description": "Status message after saving"
+  },
+  "sectionLocalFiles": {
+    "message": "SOUBORY NA DISKU (file:///)",
+    "description": "Heading for local files section"
+  },
+  "localFilesDesc": {
+    "message": "Pro fungování s lokálními PDF soubory otevřenými v prohlížeči (např. file:///...):",
+    "description": "Intro text for local files instruction"
+  },
+  "localFilesStep1": {
+    "message": "Otevřete stránku správy rozšíření v prohlížeči (např. opera://extensions nebo chrome://extensions)",
+    "description": "Step 1 for local files"
+  },
+  "localFilesStep2": {
+    "message": "Najděte PDFImport a klikněte na Podrobnosti",
+    "description": "Step 2 for local files"
+  },
+  "localFilesStep3": {
+    "message": "Zaškrtněte volbu „Povolit přístup k adresám URL souborů“",
+    "description": "Step 3 for local files"
+  },
+  "optionsFooter": {
+    "message": "PDFImport • Vyvinuto pro efektivní práci bez zbytečného stahování",
+    "description": "Footer text"
+  },
+  "toastProcessing": {
+    "message": "Zpracovávám: <strong>$FILENAME$</strong>...",
+    "description": "Toast message while processing file",
+    "placeholders": {
+      "filename": {
+        "content": "$1"
+      }
+    }
+  },
+  "toastSuccess": {
+    "message": "Soubor <strong>$FILENAME$</strong> byl vložen do Gemini!",
+    "description": "Toast message when file insertion succeeds",
+    "placeholders": {
+      "filename": {
+        "content": "$1"
+      }
+    }
+  },
+  "toastChatNotFound": {
+    "message": "Vstupní pole chatu Gemini nebylo nalezeno v limitu.",
+    "description": "Toast message when chat input is missing"
+  },
+  "toastError": {
+    "message": "Došlo k chybě při vkládání PDF.",
+    "description": "Toast message on error"
+  },
+  "toastFallbackWarning": {
+    "message": "Nepodařilo se vložit soubor automaticky. Podrobnosti v Debug panelu.",
+    "description": "Toast message when automatic upload fails"
+  },
+  "debugPanelClear": {
+    "message": "VYČISTIT",
+    "description": "Debug panel clear button"
+  },
+  "debugPanelHide": {
+    "message": "SKRÝT",
+    "description": "Debug panel hide button"
+  },
+  "debugPanelInspect": {
+    "message": "PROZKOUMAT DOM",
+    "description": "Debug panel inspect DOM button"
+  },
+  "debugPanelRetry": {
+    "message": "OPAKOVAT VLOŽENÍ",
+    "description": "Debug panel retry button"
+  },
+  "debugWaitingActivity": {
+    "message": "Čekám na aktivitu...",
+    "description": "Debug panel initial state text"
+  }
+}

@@ -1,8 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "PDF to AI Chat Fast Import",
+  "name": "__MSG_extensionName__",
+  "short_name": "__MSG_extensionShortName__",
+  "default_locale": "en",
   "version": "1.0.0",
-  "description": "Automaticky a bleskově vloží otevřený PDF dokument do Google Gemini chatu bez nutnosti ručního stahování.",
+  "description": "__MSG_extensionDescription__",
   "author": "Antigravity",
   "permissions": [
     "activeTab",
@@ -18,7 +20,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Odeslat PDF do Gemini (Alt+G)",
+    "default_title": "__MSG_actionTitle__",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -30,7 +32,7 @@
       "suggested_key": {
         "default": "Alt+G"
       },
-      "description": "Odeslat aktuální PDF dokument do chatu Gemini"
+      "description": "__MSG_commandDescription__"
     }
   },
   "options_ui": {

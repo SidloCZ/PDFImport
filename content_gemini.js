@@ -38,6 +38,14 @@
   // Kontrola při přímém spuštění
   setTimeout(checkAndInsertPdf, 1500);
 
+  function i18n(key, substitutions, fallback) {
+    if (typeof chrome !== "undefined" && chrome.i18n && chrome.i18n.getMessage) {
+      const msg = chrome.i18n.getMessage(key, substitutions);
+      if (msg) return msg;
+    }
+    return fallback || key;
+  }
+
   /**
    * Zkontroluje pending PDF v úložišti a provede vložení
    */
@@ -64,7 +72,7 @@
 
       isProcessing = true;
       log(`Nalezeno PDF v úložišti: ${pending.filename} (${(pending.size / 1024).toFixed(1)} KB)`);
-      showToast(`Zpracovávám: <strong>${escapeHtml(pending.filename)}</strong>...`, "info");
+      showToast(i18n("toastProcessing", [escapeHtml(pending.filename)], `Processing: <strong>${escapeHtml(pending.filename)}</strong>...`), "info");
 
       // Převod zpět na File
       const res = await fetch(pending.dataUrl);
@@ -81,7 +89,7 @@
       const ready = await waitForGeminiReady(12000);
       if (!ready) {
         log("Chatovací pole Gemini nebylo nalezeno v limitu 12s!", "error");
-        showToast("Vstupní pole chatu Gemini nebylo nalezeno.", "warning");
+        showToast(i18n("toastChatNotFound", null, "Gemini chat input was not found within timeout."), "warning");
         isProcessing = false;
         return;
       }
@@ -95,7 +103,7 @@
     } catch (err) {
       log(`Chyba: ${err.message}`, "error");
       console.error(err);
-      showToast("Došlo k chybě při vkládání PDF.", "error");
+      showToast(i18n("toastError", null, "An error occurred while inserting the PDF."), "error");
     } finally {
       isProcessing = false;
     }
@@ -130,7 +138,7 @@
         log("Čekám 1.5s na reakci Gemini...");
         await sleep(1500);
         if (checkIfAttachmentAppeared()) {
-          log("✅ Soubor detekován v rozhraní chatu po input change!", "success");
+          log("[OK] Soubor detekován v rozhraní chatu po input change!", "success");
           success = true;
         } else {
           log("Input change nevedl k zobrazení přílohy, zkouším další metody.");
@@ -227,12 +235,12 @@
 
     // Vyhodnocení
     if (success) {
-      showToast(`Soubor <strong>${escapeHtml(file.name)}</strong> byl vložen do Gemini!`, "success");
+      showToast(i18n("toastSuccess", [escapeHtml(file.name)], `File <strong>${escapeHtml(file.name)}</strong> was inserted into Gemini!`), "success");
       if (optionalPrompt && optionalPrompt.trim().length > 0) {
         await insertPromptText(optionalPrompt.trim());
       }
     } else {
-      showToast(`Nepodařilo se vložit soubor automaticky. Podrobnosti v Debug panelu.`, "warning");
+      showToast(i18n("toastFallbackWarning", null, "Could not insert file automatically. See Debug panel for details."), "warning");
       log("[CHYBA] Žádná z metod nevedla k zobrazení přílohy v Gemini.", "error");
     }
   }
@@ -371,19 +379,19 @@
       <div style="background: #fef08a; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000000;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="background: #000000; color: #ffffff; font-size: 10px; font-weight: 900; padding: 1px 5px;">DEBUG</span>
-          <strong style="color: #000000; font-size: 13px; font-family: 'Space Grotesk', sans-serif; font-weight: 900;">PDF TO AI // PANEL (Alt+D)</strong>
+          <strong style="color: #000000; font-size: 13px; font-family: 'Space Grotesk', sans-serif; font-weight: 900;">PDFIMPORT // PANEL (Alt+D)</strong>
         </div>
         <div style="display: flex; gap: 6px;">
-          <button id="pdf-debug-clear" style="background: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; color: #000000; font-weight: bold; padding: 3px 8px; cursor: pointer; font-size: 10px; font-family: inherit;">VYČISTIT</button>
-          <button id="pdf-debug-toggle" style="background: #ffe600; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; color: #000000; font-weight: bold; padding: 3px 8px; cursor: pointer; font-size: 10px; font-family: inherit;">SKRÝT</button>
+          <button id="pdf-debug-clear" style="background: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; color: #000000; font-weight: bold; padding: 3px 8px; cursor: pointer; font-size: 10px; font-family: inherit;">${escapeHtml(i18n("debugPanelClear", null, "CLEAR"))}</button>
+          <button id="pdf-debug-toggle" style="background: #ffe600; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; color: #000000; font-weight: bold; padding: 3px 8px; cursor: pointer; font-size: 10px; font-family: inherit;">${escapeHtml(i18n("debugPanelHide", null, "HIDE"))}</button>
         </div>
       </div>
       <div id="pdf-debug-logs" style="padding: 12px; flex: 1; overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; gap: 6px; line-height: 1.4; background: #ffffff; font-weight: 700;">
-        <div style="color: #666666;">Čekám na aktivitu...</div>
+        <div style="color: #666666;">${escapeHtml(i18n("debugWaitingActivity", null, "Waiting for activity..."))}</div>
       </div>
       <div style="padding: 10px; background: #fef08a; border-top: 3px solid #000000; display: flex; gap: 8px; flex-wrap: wrap;">
-        <button id="pdf-btn-inspect" style="flex: 1; background: #00d2ff; color: #000000; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">PROZKOUMAT DOM</button>
-        <button id="pdf-btn-retry" style="flex: 1; background: #ff2a85; color: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">OPAKOVAT VLOŽENÍ</button>
+        <button id="pdf-btn-inspect" style="flex: 1; background: #00d2ff; color: #000000; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">${escapeHtml(i18n("debugPanelInspect", null, "INSPECT DOM"))}</button>
+        <button id="pdf-btn-retry" style="flex: 1; background: #ff2a85; color: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">${escapeHtml(i18n("debugPanelRetry", null, "RETRY INSERT"))}</button>
       </div>
     `;
 
@@ -517,8 +525,8 @@
     const colors = {
       info: { bg: "#fef08a", tag: "#000000", tagColor: "#ffffff", title: "INFO" },
       success: { bg: "#86efac", tag: "#000000", tagColor: "#ffffff", title: "SUCCESS" },
-      warning: { bg: "#fde047", tag: "#ff6b35", tagColor: "#000000", title: "POZOR" },
-      error: { bg: "#fca5a5", tag: "#ff2a85", tagColor: "#ffffff", title: "CHYBA" }
+      warning: { bg: "#fde047", tag: "#ff6b35", tagColor: "#000000", title: "WARNING" },
+      error: { bg: "#fca5a5", tag: "#ff2a85", tagColor: "#ffffff", title: "ERROR" }
     };
     const c = colors[type] || colors.info;
 
@@ -540,7 +548,7 @@
     toast.innerHTML = `
       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
         <span style="background: ${c.tag}; color: ${c.tagColor}; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 900; padding: 1px 5px; border: 1px solid #000000;">${c.title}</span>
-        <span style="font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;">PDF TO AI</span>
+        <span style="font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;">PDFIMPORT</span>
       </div>
       <div>${htmlContent}</div>
     `;
