@@ -17,10 +17,7 @@ Funguje jak pro **online vědecké články a weby** (např. *ASM Journals, Scie
    *(Případně klikněte na ikonu kostičky rozšíření vpravo nahoře a zvolte **Spravovat rozšíření**).*
 3. V pravém horním rohu stránky zapněte přepínač **Vývojářský režim** (*Developer Mode*).
 4. Klikněte na nově zobrazené tlačítko **Načíst rozbalené** (*Load unpacked*).
-5. Vyberte tuto složku:
-   ```text
-   e:\Coding\Antigravity IDE Projects\PDFImport
-   ```
+5. Vyberte složku s tímto staženým projektem (kde se nachází soubor `manifest.json`).
 6. Rozšíření se ihned načte a objeví se v seznamu!
 
 ---
