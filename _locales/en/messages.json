@@ -55,13 +55,25 @@
     "message": "HOW TO USE",
     "description": "Heading for how-to section"
   },
+  "shortcutKeyBadge": {
+    "message": "Alt + G",
+    "description": "Badge label for keyboard shortcut"
+  },
   "shortcutKeyDesc": {
     "message": "Default keyboard shortcut on any page or PDF",
     "description": "Description for keyboard shortcut"
   },
+  "shortcutIconBadge": {
+    "message": "Toolbar Icon",
+    "description": "Badge label for toolbar button"
+  },
   "shortcutIconDesc": {
     "message": "1 click on the extension icon in browser toolbar",
     "description": "Description for toolbar button"
+  },
+  "shortcutContextBadge": {
+    "message": "Right Click",
+    "description": "Badge label for context menu"
   },
   "shortcutContextDesc": {
     "message": "Context menu on link or in PDF document",

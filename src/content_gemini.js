@@ -379,7 +379,7 @@
       <div style="background: #fef08a; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000000;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="background: #000000; color: #ffffff; font-size: 10px; font-weight: 900; padding: 1px 5px;">DEBUG</span>
-          <strong style="color: #000000; font-size: 13px; font-family: 'Space Grotesk', sans-serif; font-weight: 900;">PDFIMPORT // PANEL (Alt+D)</strong>
+          <strong style="color: #000000; font-size: 13px; font-family: 'Space Mono', 'Courier New', monospace; font-weight: 900;">PDFIMPORT // PANEL (Alt+D)</strong>
         </div>
         <div style="display: flex; gap: 6px;">
           <button id="pdf-debug-clear" style="background: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; color: #000000; font-weight: bold; padding: 3px 8px; cursor: pointer; font-size: 10px; font-family: inherit;">${escapeHtml(i18n("debugPanelClear", null, "CLEAR"))}</button>
@@ -390,8 +390,8 @@
         <div style="color: #666666;">${escapeHtml(i18n("debugWaitingActivity", null, "Waiting for activity..."))}</div>
       </div>
       <div style="padding: 10px; background: #fef08a; border-top: 3px solid #000000; display: flex; gap: 8px; flex-wrap: wrap;">
-        <button id="pdf-btn-inspect" style="flex: 1; background: #00d2ff; color: #000000; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">${escapeHtml(i18n("debugPanelInspect", null, "INSPECT DOM"))}</button>
-        <button id="pdf-btn-retry" style="flex: 1; background: #ff2a85; color: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">${escapeHtml(i18n("debugPanelRetry", null, "RETRY INSERT"))}</button>
+        <button id="pdf-btn-inspect" style="flex: 1; background: #00d2ff; color: #000000; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Mono', 'Courier New', monospace; text-transform: uppercase;">${escapeHtml(i18n("debugPanelInspect", null, "INSPECT DOM"))}</button>
+        <button id="pdf-btn-retry" style="flex: 1; background: #ff2a85; color: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Mono', 'Courier New', monospace; text-transform: uppercase;">${escapeHtml(i18n("debugPanelRetry", null, "RETRY INSERT"))}</button>
       </div>
     `;
 
@@ -516,7 +516,7 @@
         flex-direction: column;
         gap: 12px;
         pointer-events: none;
-        font-family: 'Space Grotesk', -apple-system, sans-serif;
+        font-family: 'Space Mono', 'Courier New', monospace;
       `;
       document.body.appendChild(container);
     }

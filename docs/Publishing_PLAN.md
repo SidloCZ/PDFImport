@@ -18,8 +18,8 @@ Rozhraní aplikace (stránka s možnostmi, notifikační toasty a diagnostické 
   * Karty: čistě bílá `--bg-card: #ffffff;`
   * Signální akcenty: sytě žlutá (`#ffe600`), jemně žlutá (`#fef08a`), limetková (`#00f59b`), azurová (`#00d2ff`), oranžová (`#ff6b35`) a růžová (`#ff2a85`).
 * **Typografie:**
-  * Hlavní text a výrazné nadpisy: geometrický bezpatkový font **Space Grotesk**.
-  * Systémové štítky, kód a klávesové zkratky: neproporcionální font **Space Mono**.
+  * Výrazné tučné nadpisy, akční tlačítka a labely: geometrický display font **Space Grotesk** (řezy 700 a 900).
+  * Text, klávesové zkratky, kód, odznaky a formulářová pole: neproporcionální font **Space Mono** (striktní zákaz generických systémových písem).
 
 ### Závazná projektová pravidla (AGENTS.md):
 * **Méně je více:** Jednoduchost, čistota a eliminace zbytečného vizuálního balastu.

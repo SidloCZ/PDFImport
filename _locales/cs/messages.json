@@ -55,13 +55,25 @@
     "message": "JAK POUŽÍVAT",
     "description": "Heading for how-to section"
   },
+  "shortcutKeyBadge": {
+    "message": "Alt + G",
+    "description": "Badge label for keyboard shortcut"
+  },
   "shortcutKeyDesc": {
     "message": "Výchozí klávesová zkratka na jakékoliv stránce či PDF",
     "description": "Description for keyboard shortcut"
   },
+  "shortcutIconBadge": {
+    "message": "Ikona na liště",
+    "description": "Badge label for toolbar button"
+  },
   "shortcutIconDesc": {
     "message": "1 kliknutí na ikonu rozšíření v liště prohlížeče",
     "description": "Description for toolbar button"
+  },
+  "shortcutContextBadge": {
+    "message": "Pravé tlačítko",
+    "description": "Badge label for context menu"
   },
   "shortcutContextDesc": {
     "message": "Kontextové menu na odkazu nebo v PDF dokumentu",

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 :root {
   --bg-clay: #f4efe6;
   --bg-card: #ffffff;
@@ -12,8 +14,8 @@
   --shadow-brutal: 4px 4px 0px 0px #000000;
   --shadow-brutal-hover: 6px 6px 0px 0px #000000;
   --shadow-brutal-active: 2px 2px 0px 0px #000000;
-  --font-geom: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'Space Mono', monospace;
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Space Mono', 'Courier New', Courier, monospace;
 }
 
 * {
@@ -23,7 +25,7 @@
 }
 
 body {
-  font-family: var(--font-geom);
+  font-family: var(--font-mono);
   background-color: var(--bg-clay);
   color: var(--color-black);
   line-height: 1.5;
@@ -80,7 +82,8 @@ body {
 }
 
 h1 {
-  font-size: 26px;
+  font-family: var(--font-display);
+  font-size: 28px;
   font-weight: 900;
   letter-spacing: -0.5px;
   text-transform: uppercase;
@@ -146,15 +149,18 @@ h1 {
 }
 
 h2 {
-  font-size: 18px;
+  font-family: var(--font-display);
+  font-size: 20px;
   font-weight: 900;
   letter-spacing: -0.3px;
   text-transform: uppercase;
 }
 
 h3 {
+  font-family: var(--font-display);
   font-size: 16px;
   font-weight: 900;
+  letter-spacing: -0.2px;
   text-transform: uppercase;
 }
 
@@ -217,7 +223,7 @@ label[for="defaultPrompt"] {
 .input-label strong,
 label[for="defaultPrompt"] strong {
   display: block;
-  font-family: var(--font-geom);
+  font-family: var(--font-display);
   font-size: 14px;
   font-weight: 800;
   text-transform: uppercase;
@@ -229,7 +235,7 @@ label[for="defaultPrompt"] strong {
 .input-label small,
 label[for="defaultPrompt"] small {
   display: block;
-  font-family: var(--font-geom);
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 400;
   color: #555555;
@@ -251,7 +257,7 @@ label[for="defaultPrompt"] small {
 
 .lang-btn {
   padding: 8px 16px;
-  font-family: var(--font-geom);
+  font-family: var(--font-display);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.5px;
@@ -330,7 +336,7 @@ label[for="defaultPrompt"] small {
 
 .toggle-text strong {
   display: block;
-  font-family: var(--font-geom);
+  font-family: var(--font-display);
   font-size: 14px;
   font-weight: 800;
   text-transform: uppercase;
@@ -340,7 +346,7 @@ label[for="defaultPrompt"] small {
 
 .toggle-text small {
   display: block;
-  font-family: var(--font-geom);
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 400;
   color: #555555;
@@ -384,7 +390,7 @@ textarea:focus {
   box-shadow: 2px 2px 0px 0px #000000;
   color: var(--color-black);
   padding: 6px 12px;
-  font-family: var(--font-geom);
+  font-family: var(--font-display);
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.5px;
@@ -418,7 +424,7 @@ textarea:focus {
 }
 
 .btn {
-  font-family: var(--font-geom);
+  font-family: var(--font-display);
   padding: 14px 28px;
   font-size: 15px;
   font-weight: 900;
