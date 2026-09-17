@@ -62,7 +62,35 @@ Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Op
 
 ---
 
+## Struktura projektu
+
+```text
+PDFImport/
+├── manifest.json              # Vstupní manifest rozšíření (MV3)
+├── src/                       # Zdrojový kód (service worker, content script, rozhraní nastavení)
+├── icons/                     # Ikony rozšíření pro prohlížeč
+├── _locales/                  # Lokalizační soubory (čeština a angličtina)
+├── assets/                    # Grafické materiály loga a propagační grafika pro obchody
+├── docs/                      # Technická dokumentace, plán publikace a todolist
+└── scripts/                   # Automatizační a pomocné skripty
+```
+
+---
+
+## Sestavení produkčního balíčku
+
+Pro vytvoření čistého distribučního ZIP archivu pro Chrome Web Store a Opera Add-ons spusťte:
+
+```bash
+python scripts/pack_extension.py
+```
+
+Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.0.0.zip`).
+
+---
+
 ## Varianta B (Vlastní PDF Viewer)
 
 Kompletní technická dokumentace a návrh na nahrazení nativního PDF prohlížeče vlastním HTML5 PDF.js viewerem s plovoucím tlačítkem přímo přes dokument se nachází v souboru:
-* [DOCS_VARIANTA_B.md](DOCS_VARIANTA_B.md)
+* [DOCS_VARIANTA_B.md](docs/DOCS_VARIANTA_B.md)
+

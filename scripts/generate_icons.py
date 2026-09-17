@@ -2,8 +2,9 @@ import os
 import re
 from PIL import Image, ImageFilter
 
-SVG_SOURCE = "PDFImport logo v3.svg"
-OUTPUT_DIR = "icons"
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SVG_SOURCE = os.path.join(REPO_ROOT, "assets", "branding", "PDFImport logo v3.svg")
+OUTPUT_DIR = os.path.join(REPO_ROOT, "icons")
 SIZES = [16, 32, 48, 128]
 
 def create_centered_svg():

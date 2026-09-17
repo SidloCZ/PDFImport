@@ -17,7 +17,7 @@
     "<all_urls>"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background.js"
   },
   "action": {
     "default_title": "__MSG_actionTitle__",
@@ -37,7 +37,7 @@
     }
   },
   "options_ui": {
-    "page": "options.html",
+    "page": "src/options/options.html",
     "open_in_tab": false
   },
   "content_scripts": [
@@ -46,7 +46,7 @@
         "https://gemini.google.com/*"
       ],
       "js": [
-        "content_gemini.js"
+        "src/content_gemini.js"
       ],
       "run_at": "document_end"
     }

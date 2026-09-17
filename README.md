@@ -62,7 +62,35 @@ Right-click the extension icon and select **Options**:
 
 ---
 
+## Project Structure
+
+```text
+PDFImport/
+├── manifest.json              # Extension manifest (MV3)
+├── src/                       # Extension source code (service worker, content script, options UI)
+├── icons/                     # Runtime browser icons
+├── _locales/                  # Localization files (English and Czech)
+├── assets/                    # Graphic brand assets and store promotional media
+├── docs/                      # Technical documentation, publishing plan, and roadmap
+└── scripts/                   # Development and packaging automation
+```
+
+---
+
+## Building for Release
+
+To create a clean distribution ZIP package for Chrome Web Store and Opera Add-ons:
+
+```bash
+python scripts/pack_extension.py
+```
+
+The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.0.0.zip`).
+
+---
+
 ## Architecture: Custom PDF Viewer (Variant B)
 
 Technical documentation and architectural design for replacing the browser's built-in PDF viewer with an HTML5 PDF.js viewer featuring a floating action button directly overlaid on the document is available in:
-* [DOCS_VARIANTA_B.md](DOCS_VARIANTA_B.md)
+* [DOCS_VARIANTA_B.md](docs/DOCS_VARIANTA_B.md)
+

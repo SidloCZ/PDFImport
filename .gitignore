@@ -90,3 +90,9 @@ node_modules/
 .gemini/
 .agents/
 scratch/
+
+# 11. Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+

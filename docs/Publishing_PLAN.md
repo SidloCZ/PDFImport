@@ -48,16 +48,17 @@ Rozhraní aplikace (stránka s možnostmi, notifikační toasty a diagnostické 
    * Ověřit lokalizované názvy a popisy v `_locales/en/messages.json` a `_locales/cs/messages.json`.
    * Zkontrolovat deklarovaná oprávnění (`permissions: ["storage", "activeTab", "contextMenus"]`) a minimalizovat požadované přístupy pro hladké schválení.
 2. **Kód a bezpečnost:**
-   * Odstranit nebo vypnout dočasné vývojové debugovací logy v `content_gemini.js` a `background.js`.
+   * Odstranit nebo vypnout dočasné vývojové debugovací logy v `src/content_gemini.js` a `src/background.js`.
    * Ověřit dodržení Content Security Policy (CSP).
 
 ### Fáze 2: Grafické podklady pro obchody (Store Assets)
 1. **Ikony aplikace:**
-   * 16x16, 48x48 a 128x128 px (již vygenerováno v adresáři `icons/`).
-2. **Propagační grafika (vyžadováno Chrome Web Store / Opera):**
+   * 16x16, 48x48 a 128x128 px (vygenerováno v adresáři `icons/` pomocí skriptu `scripts/generate_icons.py`).
+2. **Propagační grafika (vyžadováno Chrome Web Store / Opera, ukládat do `assets/`):**
    * Malá propagační dlaždice: 440 x 280 px.
    * Screenshoty rozhraní: 1280 x 800 px nebo 640 x 400 px (screenshot stránky nastavení a ukázka vložení do Gemini chatu).
    * Marquee banner (volitelný): 1400 x 560 px.
+   * Zdrojová vektorová a rastrová loga: uložena v `assets/branding/`.
 
 ### Fáze 3: Právní náležitosti a Zásady ochrany soukromí (Privacy Policy)
 1. Připravit jednoduchou stránku Privacy Policy (např. na GitHub Pages):
@@ -67,8 +68,13 @@ Rozhraní aplikace (stránka s možnostmi, notifikační toasty a diagnostické 
 
 ### Fáze 4: Sestavení balíčku a nahrání
 1. **Vytvoření produkčního ZIP archivu:**
-   * Zabalit pouze distribuční soubory: `manifest.json`, `background.js`, `content_gemini.js`, `options.html`, `options.css`, `options.js`, `icons/`, `_locales/`.
-   * Vynechat: `.git/`, testovací skripty, interní dokumentaci a poznámky.
+   * Spustit automatický balicí skript:
+     ```bash
+     python scripts/pack_extension.py
+     ```
+   * Skript automaticky načte verzi z `manifest.json` a vytvoří čistý ZIP archiv v adresáři `dist/` (např. `dist/pdfimport-v1.0.0.zip`).
+   * Zahrnuty jsou pouze distribuční položky: `manifest.json`, `src/`, `icons/`, `_locales/`.
+   * Automaticky jsou vynechány: `.git/`, `assets/`, `docs/`, `scripts/`, `dist/` a interní poznámky.
 2. **Nahrání do vývojářské konzole:**
    * Opera: [addons.opera.com/developer](https://addons.opera.com/developer/)
    * Chrome: [chrome.google.com/webstore/devconsole](https://chrome.google.com/webstore/devconsole/)
