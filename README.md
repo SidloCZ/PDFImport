@@ -16,7 +16,8 @@ Supports the **Top 10 AI platforms** out of the box, plus any **Custom AI URL**:
 * **Meta** (Meta AI)
 * **Alibaba** (Qwen)
 * **SpaceXAI** (Grok)
-* **Custom AI URL** (OpenRouter, Perplexity, Poe, Local WebUI, etc.)
+* **Perplexity**
+* **Custom AI URL** (OpenRouter, Poe, Local WebUI, etc.)
 
 Works seamlessly with **online scientific papers and websites** (e.g., *ASM Journals, ScienceDirect, arXiv, Nature*) as well as **local PDF files on your disk** (`file:///...`).
 

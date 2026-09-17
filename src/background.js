@@ -74,6 +74,13 @@ const AI_PROVIDERS = {
     urlMatchPatterns: ["*://grok.com/*", "*://x.com/i/grok*"],
     newTabUrl: "https://grok.com/"
   },
+  perplexity: {
+    id: "perplexity",
+    name: "Perplexity",
+    fullName: "Perplexity (Perplexity AI)",
+    urlMatchPatterns: ["*://www.perplexity.ai/*", "*://perplexity.ai/*"],
+    newTabUrl: "https://www.perplexity.ai/"
+  },
   custom: {
     id: "custom",
     name: "Custom AI",

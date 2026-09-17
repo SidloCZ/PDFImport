@@ -8,7 +8,7 @@
     "description": "The short name of the extension"
   },
   "extensionDescription": {
-    "message": "Automaticky a bleskově vloží otevřený PDF dokument do AI chatu (Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, OpenRouter) bez nutnosti ručního stahování.",
+    "message": "Automaticky a bleskově vloží otevřený PDF dokument do AI chatu bez nutnosti ručního stahování.",
     "description": "The description of the extension"
   },
   "actionTitle": {

@@ -16,7 +16,8 @@ Nativně podporuje **10 nejlepších AI platforem** a možnost zadat libovolnou 
 * **Meta** (Meta AI)
 * **Alibaba** (Qwen)
 * **SpaceXAI** (Grok)
-* **Vlastní AI platforma / URL** (OpenRouter, Perplexity, Poe, lokální WebUI apod.)
+* **Perplexity**
+* **Vlastní AI platforma / URL** (OpenRouter, Poe, lokální WebUI apod.)
 
 Funguje jak pro **online vědecké články a weby** (např. *ASM Journals, ScienceDirect, arXiv, Nature*), tak pro **lokální PDF soubory z disku** (`file:///...`).
 

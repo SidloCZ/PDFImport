@@ -8,7 +8,7 @@
     "description": "The short name of the extension"
   },
   "extensionDescription": {
-    "message": "Instantly imports opened PDF documents directly into AI chat (Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, OpenRouter) without manual downloading.",
+    "message": "Instantly imports opened PDF documents directly into AI chat without manual downloading.",
     "description": "The description of the extension"
   },
   "actionTitle": {
