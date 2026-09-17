@@ -62,6 +62,12 @@ Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Op
 
 ---
 
+## Limity velikosti souborů
+
+Rozšíření pracuje výhradně v operační paměti prohlížeče a podporuje PDF dokumenty až do velikosti **50 MB** (což odpovídá limitu Gemini). Pokud soubor limit 50 MB přesáhne, stahování se zastaví ještě před přenesením celého souboru pro úsporu dat a uživatel je upozorněn notifikací.
+
+---
+
 ## Struktura projektu
 
 ```text

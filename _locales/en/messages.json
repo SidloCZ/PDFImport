@@ -35,6 +35,22 @@
     "message": "To import 'file:///' local files, please enable 'Allow access to file URLs' on the browser extensions page.",
     "description": "Notification message for missing file:// permission"
   },
+  "fileSizeLimitErrorTitle": {
+    "message": "PDF file is too large",
+    "description": "Notification title when PDF exceeds maximum size"
+  },
+  "fileSizeLimitErrorMessage": {
+    "message": "The file size ($SIZE$ MB) exceeds the maximum allowed limit of $LIMIT$ MB for Gemini.",
+    "description": "Notification message when PDF exceeds size limit",
+    "placeholders": {
+      "size": {
+        "content": "$1"
+      },
+      "limit": {
+        "content": "$2"
+      }
+    }
+  },
   "defaultFileNamePrefix": {
     "message": "document_",
     "description": "Prefix used when generating a fallback PDF filename"

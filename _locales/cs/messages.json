@@ -35,6 +35,22 @@
     "message": "Pro import souborů 'file:///' povolte na stránce rozšíření volbu 'Povolit přístup k adresám URL souborů'.",
     "description": "Notification message for missing file:// permission"
   },
+  "fileSizeLimitErrorTitle": {
+    "message": "PDF soubor je příliš velký",
+    "description": "Notification title when PDF exceeds maximum size"
+  },
+  "fileSizeLimitErrorMessage": {
+    "message": "Velikost souboru ($SIZE$ MB) překračuje maximální limit $LIMIT$ MB pro Gemini.",
+    "description": "Notification message when PDF exceeds size limit",
+    "placeholders": {
+      "size": {
+        "content": "$1"
+      },
+      "limit": {
+        "content": "$2"
+      }
+    }
+  },
   "defaultFileNamePrefix": {
     "message": "dokument_",
     "description": "Prefix used when generating a fallback PDF filename"

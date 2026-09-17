@@ -62,6 +62,12 @@ Right-click the extension icon and select **Options**:
 
 ---
 
+## File Size Limits
+
+The extension operates completely in browser memory and supports PDF documents up to **50 MB** (aligned with the Gemini limit). Files exceeding 50 MB are stopped before downloading to save bandwidth, and a warning notification is displayed.
+
+---
+
 ## Project Structure
 
 ```text

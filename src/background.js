@@ -68,6 +68,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
+const MAX_PDF_SIZE_MB = 50;
+const MAX_PDF_SIZE_BYTES = MAX_PDF_SIZE_MB * 1024 * 1024;
+
 /**
  * Zpracuje PDF adresu, stáhne data a předá je do záložky Gemini
  */
@@ -86,7 +89,29 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
       }
     }
 
-    // 2. Stažení PDF souboru
+    // 2. Rychlá kontrola velikosti před plným stažením pomocí HEAD požadavku (pokud jde o HTTP/HTTPS)
+    if (!isFileUrl) {
+      try {
+        const headResponse = await fetch(url, {
+          method: "HEAD",
+          credentials: "include"
+        });
+        if (headResponse.ok) {
+          const headLength = headResponse.headers.get("content-length");
+          if (headLength) {
+            const sizeBytes = parseInt(headLength, 10);
+            if (!isNaN(sizeBytes) && sizeBytes > MAX_PDF_SIZE_BYTES) {
+              handleSizeLimitExceeded(sizeBytes, MAX_PDF_SIZE_BYTES);
+              return;
+            }
+          }
+        }
+      } catch (e) {
+        // Některé servery nepodporují HEAD nebo blokují CORS; pokračujeme k GET
+      }
+    }
+
+    // 3. Stažení PDF souboru
     console.log("[PDF Import] Stahuji PDF:", url);
     const response = await fetch(url, {
       credentials: "include" // Pro zachování cookies na vědeckých portálech
@@ -96,19 +121,34 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
       throw new Error(`Chyba při stahování (${response.status}: ${response.statusText})`);
     }
 
+    // Kontrola hlavičky Content-Length z GET odpovědi
+    const contentLength = response.headers.get("content-length");
+    if (contentLength) {
+      const sizeBytes = parseInt(contentLength, 10);
+      if (!isNaN(sizeBytes) && sizeBytes > MAX_PDF_SIZE_BYTES) {
+        handleSizeLimitExceeded(sizeBytes, MAX_PDF_SIZE_BYTES);
+        return;
+      }
+    }
+
     // Určení názvu souboru
     let filename = extractFilename(response, url, fallbackTitle);
     if (!filename.toLowerCase().endsWith(".pdf")) {
       filename += ".pdf";
     }
 
-    // Načtení dat a převod na base64
+    // Načtení dat a kontrola reálné velikosti blob
     const blob = await response.blob();
+    if (blob.size > MAX_PDF_SIZE_BYTES) {
+      handleSizeLimitExceeded(blob.size, MAX_PDF_SIZE_BYTES);
+      return;
+    }
+
     const base64Data = await blobToBase64(blob);
 
     console.log(`[PDF Import] PDF úspěšně načteno: ${filename}, velikost: ${(blob.size / 1024 / 1024).toFixed(2)} MB`);
 
-    // 3. Načtení uživatelských předvoleb
+    // 4. Načtení uživatelských předvoleb
     const settings = await chrome.storage.sync.get({
       reuseTab: true,
       defaultPrompt: ""
@@ -262,6 +302,32 @@ function showFileAccessWarning() {
   });
 }
 
+/**
+ * Upozornění na překročení maximální velikosti PDF
+ */
+function handleSizeLimitExceeded(sizeBytes, maxBytes) {
+  const sizeMb = (sizeBytes / (1024 * 1024)).toFixed(1);
+  const limitMb = (maxBytes / (1024 * 1024)).toFixed(0);
+
+  console.warn(`[PDF Import] PDF soubor přesahuje limit: ${sizeMb} MB > ${limitMb} MB`);
+  setBadge("SIZE", "#D32F2F");
+  setTimeout(() => clearBadge(), 5000);
+
+  const title = chrome.i18n.getMessage("fileSizeLimitErrorTitle") || "PDF file is too large";
+  const rawMsg = chrome.i18n.getMessage("fileSizeLimitErrorMessage", [sizeMb, limitMb]);
+  const message = rawMsg || `The file size (${sizeMb} MB) exceeds the maximum allowed limit of ${limitMb} MB for Gemini.`;
+
+  chrome.notifications.create({
+    type: "basic",
+    iconUrl: "icons/icon128.png",
+    title: title,
+    message: message
+  }).catch(() => {
+    console.warn("[PDF Import]", message);
+  });
+}
+
 function notifyError(message) {
   console.error("[PDF Import Error]", message);
 }
+
