@@ -7,13 +7,13 @@ function setupContextMenus() {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
       id: "send_current_pdf",
-      title: "✨ Odeslat PDF do Gemini (Alt+G)",
+      title: "Odeslat PDF do Gemini (Alt+G)",
       contexts: ["all"]
     });
 
     chrome.contextMenus.create({
       id: "send_link_pdf",
-      title: "✨ Odeslat odkazované PDF do Gemini",
+      title: "Odeslat odkazované PDF do Gemini",
       contexts: ["link"]
     });
   });

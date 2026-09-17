@@ -1,35 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- Barva 1: Černé zaoblené pozadí -->
+  <!-- Barva 1: Cerne zaoblene pozadi -->
   <rect width="128" height="128" rx="28" fill="#000000" />
 
-  <!-- 1. SOUBOR (levá strana) -->
-  <g fill="none" stroke="#FFFFFF" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M16 28 C16 23 20 20 25 20 L44 20 L58 34 L58 100 C58 105 54 108 49 108 L25 108 C20 108 16 105 16 100 Z" />
-    <path d="M44 20 L44 34 L58 34" />
-    <line x1="26" y1="56" x2="42" y2="56" stroke-width="5.5" />
-    <line x1="26" y1="72" x2="46" y2="72" stroke-width="5.5" />
+  <!-- 1. SOUBOR (zmensena, elegantni ikona na leve strane, x: 14 az 42) -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 40 C16 36 19 33 23 33 L34 33 L44 43 L44 87 C44 91 41 94 37 94 L23 94 C19 94 16 91 16 87 Z" />
+    <path d="M34 33 L34 43 L44 43" />
+    <line x1="23" y1="58" x2="34" y2="58" stroke-width="4.5" />
+    <line x1="23" y1="72" x2="37" y2="72" stroke-width="4.5" />
   </g>
 
-  <!-- 2. SPEED ARROW (střed) - Solid silhouette podle předlohy -->
+  <!-- 2. SPEED ARROW (stred, x: 52 az 86 - zadny prekryv) -->
   <g fill="#FFFFFF">
-    <!-- Hlavní tělo a hrot šipky -->
-    <path d="M78 48 L96 64 L78 80 L78 72 L66 72 L66 56 L78 56 Z" />
-    
-    <!-- Speed pruhy a motion stopy (zaoblené kapsle) -->
-    <!-- Řádek 1 (nahoře) -->
-    <rect x="52" y="52" width="10" height="4.5" rx="2.25" />
-    <rect x="65" y="52" width="6" height="4.5" rx="2.25" />
-    
-    <!-- Řádek 2 -->
-    <rect x="46" y="58.5" width="14" height="4.5" rx="2.25" />
-    
-    <!-- Řádek 3 (střed) -->
-    <rect x="54" y="65" width="9" height="4.5" rx="2.25" />
-    
-    <!-- Řádek 4 (dole) -->
-    <rect x="49" y="71.5" width="12" height="4.5" rx="2.25" />
+    <!-- Hrot sipky a stredove telo -->
+    <path d="M74 52 L88 64 L74 76 L74 70 L64 70 L64 58 L74 58 Z" />
+
+    <!-- Trailing speed pruhy s mezerami -->
+    <!-- Radek 1 -->
+    <rect x="52" y="55" width="8" height="3.5" rx="1.75" />
+    <!-- Radek 2 -->
+    <rect x="47" y="60.5" width="12" height="3.5" rx="1.75" />
+    <!-- Radek 3 -->
+    <rect x="53" y="66" width="8" height="3.5" rx="1.75" />
+    <!-- Radek 4 -->
+    <rect x="48" y="71.5" width="10" height="3.5" rx="1.75" />
   </g>
 
-  <!-- 3. AI SPARKLE (pravá strana) -->
-  <path d="M110 46 C110 56 114 64 122 64 C114 64 110 72 110 82 C110 72 106 64 98 64 C106 64 110 56 110 46 Z" fill="#FFFFFF" />
+  <!-- 3. AI SPARKLE (prava strana, stred x: 110, y: 64 - velkorysy odstup) -->
+  <path d="M110 48 C110 57 114 64 122 64 C114 64 110 71 110 80 C110 71 106 64 98 64 C106 64 110 57 110 48 Z" fill="#FFFFFF" />
 </svg>

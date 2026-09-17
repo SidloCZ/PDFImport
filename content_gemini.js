@@ -64,7 +64,7 @@
 
       isProcessing = true;
       log(`Nalezeno PDF v úložišti: ${pending.filename} (${(pending.size / 1024).toFixed(1)} KB)`);
-      showToast(`📄 Zpracovávám: <strong>${escapeHtml(pending.filename)}</strong>...`, "info");
+      showToast(`Zpracovávám: <strong>${escapeHtml(pending.filename)}</strong>...`, "info");
 
       // Převod zpět na File
       const res = await fetch(pending.dataUrl);
@@ -80,8 +80,8 @@
       log("Hledám chatovací pole Gemini...");
       const ready = await waitForGeminiReady(12000);
       if (!ready) {
-        log("❌ Chatovací pole Gemini nebylo nalezeno v limitu 12s!", "error");
-        showToast("⚠️ Vstupní pole chatu Gemini nebylo nalezeno.", "warning");
+        log("Chatovací pole Gemini nebylo nalezeno v limitu 12s!", "error");
+        showToast("Vstupní pole chatu Gemini nebylo nalezeno.", "warning");
         isProcessing = false;
         return;
       }
@@ -93,9 +93,9 @@
       await chrome.storage.local.remove("pendingPdf");
 
     } catch (err) {
-      log(`❌ Chyba: ${err.message}`, "error");
+      log(`Chyba: ${err.message}`, "error");
       console.error(err);
-      showToast("❌ Došlo k chybě při vkládání PDF.", "error");
+      showToast("Došlo k chybě při vkládání PDF.", "error");
     } finally {
       isProcessing = false;
     }
@@ -195,7 +195,7 @@
         simulateDrop(target, file);
         await sleep(800);
         if (checkIfAttachmentAppeared()) {
-          log("✅ Příloha se úspěšně objevila po Drag & Drop!", "success");
+          log("[OK] Příloha se úspěšně objevila po Drag & Drop!", "success");
           success = true;
           break;
         }
@@ -219,7 +219,7 @@
         log("Paste událost odeslána, čekám...");
         await sleep(1500);
         if (checkIfAttachmentAppeared()) {
-          log("✅ Příloha se objevila po Paste události!", "success");
+          log("[OK] Příloha se objevila po Paste události!", "success");
           success = true;
         }
       }
@@ -227,13 +227,13 @@
 
     // Vyhodnocení
     if (success) {
-      showToast(`✅ Soubor <strong>${escapeHtml(file.name)}</strong> byl vložen do Gemini!`, "success");
+      showToast(`Soubor <strong>${escapeHtml(file.name)}</strong> byl vložen do Gemini!`, "success");
       if (optionalPrompt && optionalPrompt.trim().length > 0) {
         await insertPromptText(optionalPrompt.trim());
       }
     } else {
-      showToast(`⚠️ Nepodařilo se vložit soubor automaticky. Podrobnosti v Debug panelu.`, "warning");
-      log("❌ Žádná z metod nevedla k zobrazení přílohy v Gemini.", "error");
+      showToast(`Nepodařilo se vložit soubor automaticky. Podrobnosti v Debug panelu.`, "warning");
+      log("[CHYBA] Žádná z metod nevedla k zobrazení přílohy v Gemini.", "error");
     }
   }
 
@@ -382,8 +382,8 @@
         <div style="color: #666666;">Čekám na aktivitu...</div>
       </div>
       <div style="padding: 10px; background: #fef08a; border-top: 3px solid #000000; display: flex; gap: 8px; flex-wrap: wrap;">
-        <button id="pdf-btn-inspect" style="flex: 1; background: #00d2ff; color: #000000; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">🔍 PROZKOUMAT DOM</button>
-        <button id="pdf-btn-retry" style="flex: 1; background: #ff2a85; color: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">▶ OPAKOVAT VLOŽENÍ</button>
+        <button id="pdf-btn-inspect" style="flex: 1; background: #00d2ff; color: #000000; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">PROZKOUMAT DOM</button>
+        <button id="pdf-btn-retry" style="flex: 1; background: #ff2a85; color: #ffffff; border: 2px solid #000000; box-shadow: 2px 2px 0px 0px #000000; padding: 8px; cursor: pointer; font-weight: 900; font-size: 11px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase;">OPAKOVAT VLOŽENÍ</button>
       </div>
     `;
 

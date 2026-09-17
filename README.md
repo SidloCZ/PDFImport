@@ -6,7 +6,7 @@ Funguje jak pro **online vědecké články a weby** (např. *ASM Journals, Scie
 
 ---
 
-## 🚀 Jak nainstalovat rozšíření do Opery
+## Jak nainstalovat rozšíření do Opery
 
 1. Otevřete prohlížeč **Opera**.
 2. Do adresního řádku zadejte:
@@ -22,18 +22,18 @@ Funguje jak pro **online vědecké články a weby** (např. *ASM Journals, Scie
 
 ---
 
-## 📂 DŮLEŽITÉ: Povolení pro lokální soubory (`file:///`)
+## DŮLEŽITÉ: Povolení pro lokální soubory (file:///)
 
 Pokud chcete odesílat i PDF soubory, které máte uložené v počítači a otevřené v Opeře (cesta začínající na `file:///`):
 
-1. Na stránce `opera://extensions` najděte kartu **PDF to Gemini Fast Import**.
+1. Na stránce `opera://extensions` najděte kartu **PDF to AI Chat Fast Import**.
 2. Klikněte na tlačítko **Podrobnosti** (*Details*).
 3. Zapněte přepínač **„Povolit přístup k adresám URL souborů“** (*Allow access to file URLs*).
    *(Tuto bezpečnostní volbu vyžaduje jádro Chromium pro všechna rozšíření přistupující k lokálnímu disku).*
 
 ---
 
-## 💡 Jak rozšíření používat
+## Jak rozšíření používat
 
 Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journals.asm.org/doi/pdf/10.1128/aem.00763-26)) nebo lokální PDF:
 
@@ -48,11 +48,11 @@ Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journ
 
 ### Možnost 3: Kontextové menu
 
-* Kdekoliv na stránce nebo na odkazu vedoucím na PDF klikněte pravým tlačítkem myši a zvolte **✨ Odeslat toto PDF do Gemini**.
+* Kdekoliv na stránce nebo na odkazu vedoucím na PDF klikněte pravým tlačítkem myši a zvolte **Odeslat PDF do Gemini (Alt+G)**.
 
 ---
 
-## ⚙️ Předvolby a automatický prompt
+## Předvolby a automatický prompt
 
 Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Options*):
 
@@ -61,8 +61,7 @@ Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Op
 
 ---
 
-## 📑 Varianta B (Vlastní PDF Viewer s plovoucím tlačítkem)
+## Varianta B (Vlastní PDF Viewer)
 
 Kompletní technická dokumentace a návrh na nahrazení nativního PDF prohlížeče vlastním HTML5 PDF.js viewerem s plovoucím SVG tlačítkem přímo přes dokument se nachází v souboru:
-
 * [DOCS_VARIANTA_B.md](DOCS_VARIANTA_B.md)
