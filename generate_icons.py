@@ -1,96 +1,85 @@
 import math
 from PIL import Image, ImageDraw
 
-def create_icon(size):
+def render_icon(target_size):
+    # Supersampling 4x pro dokonale hladké a ostré hrany
+    scale = 4
+    size = target_size * scale
+    s = size / 128.0
+
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
-    scale = size / 128.0
 
-    # 1. Background plate
-    pad = int(3 * scale)
-    r = int(24 * scale)
+    # 1. Barva 1: Černé zaoblené pozadí
+    pad = int(4 * s)
+    radius = int(26 * s)
     draw.rounded_rectangle(
         [pad, pad, size - pad, size - pad],
-        radius=r,
-        fill=(15, 23, 42, 255),
-        outline=(51, 65, 85, 255),
-        width=max(1, int(2 * scale))
+        radius=radius,
+        fill=(0, 0, 0, 255)
     )
 
-    # 2. File document on left (soubor)
-    doc_x = int(14 * scale)
-    doc_y = int(24 * scale)
-    doc_w = int(36 * scale)
-    doc_h = int(80 * scale)
-    fold_s = int(12 * scale)
+    # 2. Barva 2: Čistě bílá grafika (File -> Arrow -> Sparkle)
+    WHITE = (255, 255, 255, 255)
 
-    # File polygon with folded top-right corner
-    file_points = [
-        (doc_x, doc_y),
-        (doc_x + doc_w - fold_s, doc_y),
-        (doc_x + doc_w, doc_y + fold_s),
-        (doc_x + doc_w, doc_y + doc_h),
-        (doc_x, doc_y + doc_h)
+    # SOUBOR
+    fx = int(18 * s)
+    fy = int(22 * s)
+    fw = int(46 * s)
+    fh = int(84 * s)
+    fold = int(16 * s)
+
+    # Obrys dokumentu
+    pts = [
+        (fx, fy),
+        (fx + fw - fold, fy),
+        (fx + fw, fy + fold),
+        (fx + fw, fy + fh),
+        (fx, fy + fh)
     ]
-    draw.polygon(file_points, fill=(30, 41, 59, 255), outline=(226, 232, 240, 255))
-    draw.polygon(
-        [
-            (doc_x + doc_w - fold_s, doc_y),
-            (doc_x + doc_w - fold_s, doc_y + fold_s),
-            (doc_x + doc_w, doc_y + fold_s)
-        ],
-        fill=(51, 65, 85, 255),
-        outline=(226, 232, 240, 255)
-    )
-
-    if size >= 32:
-        # File text lines
-        line_w = max(1, int(2.5 * scale))
-        draw.line([doc_x + int(6 * scale), doc_y + int(28 * scale), doc_x + int(24 * scale), doc_y + int(28 * scale)], fill=(56, 189, 248, 255), width=line_w)
-        draw.line([doc_x + int(6 * scale), doc_y + int(42 * scale), doc_x + int(28 * scale), doc_y + int(42 * scale)], fill=(148, 163, 184, 255), width=line_w)
-        draw.line([doc_x + int(6 * scale), doc_y + int(56 * scale), doc_x + int(20 * scale), doc_y + int(56 * scale)], fill=(148, 163, 184, 255), width=line_w)
-
-    # 3. Arrow in middle ( -> )
-    arrow_y = int(64 * scale)
-    arrow_x1 = int(58 * scale)
-    arrow_x2 = int(74 * scale)
-    arrow_w = max(1, int(3.5 * scale))
-    draw.line([arrow_x1, arrow_y, arrow_x2, arrow_y], fill=(56, 189, 248, 255), width=arrow_w)
+    draw.polygon(pts, fill=(0, 0, 0, 255), outline=WHITE, width=max(1, int(6.5 * s)))
     
-    head_len = int(6 * scale)
-    draw.line([arrow_x2 - head_len, arrow_y - head_len, arrow_x2, arrow_y], fill=(56, 189, 248, 255), width=arrow_w)
-    draw.line([arrow_x2 - head_len, arrow_y + head_len, arrow_x2, arrow_y], fill=(56, 189, 248, 255), width=arrow_w)
+    # Zahnutý roh
+    draw.line([fx + fw - fold, fy, fx + fw - fold, fy + fold], fill=WHITE, width=max(1, int(6.5 * s)))
+    draw.line([fx + fw - fold, fy + fold, fx + fw, fy + fold], fill=WHITE, width=max(1, int(6.5 * s)))
 
-    # 4. AI Sparkle Star on right (AI)
-    star_cx = int(100 * scale)
-    star_cy = int(64 * scale)
-    star_r = 26 * scale
+    # Vodorovné linky textu uvnitř dokumentu
+    if target_size >= 32:
+        draw.line([fx + int(10 * s), fy + int(36 * s), fx + int(28 * s), fy + int(36 * s)], fill=WHITE, width=max(1, int(6 * s)))
+        draw.line([fx + int(10 * s), fy + int(52 * s), fx + int(34 * s), fy + int(52 * s)], fill=WHITE, width=max(1, int(6 * s)))
+        draw.line([fx + int(10 * s), fy + int(68 * s), fx + int(22 * s), fy + int(68 * s)], fill=WHITE, width=max(1, int(6 * s)))
+    else:
+        # Pro 16x16 zjednodušená jedna linka
+        draw.line([fx + int(8 * s), fy + int(46 * s), fx + int(32 * s), fy + int(46 * s)], fill=WHITE, width=max(1, int(7 * s)))
 
-    points = []
-    num_pts = 32
-    for i in range(num_pts):
-        angle = i * (2 * math.pi / num_pts)
+    # ŠIPKA (střed)
+    ax1 = int(72 * s)
+    ax2 = int(88 * s)
+    ay = int(64 * s)
+    draw.line([ax1, ay, ax2, ay], fill=WHITE, width=max(1, int(6 * s)))
+    head = int(8 * s)
+    draw.line([ax2 - head, ay - head, ax2, ay], fill=WHITE, width=max(1, int(6 * s)))
+    draw.line([ax2 - head, ay + head, ax2, ay], fill=WHITE, width=max(1, int(6 * s)))
+
+    # AI SPARKLE (pravá strana)
+    star_cx = int(108 * s)
+    star_cy = int(64 * s)
+    star_r = 18 * s
+
+    star_pts = []
+    n = 32
+    for i in range(n):
+        angle = i * (2 * math.pi / n)
         px = star_cx + star_r * (math.cos(angle) ** 3)
         py = star_cy + star_r * (math.sin(angle) ** 3)
-        points.append((px, py))
-    draw.polygon(points, fill=(168, 85, 247, 255))
+        star_pts.append((px, py))
+    draw.polygon(star_pts, fill=WHITE)
 
-    # Inner bright star
-    inner_pts = []
-    for i in range(num_pts):
-        angle = i * (2 * math.pi / num_pts)
-        px = star_cx + (star_r * 0.55) * (math.cos(angle) ** 3)
-        py = star_cy + (star_r * 0.55) * (math.sin(angle) ** 3)
-        inner_pts.append((px, py))
-    draw.polygon(inner_pts, fill=(236, 72, 153, 255))
-
-    # Center bright dot
-    dot_r = max(1, int(2.5 * scale))
-    draw.ellipse([star_cx - dot_r, star_cy - dot_r, star_cx + dot_r, star_cy + dot_r], fill=(255, 255, 255, 255))
-
-    return img
+    # Zmenšení zpět s vyhlazením Lanczos
+    res = img.resize((target_size, target_size), Image.Resampling.LANCZOS)
+    return res
 
 for s in [16, 48, 128]:
-    icon = create_icon(s)
+    icon = render_icon(s)
     icon.save(f"icons/icon{s}.png")
-    print(f"Generated icons/icon{s}.png")
+    print(f"Rendered 2-color icon: icons/icon{s}.png")

@@ -1,61 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <defs>
-    <!-- Background Gradient (Dark Neo/Modern) -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0F172A" />
-      <stop offset="100%" stop-color="#1E293B" />
-    </linearGradient>
+  <!-- Barva 1: Černé zaoblené pozadí -->
+  <rect width="128" height="128" rx="28" fill="#000000" />
 
-    <!-- AI Sparkle Gradient -->
-    <linearGradient id="aiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38BDF8" />
-      <stop offset="50%" stop-color="#A855F7" />
-      <stop offset="100%" stop-color="#EC4899" />
-    </linearGradient>
+  <!-- Barva 2: Čistě bílé vektorové linky a tvary (Lucide styl) -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Soubor (levá strana) -->
+    <path d="M18 28 C18 23 22 20 27 20 L48 20 L64 36 L64 100 C64 105 60 108 55 108 L27 108 C22 108 18 105 18 100 Z" />
+    <path d="M48 20 L48 36 L64 36" />
+    <line x1="30" y1="58" x2="48" y2="58" stroke-width="6" />
+    <line x1="30" y1="74" x2="52" y2="74" stroke-width="6" />
 
-    <!-- Arrow Gradient -->
-    <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#94A3B8" />
-      <stop offset="100%" stop-color="#38BDF8" />
-    </linearGradient>
-  </defs>
-
-  <!-- Clean rounded icon plate -->
-  <rect width="128" height="128" rx="28" fill="url(#bgGrad)" stroke="#334155" stroke-width="2" />
-
-  <!-- 1. FILE ICON (Soubor) -->
-  <g transform="translate(14, 24)">
-    <!-- Document Body with Fold -->
-    <path d="M4 0 L26 0 L38 12 L38 76 C38 78.2 36.2 80 34 80 L4 80 C1.8 80 0 78.2 0 76 L0 4 C0 1.8 1.8 0 4 0 Z" 
-          fill="#1E293B" stroke="#E2E8F0" stroke-width="3.5" stroke-linejoin="round" />
-    
-    <!-- Top-Right Fold Corner -->
-    <path d="M26 0 L26 12 L38 12 Z" 
-          fill="#334155" stroke="#E2E8F0" stroke-width="3" stroke-linejoin="round" />
-
-    <!-- File lines (simulating text/pdf) -->
-    <line x1="8" y1="28" x2="26" y2="28" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
-    <line x1="8" y1="42" x2="30" y2="42" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" />
-    <line x1="8" y1="56" x2="22" y2="56" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" />
+    <!-- Šipka -> (střed) -->
+    <line x1="72" y1="64" x2="88" y2="64" stroke-width="6" />
+    <path d="M82 56 L90 64 L82 72" stroke-width="6" />
   </g>
 
-  <!-- 2. ARROW ( -> ) -->
-  <g transform="translate(60, 64)">
-    <line x1="-2" y1="0" x2="16" y2="0" stroke="url(#arrowGrad)" stroke-width="4" stroke-linecap="round" />
-    <path d="M10 -6 L18 0 L10 6" fill="none" stroke="#38BDF8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-  </g>
-
-  <!-- 3. AI SPARKLE (AI) -->
-  <g transform="translate(98, 64)">
-    <!-- Main 4-point Star -->
-    <path d="M0 -28 C0 -12 12 0 26 0 C12 0 0 12 0 28 C0 12 -12 0 -26 0 C-12 0 0 -12 0 -28 Z" 
-          fill="url(#aiGrad)" />
-    
-    <!-- Center white glow -->
-    <circle cx="0" cy="0" r="3.5" fill="#FFFFFF" />
-
-    <!-- Secondary small sparkle -->
-    <path d="M16 -20 C16 -14 20 -10 24 -10 C20 -10 16 -6 16 0 C16 -6 12 -10 8 -10 C12 -10 16 -14 16 -20 Z" 
-          fill="#F472B6" />
-  </g>
+  <!-- AI Hvězda (pravá strana) -->
+  <path d="M108 44 C108 55 113 64 122 64 C113 64 108 73 108 84 C108 73 103 64 94 64 C103 64 108 55 108 44 Z" fill="#FFFFFF" />
 </svg>
