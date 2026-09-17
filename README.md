@@ -2,7 +2,21 @@
 
 [English](README.md) | [Čeština](README.cs.md)
 
-Browser extension for **Opera** (and any Chromium-based browser) that enables you to instantly load and attach any opened PDF document directly into **Google Gemini** chat with **1 click or a keyboard shortcut** - without having to download files to disk and manually re-upload them.
+Browser extension for **Opera** (and any Chromium-based browser) that enables you to instantly load and attach any opened PDF document directly into your favorite **AI chat platform** with **1 click or a keyboard shortcut** - without having to download files to disk and manually re-upload them.
+
+Supports the **Top 10 AI platforms** out of the box, plus any **Custom AI URL**:
+
+* **Anthropic** (Claude)
+* **OpenAI** (ChatGPT)
+* **Moonshot** (Kimi)
+* **Tencent** (Hy4 / Yuanbao)
+* **DeepSeek**
+* **Google** (Gemini)
+* **Z.ai** (GLM)
+* **Meta** (Meta AI)
+* **Alibaba** (Qwen)
+* **SpaceXAI** (Grok)
+* **Custom AI URL** (OpenRouter, Perplexity, Poe, Local WebUI, etc.)
 
 Works seamlessly with **online scientific papers and websites** (e.g., *ASM Journals, ScienceDirect, arXiv, Nature*) as well as **local PDF files on your disk** (`file:///...`).
 
@@ -41,7 +55,7 @@ When viewing any PDF article (e.g. [AEM Journal PDF](https://journals.asm.org/do
 ### Option 1: Keyboard Shortcut (Fastest)
 
 * Press **`Alt + G`**.
-* The extension fetches the PDF data in the background, focuses or opens Gemini, and attaches the file directly into the chat prompt.
+* The extension fetches the PDF data in the background, focuses or opens your selected AI platform, and attaches the file directly into the chat prompt.
 
 ### Option 2: Toolbar Icon
 
@@ -49,22 +63,25 @@ When viewing any PDF article (e.g. [AEM Journal PDF](https://journals.asm.org/do
 
 ### Option 3: Context Menu
 
-* Right-click anywhere on a PDF page or on a link pointing to a PDF, and select **Send PDF to Gemini (Alt+G)**.
+* Right-click anywhere on a PDF page or on a link pointing to a PDF, and select **Send PDF to [Selected AI] (Alt+G)**.
 
 ---
 
-## Preferences and Default Prompt
+## Preferences and Target AI Selection
 
 Right-click the extension icon and select **Options**:
 
-* **Default prompt**: Configure a template prompt that is automatically typed into Gemini after the PDF is attached (with built-in presets for **Quick Summary**, **Key Points**, **Peer Review**, and **Feynman**).
-* **Tab reuse**: Choose whether to switch to an already opened Gemini tab or always open a new tab.
+* **Target AI Platform**: Choose between Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, or Custom URL.
+* **Custom AI Web URL**: When "Custom URL" is selected, enter any URL (e.g. `https://openrouter.ai/chat`).
+* **Tab reuse**: Choose whether to switch to an already opened AI tab or always open a new tab.
+* **Default prompt**: Configure a template prompt that is automatically typed into the chat after the PDF is attached (with built-in presets for **Quick Summary**, **Key Points**, **Peer Review**, and **Feynman**).
+* **Extension Language**: Switch between English and Czech.
 
 ---
 
 ## File Size Limits
 
-The extension operates completely in browser memory and supports PDF documents up to **50 MB** (aligned with the Gemini limit). Files exceeding 50 MB are stopped before downloading to save bandwidth, and a warning notification is displayed.
+The extension operates completely in browser memory and supports PDF documents up to **50 MB**. Files exceeding 50 MB are stopped before downloading to save bandwidth, and a warning notification is displayed.
 
 ---
 
@@ -91,12 +108,4 @@ To create a clean distribution ZIP package for Chrome Web Store and Opera Add-on
 python scripts/pack_extension.py
 ```
 
-The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.0.0.zip`).
-
----
-
-## Architecture: Custom PDF Viewer (Variant B)
-
-Technical documentation and architectural design for replacing the browser's built-in PDF viewer with an HTML5 PDF.js viewer featuring a floating action button directly overlaid on the document is available in:
-* [DOCS_VARIANTA_B.md](docs/DOCS_VARIANTA_B.md)
-
+The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.1.0.zip`).

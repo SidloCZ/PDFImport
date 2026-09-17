@@ -58,17 +58,82 @@
           </div>
         </div>
 
+        <!-- Target AI Platform Selection -->
+        <div class="form-group ai-group">
+          <label class="input-label">
+            <strong data-i18n="prefTargetAiTitle">Target AI Platform</strong>
+            <small data-i18n="prefTargetAiDesc">Choose where you want to import your PDF documents.</small>
+          </label>
+          <div class="ai-platform-grid" id="aiPlatformGrid">
+            <button type="button" class="ai-card" data-ai="claude">
+              <span class="ai-card-badge">Anthropic</span>
+              <span class="ai-card-name">Claude</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="chatgpt">
+              <span class="ai-card-badge">OpenAI</span>
+              <span class="ai-card-name">ChatGPT</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="kimi">
+              <span class="ai-card-badge">Moonshot</span>
+              <span class="ai-card-name">Kimi</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="tencent">
+              <span class="ai-card-badge">Tencent</span>
+              <span class="ai-card-name">Hy4 / Yuanbao</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="deepseek">
+              <span class="ai-card-badge">DeepSeek</span>
+              <span class="ai-card-name">DeepSeek</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="gemini">
+              <span class="ai-card-badge">Google</span>
+              <span class="ai-card-name">Gemini</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="glm">
+              <span class="ai-card-badge">Z.ai</span>
+              <span class="ai-card-name">GLM</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="meta">
+              <span class="ai-card-badge">Meta</span>
+              <span class="ai-card-name">Meta AI</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="qwen">
+              <span class="ai-card-badge">Alibaba</span>
+              <span class="ai-card-name">Qwen</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="grok">
+              <span class="ai-card-badge">SpaceXAI</span>
+              <span class="ai-card-name">Grok</span>
+            </button>
+            <button type="button" class="ai-card ai-card-custom" data-ai="custom">
+              <span class="ai-card-badge">Custom</span>
+              <span class="ai-card-name">Custom URL</span>
+            </button>
+          </div>
+
+          <!-- Custom URL Input (shown when Custom is selected) -->
+          <div class="custom-url-box" id="customUrlBox" style="display: none;">
+            <label for="customAiUrl" class="input-label">
+              <strong data-i18n="prefCustomUrlTitle">Custom AI Web URL</strong>
+              <small data-i18n="prefCustomUrlDesc">Full URL of your preferred AI chat interface (e.g. OpenRouter, Perplexity, Poe, or self-hosted WebUI).</small>
+            </label>
+            <input type="url" id="customAiUrl" class="text-input" placeholder="https://openrouter.ai/chat" data-i18n-placeholder="prefCustomUrlPlaceholder">
+          </div>
+        </div>
+
+        <!-- Reuse Tab Option -->
         <div class="form-group">
           <label class="toggle-label">
             <input type="checkbox" id="reuseTab" checked>
             <span class="toggle-slider"></span>
             <span class="toggle-text">
-              <strong data-i18n="prefReuseTabTitle">Reuse existing Gemini tab</strong>
-              <small data-i18n="prefReuseTabDesc">If Gemini is already open, switches to it. Otherwise opens a new tab.</small>
+              <strong data-i18n="prefReuseTabTitle">Reuse existing AI tab</strong>
+              <small data-i18n="prefReuseTabDesc">If the selected AI chat is already open, switches to it. Otherwise opens a new tab.</small>
             </span>
           </label>
         </div>
 
+        <!-- Default Prompt -->
         <div class="form-group">
           <label for="defaultPrompt" class="input-label">
             <strong data-i18n="prefDefaultPromptTitle">Automatic default prompt (optional):</strong>

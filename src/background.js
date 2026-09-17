@@ -1,6 +1,118 @@
 /**
- * Background Service Worker pro PDF to Gemini Fast Import
+ * Background Service Worker for PDF to AI Fast Import
+ * Supports Top 10 AI platforms (Claude, ChatGPT, Kimi, Hy4/Yuanbao, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok) + Custom URL
  */
+
+const AI_PROVIDERS = {
+  claude: {
+    id: "claude",
+    name: "Claude",
+    fullName: "Anthropic (Claude)",
+    urlMatchPatterns: ["*://claude.ai/*"],
+    newTabUrl: "https://claude.ai/new"
+  },
+  chatgpt: {
+    id: "chatgpt",
+    name: "ChatGPT",
+    fullName: "OpenAI (ChatGPT)",
+    urlMatchPatterns: ["*://chatgpt.com/*", "*://chat.openai.com/*"],
+    newTabUrl: "https://chatgpt.com/"
+  },
+  kimi: {
+    id: "kimi",
+    name: "Kimi",
+    fullName: "Moonshot (Kimi)",
+    urlMatchPatterns: ["*://kimi.com/*", "*://kimi.moonshot.cn/*"],
+    newTabUrl: "https://kimi.com/"
+  },
+  tencent: {
+    id: "tencent",
+    name: "Hy4",
+    fullName: "Tencent (Hy4 / Yuanbao)",
+    urlMatchPatterns: ["*://yuanbao.tencent.com/*", "*://hunyuan.tencent.com/*"],
+    newTabUrl: "https://yuanbao.tencent.com/"
+  },
+  deepseek: {
+    id: "deepseek",
+    name: "DeepSeek",
+    fullName: "DeepSeek",
+    urlMatchPatterns: ["*://chat.deepseek.com/*"],
+    newTabUrl: "https://chat.deepseek.com/"
+  },
+  gemini: {
+    id: "gemini",
+    name: "Gemini",
+    fullName: "Google (Gemini)",
+    urlMatchPatterns: ["*://gemini.google.com/*"],
+    newTabUrl: "https://gemini.google.com/app"
+  },
+  glm: {
+    id: "glm",
+    name: "GLM",
+    fullName: "Z.ai (GLM)",
+    urlMatchPatterns: ["*://chatglm.cn/*", "*://z.ai/*"],
+    newTabUrl: "https://chatglm.cn/"
+  },
+  meta: {
+    id: "meta",
+    name: "Meta AI",
+    fullName: "Meta (Meta AI)",
+    urlMatchPatterns: ["*://www.meta.ai/*", "*://meta.ai/*"],
+    newTabUrl: "https://www.meta.ai/"
+  },
+  qwen: {
+    id: "qwen",
+    name: "Qwen",
+    fullName: "Alibaba (Qwen)",
+    urlMatchPatterns: ["*://tongyi.ai/*", "*://qwen.ai/*"],
+    newTabUrl: "https://tongyi.ai/"
+  },
+  grok: {
+    id: "grok",
+    name: "Grok",
+    fullName: "SpaceXAI (Grok)",
+    urlMatchPatterns: ["*://grok.com/*", "*://x.com/i/grok*"],
+    newTabUrl: "https://grok.com/"
+  },
+  custom: {
+    id: "custom",
+    name: "Custom AI",
+    fullName: "Custom URL",
+    urlMatchPatterns: [],
+    newTabUrl: "https://openrouter.ai/chat"
+  }
+};
+
+async function getActiveAiInfo() {
+  const settings = await chrome.storage.sync.get({
+    targetAi: "gemini",
+    customAiUrl: "https://openrouter.ai/chat"
+  });
+
+  const provider = AI_PROVIDERS[settings.targetAi] || AI_PROVIDERS.gemini;
+  let name = provider.name;
+  let newTabUrl = provider.newTabUrl;
+  let urlMatchPatterns = provider.urlMatchPatterns;
+
+  if (settings.targetAi === "custom" && settings.customAiUrl && settings.customAiUrl.trim()) {
+    try {
+      const parsed = new URL(settings.customAiUrl.trim());
+      name = parsed.hostname.replace(/^www\./, "");
+      newTabUrl = parsed.href;
+      urlMatchPatterns = [`*://${parsed.hostname}/*`];
+    } catch (e) {
+      name = "OpenRouter";
+    }
+  }
+
+  return {
+    id: settings.targetAi,
+    name: name,
+    fullName: provider.fullName,
+    newTabUrl: newTabUrl,
+    urlMatchPatterns: urlMatchPatterns
+  };
+}
 
 // Context menu setup
 async function setupContextMenus() {
@@ -15,8 +127,11 @@ async function setupContextMenus() {
     }
   } catch (e) {}
 
-  const titleCurrent = lang === "cs" ? "Odeslat PDF do Gemini (Alt+G)" : "Send PDF to Gemini (Alt+G)";
-  const titleLink = lang === "cs" ? "Odeslat odkazované PDF do Gemini" : "Send linked PDF to Gemini";
+  const aiInfo = await getActiveAiInfo();
+  const aiName = aiInfo.name;
+
+  const titleCurrent = lang === "cs" ? `Odeslat PDF do ${aiName} (Alt+G)` : `Send PDF to ${aiName} (Alt+G)`;
+  const titleLink = lang === "cs" ? `Odeslat odkazované PDF do ${aiName}` : `Send linked PDF to ${aiName}`;
 
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
@@ -31,19 +146,24 @@ async function setupContextMenus() {
       contexts: ["link"]
     });
   });
+
+  // Update action title tooltip
+  chrome.action.setTitle({
+    title: titleCurrent
+  }).catch(() => {});
 }
 
 chrome.runtime.onInstalled.addListener(setupContextMenus);
 chrome.runtime.onStartup.addListener(setupContextMenus);
 chrome.runtime.onMessage.addListener((message) => {
-  if (message.action === "LANGUAGE_CHANGED") {
+  if (message.action === "LANGUAGE_CHANGED" || message.action === "TARGET_AI_CHANGED") {
     setupContextMenus();
   }
 });
 setupContextMenus();
 
 /**
- * Zjistí, zda jde o interní / omezenou URL adresu prohlížeče
+ * Checks if a URL is restricted by the browser
  */
 function isRestrictedUrl(url) {
   if (!url) return true;
@@ -62,7 +182,7 @@ function isRestrictedUrl(url) {
 }
 
 /**
- * Heuristika pro zjištění, zda jde o PDF podle URL nebo titulku
+ * Heuristic to detect PDF by URL or title
  */
 function isLikelyPdf(url, title) {
   if (!url || isRestrictedUrl(url)) return false;
@@ -88,7 +208,7 @@ function isLikelyPdf(url, title) {
 }
 
 /**
- * Zjistí, zda je v záložce skutečně otevřen PDF dokument
+ * Checks if the tab truly contains a PDF document
  */
 async function isTabPdf(tab) {
   if (!tab || !tab.url || isRestrictedUrl(tab.url)) return false;
@@ -112,21 +232,20 @@ async function isTabPdf(tab) {
         return true;
       }
     } catch (e) {
-      // Ignorovat, pokud nelze skript do stránky vložit
+      // Ignore if script injection is not allowed on this page
     }
   }
 
   return false;
 }
 
-// Obsluha kliknutí na ikonu na liště
+// Action button click
 chrome.action.onClicked.addListener(async (tab) => {
   if (!tab || !tab.url || isRestrictedUrl(tab.url)) {
     chrome.runtime.openOptionsPage();
     return;
   }
 
-  // Pokud je uživatel mimo otevřené PDF, otevřeme stránku nastavení
   const isPdf = await isTabPdf(tab);
   if (!isPdf) {
     chrome.runtime.openOptionsPage();
@@ -136,7 +255,7 @@ chrome.action.onClicked.addListener(async (tab) => {
   await processPdfUrl(tab.url, tab.title || "document.pdf", tab.id);
 });
 
-// Obsluha klávesové zkratky (např. Alt+G)
+// Shortcut command (Alt+G)
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === "send-pdf-to-gemini") {
     const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -150,7 +269,7 @@ chrome.commands.onCommand.addListener(async (command) => {
   }
 });
 
-// Obsluha položek v kontextovém menu
+// Context menus
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "send_link_pdf" && info.linkUrl) {
     if (isRestrictedUrl(info.linkUrl)) return;
@@ -168,7 +287,7 @@ const MAX_PDF_SIZE_MB = 50;
 const MAX_PDF_SIZE_BYTES = MAX_PDF_SIZE_MB * 1024 * 1024;
 
 /**
- * Zpracuje PDF adresu, stáhne data a předá je do záložky Gemini
+ * Downloads the PDF and opens or activates target AI platform
  */
 async function processPdfUrl(url, fallbackTitle, sourceTabId) {
   if (isRestrictedUrl(url)) {
@@ -179,7 +298,7 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
   try {
     setBadge("...", "#4E82EE");
 
-    // 1. Zjistíme, zda jde o file:/// URL a zda máme potřebná oprávnění
+    // 1. Check file scheme permissions for file:///
     const isFileUrl = url.startsWith("file://");
     if (isFileUrl) {
       const isAllowed = await chrome.extension.isAllowedFileSchemeAccess();
@@ -190,7 +309,7 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
       }
     }
 
-    // 2. Rychlá kontrola velikosti před plným stažením pomocí HEAD požadavku (pokud jde o HTTP/HTTPS)
+    // 2. HEAD request size check for HTTP/HTTPS
     if (!isFileUrl) {
       try {
         const headResponse = await fetch(url, {
@@ -208,21 +327,20 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
           }
         }
       } catch (e) {
-        // Některé servery nepodporují HEAD nebo blokují CORS; pokračujeme k GET
+        // Fall through to GET if HEAD fails or CORS blocks HEAD
       }
     }
 
-    // 3. Stažení PDF souboru
-    console.log("[PDF Import] Stahuji PDF:", url);
+    // 3. Fetch PDF
+    console.log("[PDF Import] Fetching PDF:", url);
     const response = await fetch(url, {
-      credentials: "include" // Pro zachování cookies na vědeckých portálech
+      credentials: "include"
     });
 
     if (!response.ok) {
-      throw new Error(`Chyba při stahování (${response.status}: ${response.statusText})`);
+      throw new Error(`Download error (${response.status}: ${response.statusText})`);
     }
 
-    // Kontrola hlavičky Content-Length z GET odpovědi
     const contentLength = response.headers.get("content-length");
     if (contentLength) {
       const sizeBytes = parseInt(contentLength, 10);
@@ -232,13 +350,11 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
       }
     }
 
-    // Určení názvu souboru
     let filename = extractFilename(response, url, fallbackTitle);
     if (!filename.toLowerCase().endsWith(".pdf")) {
       filename += ".pdf";
     }
 
-    // Načtení dat a kontrola reálné velikosti blob
     const blob = await response.blob();
     if (blob.size > MAX_PDF_SIZE_BYTES) {
       handleSizeLimitExceeded(blob.size, MAX_PDF_SIZE_BYTES);
@@ -246,16 +362,17 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
     }
 
     const base64Data = await blobToBase64(blob);
+    console.log(`[PDF Import] PDF fetched: ${filename}, size: ${(blob.size / 1024 / 1024).toFixed(2)} MB`);
 
-    console.log(`[PDF Import] PDF úspěšně načteno: ${filename}, velikost: ${(blob.size / 1024 / 1024).toFixed(2)} MB`);
-
-    // 4. Načtení uživatelských předvoleb
+    // 4. Retrieve settings
     const settings = await chrome.storage.sync.get({
       reuseTab: true,
       defaultPrompt: ""
     });
 
-    // 4. Uložení připraveného PDF do lokálního úložiště
+    const aiInfo = await getActiveAiInfo();
+
+    // 5. Store pending PDF
     await chrome.storage.local.set({
       pendingPdf: {
         filename: filename,
@@ -263,62 +380,73 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
         size: blob.size,
         mimeType: blob.type || "application/pdf",
         prompt: settings.defaultPrompt,
+        targetAi: aiInfo.id,
+        targetAiName: aiInfo.name,
         timestamp: Date.now()
       }
     });
 
-    // 5. Nalezení nebo otevření záložky Gemini
-    await openOrActivateGemini(settings.reuseTab);
+    // 6. Open or focus target AI platform tab
+    await openOrActivateAi(aiInfo, settings.reuseTab);
     setBadge("OK", "#34A853");
     setTimeout(() => clearBadge(), 3000);
 
   } catch (err) {
-    console.error("[PDF Import] Chyba:", err);
+    console.error("[PDF Import] Error:", err);
     setBadge("ERR", "#D32F2F");
     setTimeout(() => clearBadge(), 4000);
-    notifyError(err.message || "Nepodařilo se stáhnout PDF soubor.");
+    notifyError(err.message || "Failed to download PDF.");
   }
 }
 
 /**
- * Nalezne existující záložku Gemini nebo vytvoří novou a pošle signál k vložení
+ * Finds or opens the AI tab and sends the signal to insert the PDF
  */
-async function openOrActivateGemini(reuseTab) {
+async function openOrActivateAi(aiInfo, reuseTab) {
   let targetTab = null;
 
   if (reuseTab) {
-    const tabs = await chrome.tabs.query({ url: "*://gemini.google.com/*" });
-    if (tabs && tabs.length > 0) {
-      // Preferujeme záložku v aktuálním okně nebo první nalezenou
-      targetTab = tabs[0];
-      await chrome.tabs.update(targetTab.id, { active: true });
-      if (targetTab.windowId) {
-        await chrome.windows.update(targetTab.windowId, { focused: true });
+    for (const pattern of aiInfo.urlMatchPatterns) {
+      const tabs = await chrome.tabs.query({ url: pattern });
+      if (tabs && tabs.length > 0) {
+        targetTab = tabs[0];
+        await chrome.tabs.update(targetTab.id, { active: true });
+        if (targetTab.windowId) {
+          await chrome.windows.update(targetTab.windowId, { focused: true });
+        }
+        break;
       }
     }
   }
 
   if (!targetTab) {
     targetTab = await chrome.tabs.create({
-      url: "https://gemini.google.com/app",
+      url: aiInfo.newTabUrl,
       active: true
     });
   }
 
-  // Pošleme notifikaci do záložky (pokud už je načtená)
-  setTimeout(() => {
+  // Ensure content script is present for custom URLs or dynamic injection
+  setTimeout(async () => {
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId: targetTab.id },
+        files: ["src/content_ai.js"]
+      });
+    } catch (e) {
+      // Content script may already be injected via manifest match
+    }
+
     chrome.tabs.sendMessage(targetTab.id, { action: "PROCESS_PENDING_PDF" }).catch(() => {
-      // Pokud content script ještě neběží (např. nová záložka se načítá),
-      // vyzvedne si data sám z chrome.storage.local po startu.
+      // Content script will pick it up on startup from storage if tab is still loading
     });
-  }, 400);
+  }, 600);
 }
 
 /**
- * Pomocná funkce pro extrakci smysluplného názvu souboru
+ * Extract meaningful filename
  */
 function extractFilename(response, url, fallbackTitle) {
-  // Zkouška Content-Disposition hlavičky
   const disposition = response.headers.get("content-disposition");
   if (disposition) {
     const matchUtf8 = disposition.match(/filename\*=UTF-8''([^;]+)/i);
@@ -331,7 +459,6 @@ function extractFilename(response, url, fallbackTitle) {
     }
   }
 
-  // Zkouška z URL adresy
   try {
     const parsedUrl = new URL(url);
     const pathname = parsedUrl.pathname;
@@ -341,16 +468,12 @@ function extractFilename(response, url, fallbackTitle) {
       if (lastPart.toLowerCase().endsWith(".pdf")) {
         return lastPart;
       }
-      // Vědecké články např. doi/pdf/10.1128/aem.00763-26 -> aem.00763-26.pdf
       if (parts.length >= 2 && lastPart) {
         return lastPart + ".pdf";
       }
     }
-  } catch (e) {
-    // Ignorovat chybu parsování URL
-  }
+  } catch (e) {}
 
-  // Fallback z titulku záložky
   if (fallbackTitle && fallbackTitle !== "document.pdf") {
     const cleaned = fallbackTitle.replace(/[\\/:*?"<>|]/g, "_").trim();
     if (cleaned.length > 0) {
@@ -362,9 +485,6 @@ function extractFilename(response, url, fallbackTitle) {
   return prefix + Date.now().toString().slice(-4) + ".pdf";
 }
 
-/**
- * Převede Blob na Base64 Data URL
- */
 function blobToBase64(blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -374,9 +494,6 @@ function blobToBase64(blob) {
   });
 }
 
-/**
- * Nastaví odznak na ikoně
- */
 function setBadge(text, color) {
   chrome.action.setBadgeText({ text });
   if (color) {
@@ -388,9 +505,6 @@ function clearBadge() {
   chrome.action.setBadgeText({ text: "" });
 }
 
-/**
- * Upozornění na chybějící oprávnění k lokálním souborům
- */
 function showFileAccessWarning() {
   chrome.notifications.create({
     type: "basic",
@@ -398,25 +512,21 @@ function showFileAccessWarning() {
     title: chrome.i18n.getMessage("fileAccessWarningTitle") || "File URL permission required",
     message: chrome.i18n.getMessage("fileAccessWarningMessage") || "To import 'file:///' local files, please enable 'Allow access to file URLs' on the browser extensions page."
   }).catch(() => {
-    // Fallback pokud notifications API není dostupné
     console.warn("[PDF Import] Please enable 'Allow access to file URLs' in extension settings");
   });
 }
 
-/**
- * Upozornění na překročení maximální velikosti PDF
- */
 function handleSizeLimitExceeded(sizeBytes, maxBytes) {
   const sizeMb = (sizeBytes / (1024 * 1024)).toFixed(1);
   const limitMb = (maxBytes / (1024 * 1024)).toFixed(0);
 
-  console.warn(`[PDF Import] PDF soubor přesahuje limit: ${sizeMb} MB > ${limitMb} MB`);
+  console.warn(`[PDF Import] PDF size exceeds limit: ${sizeMb} MB > ${limitMb} MB`);
   setBadge("SIZE", "#D32F2F");
   setTimeout(() => clearBadge(), 5000);
 
   const title = chrome.i18n.getMessage("fileSizeLimitErrorTitle") || "PDF file is too large";
   const rawMsg = chrome.i18n.getMessage("fileSizeLimitErrorMessage", [sizeMb, limitMb]);
-  const message = rawMsg || `The file size (${sizeMb} MB) exceeds the maximum allowed limit of ${limitMb} MB for Gemini.`;
+  const message = rawMsg || `The file size (${sizeMb} MB) exceeds the maximum allowed limit of ${limitMb} MB.`;
 
   chrome.notifications.create({
     type: "basic",
@@ -431,4 +541,3 @@ function handleSizeLimitExceeded(sizeBytes, maxBytes) {
 function notifyError(message) {
   console.error("[PDF Import Error]", message);
 }
-

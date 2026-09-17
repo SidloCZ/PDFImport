@@ -1,5 +1,6 @@
 let currentLang = "en";
 const locales = {};
+let selectedAi = "gemini";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const reuseTabEl = document.getElementById("reuseTab");
@@ -9,16 +10,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   const presetBtns = document.querySelectorAll(".preset-btn");
   const langBtnEn = document.getElementById("langBtnEn");
   const langBtnCs = document.getElementById("langBtnCs");
+  const aiCards = document.querySelectorAll(".ai-card");
+  const customUrlBox = document.getElementById("customUrlBox");
+  const customAiUrlEl = document.getElementById("customAiUrl");
 
   // Load language message catalogs
   await loadLocales();
 
   // Load saved settings
   const settings = await chrome.storage.sync.get({
+    targetAi: "gemini",
+    customAiUrl: "https://openrouter.ai/chat",
     reuseTab: true,
     defaultPrompt: "",
     userLanguage: "auto"
   });
+
+  selectedAi = settings.targetAi || "gemini";
+  if (customAiUrlEl) {
+    customAiUrlEl.value = settings.customAiUrl || "https://openrouter.ai/chat";
+  }
+
+  // Update active AI card
+  updateActiveAiCard(selectedAi);
 
   // Determine active language
   if (settings.userLanguage && settings.userLanguage !== "auto") {
@@ -33,6 +47,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   reuseTabEl.checked = settings.reuseTab;
   defaultPromptEl.value = settings.defaultPrompt;
+
+  // AI card selection handler
+  aiCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const aiId = card.getAttribute("data-ai");
+      if (aiId) {
+        selectedAi = aiId;
+        updateActiveAiCard(selectedAi);
+      }
+    });
+  });
+
+  function updateActiveAiCard(aiId) {
+    aiCards.forEach((card) => {
+      card.classList.toggle("active", card.getAttribute("data-ai") === aiId);
+    });
+
+    if (customUrlBox) {
+      customUrlBox.style.display = aiId === "custom" ? "block" : "none";
+    }
+  }
 
   // Language switch handlers
   if (langBtnEn) {
@@ -74,11 +109,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     saveBtn.disabled = true;
     saveBtn.textContent = getMsg("btnSaving") || "Saving...";
 
+    const customUrlVal = customAiUrlEl ? customAiUrlEl.value.trim() : "https://openrouter.ai/chat";
+
     await chrome.storage.sync.set({
+      targetAi: selectedAi,
+      customAiUrl: customUrlVal,
       reuseTab: reuseTabEl.checked,
       defaultPrompt: defaultPromptEl.value,
       userLanguage: currentLang
     });
+
+    // Notify background script to update context menu labels
+    chrome.runtime.sendMessage({
+      action: "TARGET_AI_CHANGED",
+      targetAi: selectedAi,
+      customAiUrl: customUrlVal
+    }).catch(() => {});
 
     saveStatus.textContent = getMsg("statusSaved") || "Settings saved!";
     saveBtn.disabled = false;

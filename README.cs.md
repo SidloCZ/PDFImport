@@ -2,7 +2,21 @@
 
 [English](README.md) | [Čeština](README.cs.md)
 
-Rozšíření pro prohlížeč **Opera** (a jakýkoliv Chromium prohlížeč), které umožňuje na **1 kliknutí nebo klávesovou zkratku** automaticky načíst a vložit otevřený PDF dokument přímo do **Google Gemini** chatu – bez nutnosti ručního stahování souboru na disk a jeho následného nahrávání.
+Rozšíření pro prohlížeč **Opera** (a jakýkoliv Chromium prohlížeč), které umožňuje na **1 kliknutí nebo klávesovou zkratku** automaticky načíst a vložit otevřený PDF dokument přímo do vašeho oblíbeného **AI chatu** – bez nutnosti ručního stahování souboru na disk a jeho následného nahrávání.
+
+Nativně podporuje **10 nejlepších AI platforem** a možnost zadat libovolnou **vlastní URL**:
+
+* **Anthropic** (Claude)
+* **OpenAI** (ChatGPT)
+* **Moonshot** (Kimi)
+* **Tencent** (Hy4 / Yuanbao)
+* **DeepSeek**
+* **Google** (Gemini)
+* **Z.ai** (GLM)
+* **Meta** (Meta AI)
+* **Alibaba** (Qwen)
+* **SpaceXAI** (Grok)
+* **Vlastní AI platforma / URL** (OpenRouter, Perplexity, Poe, lokální WebUI apod.)
 
 Funguje jak pro **online vědecké články a weby** (např. *ASM Journals, ScienceDirect, arXiv, Nature*), tak pro **lokální PDF soubory z disku** (`file:///...`).
 
@@ -41,7 +55,7 @@ Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journ
 ### Možnost 1: Klávesová zkratka (Nejrychlejší)
 
 * Stiskněte **`Alt + G`**.
-* Rozšíření stáhne PDF data na pozadí, aktivuje záložku Gemini a soubor ihned vloží do zprávy.
+* Rozšíření stáhne PDF data na pozadí, aktivuje záložku vybrané AI a soubor ihned vloží do zprávy.
 
 ### Možnost 2: Ikona v liště
 
@@ -49,22 +63,25 @@ Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journ
 
 ### Možnost 3: Kontextové menu
 
-* Kdekoliv na stránce nebo na odkazu vedoucím na PDF klikněte pravým tlačítkem myši a zvolte **Odeslat PDF do Gemini (Alt+G)**.
+* Kdekoliv na stránce nebo na odkazu vedoucím na PDF klikněte pravým tlačítkem myši a zvolte **Odeslat PDF do [Zvolená AI] (Alt+G)**.
 
 ---
 
-## Předvolby a automatický prompt
+## Nastavení a volba cílové AI
 
 Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Options*):
 
-* Můžete nastavit **výchozí prompt**, který se po vložení souboru automaticky vyplní do chatu (k dispozici jsou předvolby **Rychlé shrnutí**, **Klíčové body**, **Peer Review** a **Feynman**).
-* Můžete zvolit, zda se má vždy přepnout do již otevřené záložky Gemini, nebo otevírat nová.
+* **Cílová AI platforma**: Vyberte mezi Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, nebo Vlastní URL.
+* **Vlastní adresa AI chatu**: Při volbě „Custom URL“ zadejte libovolnou adresu (např. `https://openrouter.ai/chat`).
+* **Použít již otevřenou záložku**: Zvolte, zda se má přepnout do otevřené záložky dané AI, nebo otevírat nová.
+* **Automatický prompt**: Nastavte šablonu dotazu, která se po vložení souboru automaticky vyplní do chatu (k dispozici jsou předvolby **Rychlé shrnutí**, **Klíčové body**, **Peer Review** a **Feynman**).
+* **Jazyk rozšíření**: Přepínejte mezi češtinou a angličtinou.
 
 ---
 
 ## Limity velikosti souborů
 
-Rozšíření pracuje výhradně v operační paměti prohlížeče a podporuje PDF dokumenty až do velikosti **50 MB** (což odpovídá limitu Gemini). Pokud soubor limit 50 MB přesáhne, stahování se zastaví ještě před přenesením celého souboru pro úsporu dat a uživatel je upozorněn notifikací.
+Rozšíření pracuje výhradně v operační paměti prohlížeče a podporuje PDF dokumenty až do velikosti **50 MB**. Pokud soubor limit 50 MB přesáhne, stahování se zastaví ještě před přenesením celého souboru pro úsporu dat a uživatel je upozorněn notifikací.
 
 ---
 
@@ -91,12 +108,4 @@ Pro vytvoření čistého distribučního ZIP archivu pro Chrome Web Store a Ope
 python scripts/pack_extension.py
 ```
 
-Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.0.0.zip`).
-
----
-
-## Varianta B (Vlastní PDF Viewer)
-
-Kompletní technická dokumentace a návrh na nahrazení nativního PDF prohlížeče vlastním HTML5 PDF.js viewerem s plovoucím tlačítkem přímo přes dokument se nachází v souboru:
-* [DOCS_VARIANTA_B.md](docs/DOCS_VARIANTA_B.md)
-
+Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.1.0.zip`).

@@ -8,23 +8,23 @@
     "description": "The short name of the extension"
   },
   "extensionDescription": {
-    "message": "Instantly imports opened PDF documents directly into Google Gemini chat without manual downloading.",
+    "message": "Instantly imports opened PDF documents directly into AI chat (Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, OpenRouter) without manual downloading.",
     "description": "The description of the extension"
   },
   "actionTitle": {
-    "message": "Send PDF to Gemini (Alt+G)",
+    "message": "Send PDF to AI (Alt+G)",
     "description": "Tooltip title for action icon"
   },
   "commandDescription": {
-    "message": "Send current PDF document to Gemini chat",
+    "message": "Send current PDF document to AI chat",
     "description": "Description of shortcut command"
   },
   "contextMenuSendCurrentPdf": {
-    "message": "Send PDF to Gemini (Alt+G)",
+    "message": "Send PDF to AI (Alt+G)",
     "description": "Context menu item for current page/PDF"
   },
   "contextMenuSendLinkPdf": {
-    "message": "Send linked PDF to Gemini",
+    "message": "Send linked PDF to AI",
     "description": "Context menu item for links"
   },
   "fileAccessWarningTitle": {
@@ -40,7 +40,7 @@
     "description": "Notification title when PDF exceeds maximum size"
   },
   "fileSizeLimitErrorMessage": {
-    "message": "The file size ($SIZE$ MB) exceeds the maximum allowed limit of $LIMIT$ MB for Gemini.",
+    "message": "The file size ($SIZE$ MB) exceeds the maximum allowed limit of $LIMIT$ MB.",
     "description": "Notification message when PDF exceeds size limit",
     "placeholders": {
       "size": {
@@ -99,12 +99,32 @@
     "message": "PREFERENCES",
     "description": "Heading for preferences section"
   },
+  "prefTargetAiTitle": {
+    "message": "Target AI Platform",
+    "description": "Label for target AI service selector"
+  },
+  "prefTargetAiDesc": {
+    "message": "Choose where you want to import your PDF documents.",
+    "description": "Description for target AI service selector"
+  },
+  "prefCustomUrlTitle": {
+    "message": "Custom AI Web URL",
+    "description": "Label for custom AI URL field"
+  },
+  "prefCustomUrlDesc": {
+    "message": "Full URL of your preferred AI chat interface (e.g. OpenRouter, Perplexity, Poe, or self-hosted WebUI).",
+    "description": "Description for custom AI URL field"
+  },
+  "prefCustomUrlPlaceholder": {
+    "message": "https://openrouter.ai/chat",
+    "description": "Placeholder for custom AI URL field"
+  },
   "prefReuseTabTitle": {
-    "message": "Reuse existing Gemini tab",
+    "message": "Reuse existing AI tab",
     "description": "Title for tab reuse toggle"
   },
   "prefReuseTabDesc": {
-    "message": "If Gemini is already open, switches to it. Otherwise opens a new tab.",
+    "message": "If the selected AI chat is already open, switches to it. Otherwise opens a new tab.",
     "description": "Description for tab reuse toggle"
   },
   "prefLanguageTitle": {
@@ -209,17 +229,25 @@
     }
   },
   "toastSuccess": {
-    "message": "File <strong>$FILENAME$</strong> was inserted into Gemini!",
+    "message": "File <strong>$FILENAME$</strong> was inserted into $AI$!",
     "description": "Toast message when file insertion succeeds",
     "placeholders": {
       "filename": {
         "content": "$1"
+      },
+      "ai": {
+        "content": "$2"
       }
     }
   },
   "toastChatNotFound": {
-    "message": "Gemini chat input was not found within timeout.",
-    "description": "Toast message when chat input is missing"
+    "message": "$AI$ chat input was not found within timeout.",
+    "description": "Toast message when chat input is missing",
+    "placeholders": {
+      "ai": {
+        "content": "$1"
+      }
+    }
   },
   "toastError": {
     "message": "An error occurred while inserting the PDF.",

@@ -8,23 +8,23 @@
     "description": "The short name of the extension"
   },
   "extensionDescription": {
-    "message": "Automaticky a bleskově vloží otevřený PDF dokument do Google Gemini chatu bez nutnosti ručního stahování.",
+    "message": "Automaticky a bleskově vloží otevřený PDF dokument do AI chatu (Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, OpenRouter) bez nutnosti ručního stahování.",
     "description": "The description of the extension"
   },
   "actionTitle": {
-    "message": "Odeslat PDF do Gemini (Alt+G)",
+    "message": "Odeslat PDF do AI (Alt+G)",
     "description": "Tooltip title for action icon"
   },
   "commandDescription": {
-    "message": "Odeslat aktuální PDF dokument do chatu Gemini",
+    "message": "Odeslat aktuální PDF dokument do chatu AI",
     "description": "Description of shortcut command"
   },
   "contextMenuSendCurrentPdf": {
-    "message": "Odeslat PDF do Gemini (Alt+G)",
+    "message": "Odeslat PDF do AI (Alt+G)",
     "description": "Context menu item for current page/PDF"
   },
   "contextMenuSendLinkPdf": {
-    "message": "Odeslat odkazované PDF do Gemini",
+    "message": "Odeslat odkazované PDF do AI",
     "description": "Context menu item for links"
   },
   "fileAccessWarningTitle": {
@@ -40,7 +40,7 @@
     "description": "Notification title when PDF exceeds maximum size"
   },
   "fileSizeLimitErrorMessage": {
-    "message": "Velikost souboru ($SIZE$ MB) překračuje maximální limit $LIMIT$ MB pro Gemini.",
+    "message": "Velikost souboru ($SIZE$ MB) překračuje maximální limit $LIMIT$ MB.",
     "description": "Notification message when PDF exceeds size limit",
     "placeholders": {
       "size": {
@@ -99,12 +99,32 @@
     "message": "PŘEDVOLBY",
     "description": "Heading for preferences section"
   },
+  "prefTargetAiTitle": {
+    "message": "Cílová AI platforma",
+    "description": "Label for target AI service selector"
+  },
+  "prefTargetAiDesc": {
+    "message": "Vyberte, do jaké AI platformy chcete odesílat své PDF dokumenty.",
+    "description": "Description for target AI service selector"
+  },
+  "prefCustomUrlTitle": {
+    "message": "Vlastní adresa AI chatu",
+    "description": "Label for custom AI URL field"
+  },
+  "prefCustomUrlDesc": {
+    "message": "Celá URL adresa webového rozhraní (např. OpenRouter, Perplexity, Poe nebo vlastní WebUI).",
+    "description": "Description for custom AI URL field"
+  },
+  "prefCustomUrlPlaceholder": {
+    "message": "https://openrouter.ai/chat",
+    "description": "Placeholder for custom AI URL field"
+  },
   "prefReuseTabTitle": {
-    "message": "Použít již otevřenou záložku Gemini",
+    "message": "Použít již otevřenou záložku AI",
     "description": "Title for tab reuse toggle"
   },
   "prefReuseTabDesc": {
-    "message": "Pokud je Gemini již otevřeno, přepne se na něj. Jinak otevře novou záložku.",
+    "message": "Pokud je vybraný AI chat již otevřen, přepne se na něj. Jinak otevře novou záložku.",
     "description": "Description for tab reuse toggle"
   },
   "prefLanguageTitle": {
@@ -209,17 +229,25 @@
     }
   },
   "toastSuccess": {
-    "message": "Soubor <strong>$FILENAME$</strong> byl vložen do Gemini!",
+    "message": "Soubor <strong>$FILENAME$</strong> byl vložen do $AI$!",
     "description": "Toast message when file insertion succeeds",
     "placeholders": {
       "filename": {
         "content": "$1"
+      },
+      "ai": {
+        "content": "$2"
       }
     }
   },
   "toastChatNotFound": {
-    "message": "Vstupní pole chatu Gemini nebylo nalezeno v limitu.",
-    "description": "Toast message when chat input is missing"
+    "message": "Vstupní pole chatu $AI$ nebylo nalezeno v limitu.",
+    "description": "Toast message when chat input is missing",
+    "placeholders": {
+      "ai": {
+        "content": "$1"
+      }
+    }
   },
   "toastError": {
     "message": "Došlo k chybě při vkládání PDF.",
