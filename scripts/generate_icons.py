@@ -21,7 +21,7 @@ def create_centered_svg():
     header = (
         '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" '
         'viewBox="0 0 2048 2048" width="2048" height="2048">\n'
-        '<rect width="100%" height="100%" fill="rgb(231,192,117)"/>\n'
+        '<rect width="100%" height="100%" fill="#E7C176"/>\n'
         '<g transform="translate(1024, 1024) scale(0.95) translate(-1025, -865)">\n'
     )
     footer = "\n</g>\n</svg>"

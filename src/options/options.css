@@ -44,7 +44,7 @@ body {
   display: flex;
   align-items: center;
   gap: 20px;
-  background: var(--bg-card);
+  background: #E7C176;
   border: var(--border-thick);
   box-shadow: var(--shadow-brutal);
   padding: 18px 24px;
@@ -61,8 +61,9 @@ body {
 }
 
 .logo {
-  width: 48px;
-  height: 48px;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
   display: block;
 }
 
