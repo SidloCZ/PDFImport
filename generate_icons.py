@@ -1,92 +1,69 @@
-from PIL import Image, ImageDraw
+import os
+import re
+from PIL import Image, ImageFilter
 
-def render_icon(target_size):
-    # 4x Supersampling pro dokonale hladké hrany
-    scale = 4
-    size = target_size * scale
-    s = size / 128.0
+SVG_SOURCE = "PDFImport logo v3.svg"
+OUTPUT_DIR = "icons"
+SIZES = [16, 32, 48, 128]
 
-    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
+def create_centered_svg():
+    """Generates a balanced, centered vector SVG in icons/icon.svg."""
+    if not os.path.exists(SVG_SOURCE):
+        raise FileNotFoundError(f"{SVG_SOURCE} not found!")
 
-    # 1. Černé zaoblené pozadí
-    pad = int(4 * s)
-    radius = int(26 * s)
-    draw.rounded_rectangle(
-        [pad, pad, size - pad, size - pad],
-        radius=radius,
-        fill=(0, 0, 0, 255)
+    with open(SVG_SOURCE, "r", encoding="utf-8") as f:
+        svg_content = f.read()
+
+    paths = re.findall(r"<path[^>]+>", svg_content)
+    fg_paths = paths[1:]  # Exclude raw background path
+
+    header = (
+        '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" '
+        'viewBox="0 0 2048 2048" width="2048" height="2048">\n'
+        '<rect width="100%" height="100%" fill="rgb(231,192,117)"/>\n'
+        '<g transform="translate(1024, 1024) scale(0.95) translate(-1025, -865)">\n'
     )
+    footer = "\n</g>\n</svg>"
+    centered_svg = header + "\n".join(fg_paths) + footer
 
-    WHITE = (255, 255, 255, 255)
-    CYAN = (0, 210, 255, 255)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    out_svg_path = os.path.join(OUTPUT_DIR, "icon.svg")
+    with open(out_svg_path, "w", encoding="utf-8") as f:
+        f.write(centered_svg)
+    print(f"Generated {out_svg_path}")
+    return out_svg_path
 
-    # 2. SOUBOR (bílý, levá strana, x: 16 až 44, y: 31 až 96)
-    fx = int(16 * s)
-    fy = int(32 * s)
-    fw = int(28 * s)
-    fh = int(62 * s)
-    fold = int(10 * s)
-    stroke_w = max(1, int(4.5 * s))
+def render_png_icons(svg_path):
+    """Renders the SVG at high resolution using headless Chrome/Selenium and resizes."""
+    from selenium import webdriver
+    from selenium.webdriver.chrome.options import Options
 
-    pts = [
-        (fx, fy),
-        (fx + fw - fold, fy),
-        (fx + fw, fy + fold),
-        (fx + fw, fy + fh),
-        (fx, fy + fh)
-    ]
-    draw.polygon(pts, fill=(0, 0, 0, 255), outline=WHITE, width=stroke_w)
-    draw.line([fx + fw - fold, fy, fx + fw - fold, fy + fold], fill=WHITE, width=stroke_w)
-    draw.line([fx + fw - fold, fy + fold, fx + fw, fy + fold], fill=WHITE, width=stroke_w)
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--window-size=2048,2048")
+    options.add_argument("--hide-scrollbars")
+    driver = webdriver.Chrome(options=options)
 
-    # Textové linky uvnitř souboru
-    if target_size >= 32:
-        draw.line([fx + int(6 * s), fy + int(24 * s), fx + int(18 * s), fy + int(24 * s)], fill=WHITE, width=max(1, int(4 * s)))
-        draw.line([fx + int(6 * s), fy + int(40 * s), fx + int(22 * s), fy + int(40 * s)], fill=WHITE, width=max(1, int(4 * s)))
-    else:
-        draw.line([fx + int(5 * s), fy + int(32 * s), fx + int(20 * s), fy + int(32 * s)], fill=WHITE, width=max(1, int(4.5 * s)))
+    abs_svg_url = f"file:///{os.path.abspath(svg_path).replace(os.sep, '/')}"
+    driver.get(abs_svg_url)
 
-    # 3. SPEED ARROW (barevná - azurová/cyan, střed, x: 46 až 88)
-    head_x1 = int(72 * s)
-    head_x2 = int(88 * s)
-    head_y_mid = int(64 * s)
-    head_y1 = int(50 * s)
-    head_y2 = int(78 * s)
+    high_res_tmp = os.path.join(OUTPUT_DIR, "_tmp_render2048.png")
+    driver.save_screenshot(high_res_tmp)
+    driver.quit()
 
-    shaft_x1 = int(60 * s)
-    shaft_y1 = int(58 * s)
-    shaft_y2 = int(70 * s)
+    high_img = Image.open(high_res_tmp).convert("RGB")
 
-    # Tělo a hrot šipky
-    draw.rectangle([shaft_x1, shaft_y1, head_x1, shaft_y2], fill=CYAN)
-    draw.polygon([(head_x1, head_y1), (head_x2, head_y_mid), (head_x1, head_y2)], fill=CYAN)
+    for s in SIZES:
+        icon = high_img.resize((s, s), Image.Resampling.LANCZOS)
+        if s == 16:
+            icon = icon.filter(ImageFilter.UnsharpMask(radius=1, percent=120, threshold=3))
+        out_path = os.path.join(OUTPUT_DIR, f"icon{s}.png")
+        icon.save(out_path, format="PNG")
+        print(f"Generated {out_path} ({s}x{s} px)")
 
-    # 3 aerodynamické pruhy na levé straně
-    dash_h = max(2, int(4 * s))
-    dash_r = dash_h // 2
+    if os.path.exists(high_res_tmp):
+        os.remove(high_res_tmp)
 
-    # Horní pruh
-    draw.rounded_rectangle([int(52 * s), int(53 * s), int(61 * s), int(53 * s) + dash_h], radius=dash_r, fill=CYAN)
-    # Střední pruh
-    draw.rounded_rectangle([int(46 * s), int(62 * s), int(58 * s), int(62 * s) + dash_h], radius=dash_r, fill=CYAN)
-    # Dolní pruh
-    draw.rounded_rectangle([int(52 * s), int(71 * s), int(61 * s), int(71 * s) + dash_h], radius=dash_r, fill=CYAN)
-
-    # 4. TEXT "AI" (bílý, pravá strana, x: 92 až 118, y: 50 až 78)
-    letter_w = max(1, int(5.5 * s))
-
-    # Písmeno A
-    draw.line([(int(93 * s), int(77 * s)), (int(100 * s), int(51 * s))], fill=WHITE, width=letter_w)
-    draw.line([(int(100 * s), int(51 * s)), (int(107 * s), int(77 * s))], fill=WHITE, width=letter_w)
-    draw.line([(int(95.5 * s), int(69 * s)), (int(104.5 * s), int(69 * s))], fill=WHITE, width=max(1, int(4.5 * s)))
-
-    # Písmeno I
-    draw.line([(int(114 * s), int(51 * s)), (int(114 * s), int(77 * s))], fill=WHITE, width=letter_w)
-
-    return img.resize((target_size, target_size), Image.Resampling.LANCZOS)
-
-for s in [16, 48, 128]:
-    icon = render_icon(s)
-    icon.save(f"icons/icon{s}.png")
-    print(f"Rendered icon with Cyan Speed Arrow and AI text: icons/icon{s}.png")
+if __name__ == "__main__":
+    svg_file = create_centered_svg()
+    render_png_icons(svg_file)
