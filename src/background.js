@@ -42,11 +42,98 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 setupContextMenus();
 
+/**
+ * Zjistí, zda jde o interní / omezenou URL adresu prohlížeče
+ */
+function isRestrictedUrl(url) {
+  if (!url) return true;
+  const lower = url.toLowerCase();
+  return (
+    lower.startsWith("chrome://") ||
+    lower.startsWith("opera://") ||
+    lower.startsWith("edge://") ||
+    lower.startsWith("brave://") ||
+    lower.startsWith("about:") ||
+    lower.startsWith("chrome-extension://") ||
+    lower.startsWith("chrome-search://") ||
+    lower.startsWith("devtools://") ||
+    lower.startsWith("view-source:")
+  );
+}
+
+/**
+ * Heuristika pro zjištění, zda jde o PDF podle URL nebo titulku
+ */
+function isLikelyPdf(url, title) {
+  if (!url || isRestrictedUrl(url)) return false;
+
+  try {
+    const parsed = new URL(url);
+    const pathname = parsed.pathname.toLowerCase();
+    if (pathname.endsWith(".pdf") || pathname.includes("/pdf/")) {
+      return true;
+    }
+    const format = parsed.searchParams.get("format");
+    const file = parsed.searchParams.get("file");
+    if (format === "pdf" || (file && file.toLowerCase().endsWith(".pdf"))) {
+      return true;
+    }
+  } catch (e) {}
+
+  if (title && title.trim().toLowerCase().endsWith(".pdf")) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Zjistí, zda je v záložce skutečně otevřen PDF dokument
+ */
+async function isTabPdf(tab) {
+  if (!tab || !tab.url || isRestrictedUrl(tab.url)) return false;
+
+  if (isLikelyPdf(tab.url, tab.title)) {
+    return true;
+  }
+
+  if (tab.id && (tab.url.startsWith("http://") || tab.url.startsWith("https://") || tab.url.startsWith("file://"))) {
+    try {
+      const results = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          return document.contentType === "application/pdf" ||
+                 !!document.querySelector('embed[type="application/pdf"]') ||
+                 !!document.querySelector('embed[name="plugin"]') ||
+                 document.body?.classList?.contains("pdf-viewer");
+        }
+      });
+      if (results && results[0] && results[0].result) {
+        return true;
+      }
+    } catch (e) {
+      // Ignorovat, pokud nelze skript do stránky vložit
+    }
+  }
+
+  return false;
+}
+
 // Obsluha kliknutí na ikonu na liště
 chrome.action.onClicked.addListener(async (tab) => {
-  if (tab && tab.url) {
-    await processPdfUrl(tab.url, tab.title || "document.pdf", tab.id);
+  if (!tab || !tab.url || isRestrictedUrl(tab.url)) {
+    chrome.runtime.openOptionsPage();
+    return;
   }
+
+  // Pokud je uživatel mimo otevřené PDF, otevřeme stránku nastavení
+  const isPdf = await isTabPdf(tab);
+  if (!isPdf) {
+    chrome.runtime.openOptionsPage();
+    return;
+  }
+
+  await processPdfUrl(tab.url, tab.title || "document.pdf", tab.id);
 });
 
 // Obsluha klávesové zkratky (např. Alt+G)
@@ -54,6 +141,10 @@ chrome.commands.onCommand.addListener(async (command) => {
   if (command === "send-pdf-to-gemini") {
     const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (activeTab && activeTab.url) {
+      if (isRestrictedUrl(activeTab.url)) {
+        chrome.runtime.openOptionsPage();
+        return;
+      }
       await processPdfUrl(activeTab.url, activeTab.title || "document.pdf", activeTab.id);
     }
   }
@@ -62,8 +153,13 @@ chrome.commands.onCommand.addListener(async (command) => {
 // Obsluha položek v kontextovém menu
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "send_link_pdf" && info.linkUrl) {
+    if (isRestrictedUrl(info.linkUrl)) return;
     await processPdfUrl(info.linkUrl, "document.pdf", tab ? tab.id : null);
   } else if (info.menuItemId === "send_current_pdf" && tab && tab.url) {
+    if (isRestrictedUrl(tab.url)) {
+      chrome.runtime.openOptionsPage();
+      return;
+    }
     await processPdfUrl(tab.url, tab.title || "document.pdf", tab.id);
   }
 });
@@ -75,6 +171,11 @@ const MAX_PDF_SIZE_BYTES = MAX_PDF_SIZE_MB * 1024 * 1024;
  * Zpracuje PDF adresu, stáhne data a předá je do záložky Gemini
  */
 async function processPdfUrl(url, fallbackTitle, sourceTabId) {
+  if (isRestrictedUrl(url)) {
+    chrome.runtime.openOptionsPage();
+    return;
+  }
+
   try {
     setBadge("...", "#4E82EE");
 
