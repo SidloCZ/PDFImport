@@ -306,7 +306,7 @@
     "description": "Title for context menu toggle"
   },
   "prefContextMenuDesc": {
-    "message": "Zobrazovat rychlý import v kontextovém menu pravého tlačítka (zobrazuje se automaticky pouze u PDF stránek a PDF odkazů).",
+    "message": "Pokud je zaškrtnuto, položka je v menu pravého tlačítka pořád. Pokud je odškrtnuto, zobrazuje se pouze u odkazů, obrázků a otevřených PDF.",
     "description": "Description for context menu toggle"
   },
   "optionsLargePdfTitle": {

@@ -134,13 +134,6 @@ async function setupContextMenus() {
       enableContextMenu: true
     });
 
-    if (settings.enableContextMenu === false) {
-      chrome.contextMenus.removeAll(() => {
-        if (chrome.runtime.lastError) {}
-      });
-      return;
-    }
-
     let lang = "en";
     if (settings.userLanguage && settings.userLanguage !== "auto") {
       lang = settings.userLanguage;
@@ -155,63 +148,80 @@ async function setupContextMenus() {
     const titleCurrent = lang === "cs" ? `Odeslat PDF do ${aiName} (Alt+G)` : `Send PDF to ${aiName} (Alt+G)`;
     const titleLink = lang === "cs" ? `Odeslat odkazované PDF do ${aiName}` : `Send linked PDF to ${aiName}`;
 
+    const PDF_PATTERNS = [
+      "*://*/*.pdf",
+      "*://*/*.PDF",
+      "*://*/*.pdf?*",
+      "*://*/*.PDF?*",
+      "*://*/*.pdf#*",
+      "*://*/*.PDF#*",
+      "*://*/pdf/*",
+      "*://*/doi/pdf/*",
+      "file:///*.pdf",
+      "file:///*.PDF",
+      "file:///*"
+    ];
+
     chrome.contextMenus.removeAll(() => {
       if (chrome.runtime.lastError) {}
 
-      // 1. Current PDF item: visible on PDF pages and local documents
-      chrome.contextMenus.create({
-        id: "send_current_pdf",
-        title: titleCurrent,
-        contexts: ["all"],
-        documentUrlPatterns: [
-          "*://*/*.pdf",
-          "*://*/*.PDF",
-          "*://*/*.pdf?*",
-          "*://*/*.PDF?*",
-          "*://*/*.pdf#*",
-          "*://*/*.PDF#*",
-          "*://*/pdf/*",
-          "*://*/doi/pdf/*",
-          "file:///*.pdf",
-          "file:///*.PDF",
-          "file:///*"
-        ]
-      }, () => {
-        if (chrome.runtime.lastError) {
-          console.warn("[PDF Import] Error creating send_current_pdf:", chrome.runtime.lastError.message);
-        }
-      });
+      if (settings.enableContextMenu) {
+        // Mode 1 (Checked): Always present in context menu everywhere ("pořád")
+        // 1. Link item
+        chrome.contextMenus.create({
+          id: "send_link_pdf",
+          title: titleLink,
+          contexts: ["link"]
+        }, () => {
+          if (chrome.runtime.lastError) {}
+        });
 
-      // 2. Linked PDF item: only visible on links pointing directly to PDF files
-      chrome.contextMenus.create({
-        id: "send_link_pdf",
-        title: titleLink,
-        contexts: ["link"],
-        targetUrlPatterns: [
-          "*://*/*.pdf",
-          "*://*/*.PDF",
-          "*://*/*.pdf?*",
-          "*://*/*.PDF?*",
-          "*://*/*.pdf#*",
-          "*://*/*.PDF#*",
-          "*://*/pdf/*",
-          "*://*/doi/pdf/*",
-          "file:///*.pdf",
-          "file:///*.PDF",
-          "file:///*"
-        ]
-      }, () => {
-        if (chrome.runtime.lastError) {
-          console.warn("[PDF Import] Error creating send_link_pdf:", chrome.runtime.lastError.message);
-        }
-      });
+        // 2. Current page / image / selection item
+        chrome.contextMenus.create({
+          id: "send_current_pdf",
+          title: titleCurrent,
+          contexts: ["page", "selection", "image", "frame", "editable", "video", "audio"]
+        }, () => {
+          if (chrome.runtime.lastError) {}
+        });
 
-      // Check current active tab for local file filtering
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs && tabs[0]) {
-          updateTabContextMenu(tabs[0]);
-        }
-      });
+      } else {
+        // Mode 2 (Unchecked): Only show for links, images, or open PDF documents
+        // 1. Link item (shows on any link)
+        chrome.contextMenus.create({
+          id: "send_link_pdf",
+          title: titleLink,
+          contexts: ["link"]
+        }, () => {
+          if (chrome.runtime.lastError) {}
+        });
+
+        // 2. Image item (shows on any image, including PDFium rendered pages)
+        chrome.contextMenus.create({
+          id: "send_image_pdf",
+          title: titleCurrent,
+          contexts: ["image"]
+        }, () => {
+          if (chrome.runtime.lastError) {}
+        });
+
+        // 3. Open PDF document item (page / frame / selection only when matching PDF URL)
+        chrome.contextMenus.create({
+          id: "send_current_pdf",
+          title: titleCurrent,
+          contexts: ["page", "frame", "selection"],
+          documentUrlPatterns: PDF_PATTERNS
+        }, () => {
+          if (chrome.runtime.lastError) {}
+        });
+
+        // Check active tab for non-PDF local files
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          if (tabs && tabs[0]) {
+            updateTabContextMenu(tabs[0]);
+          }
+        });
+      }
     });
 
     // Update action title tooltip
@@ -228,6 +238,14 @@ async function setupContextMenus() {
  */
 async function updateTabContextMenu(tab) {
   if (!tab || !tab.url) return;
+  const settings = await chrome.storage.sync.get({ enableContextMenu: true });
+  if (settings.enableContextMenu) {
+    chrome.contextMenus.update("send_current_pdf", { visible: true }, () => {
+      if (chrome.runtime.lastError) {}
+    });
+    return;
+  }
+
   if (tab.url.startsWith("file://")) {
     const isPdf = isLikelyPdf(tab.url, tab.title);
     chrome.contextMenus.update("send_current_pdf", { visible: isPdf }, () => {
@@ -372,16 +390,38 @@ chrome.commands.onCommand.addListener(async (command) => {
 
 // Context menus
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId === "send_link_pdf" && info.linkUrl) {
-    if (isRestrictedUrl(info.linkUrl)) return;
-    await processPdfUrl(info.linkUrl, "document.pdf", tab ? tab.id : null);
-  } else if (info.menuItemId === "send_current_pdf" && tab && tab.url) {
-    if (isRestrictedUrl(tab.url)) {
-      chrome.runtime.openOptionsPage();
+  if (info.menuItemId === "send_link_pdf" || info.linkUrl) {
+    if (info.linkUrl && !isRestrictedUrl(info.linkUrl)) {
+      await processPdfUrl(info.linkUrl, "document.pdf", tab ? tab.id : null);
       return;
     }
-    await processPdfUrl(tab.url, tab.title || "document.pdf", tab.id);
   }
+
+  const tabUrl = (tab && tab.url) || "";
+  const pageUrl = info.pageUrl || "";
+  const srcUrl = info.srcUrl || "";
+
+  let targetUrl = "";
+  if (isLikelyPdf(tabUrl, tab?.title)) {
+    targetUrl = tabUrl;
+  } else if (isLikelyPdf(pageUrl)) {
+    targetUrl = pageUrl;
+  } else if (info.menuItemId === "send_image_pdf" && srcUrl && !isRestrictedUrl(srcUrl)) {
+    targetUrl = srcUrl;
+  } else if (tabUrl && !isRestrictedUrl(tabUrl)) {
+    targetUrl = tabUrl;
+  } else if (pageUrl && !isRestrictedUrl(pageUrl)) {
+    targetUrl = pageUrl;
+  } else if (srcUrl && !isRestrictedUrl(srcUrl)) {
+    targetUrl = srcUrl;
+  }
+
+  if (!targetUrl || isRestrictedUrl(targetUrl)) {
+    chrome.runtime.openOptionsPage();
+    return;
+  }
+
+  await processPdfUrl(targetUrl, (tab && tab.title) || "document.pdf", tab ? tab.id : null);
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

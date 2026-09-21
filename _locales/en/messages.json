@@ -306,7 +306,7 @@
     "description": "Title for context menu toggle"
   },
   "prefContextMenuDesc": {
-    "message": "Show quick import action in the right-click context menu (only visible on PDF pages and PDF links).",
+    "message": "When checked, always shows in the context menu. When unchecked, only shows for links, images, and open PDFs.",
     "description": "Description for context menu toggle"
   },
   "optionsLargePdfTitle": {
