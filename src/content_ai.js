@@ -6,7 +6,7 @@
 (() => {
   let isProcessing = false;
   let lastReceivedFile = null;
-  let debugModeEnabled = true;
+  let debugModeEnabled = false;
   const debugLogs = [];
 
   const hostname = window.location.hostname.toLowerCase();
@@ -38,15 +38,16 @@
     updateDebugUI();
   }
 
-  // Load debug settings and initialize HUD
-  chrome.storage.sync.get({ debugMode: true }).then((settings) => {
-    debugModeEnabled = settings.debugMode !== false;
-    createDebugPanel();
-    createDebugTogglePill();
+  // Load debug settings and initialize HUD only if enabled
+  chrome.storage.sync.get({ debugMode: false }).then((settings) => {
+    debugModeEnabled = settings.debugMode === true;
+    if (debugModeEnabled) {
+      createDebugPanel();
+      createDebugTogglePill();
+    }
     log(`Platform initialized: ${currentPlatform.name} (${window.location.hostname})`);
   }).catch(() => {
-    createDebugPanel();
-    createDebugTogglePill();
+    debugModeEnabled = false;
     log(`Platform initialized: ${currentPlatform.name}`);
   });
 
@@ -54,7 +55,9 @@
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     log(`Received action message: ${message.action}`);
     if (message.action === "PROCESS_PENDING_PDF") {
-      openDebugHud();
+      if (debugModeEnabled) {
+        openDebugHud();
+      }
       checkAndInsertPdf();
       sendResponse({ status: "processing" });
     }
@@ -78,6 +81,7 @@
   }
 
   function openDebugHud() {
+    if (!debugModeEnabled) return;
     const hud = document.getElementById("pdf-import-debug-hud");
     if (hud) hud.style.display = "flex";
   }

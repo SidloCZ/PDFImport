@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     customAiUrl: "https://openrouter.ai/chat",
     reuseTab: true,
     enableContextMenu: true,
-    debugMode: true,
+    debugMode: false,
     largePdfThreshold: "30",
     largePdfAction: "ask",
     defaultPrompt: "",
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   localizePage(currentLang);
 
   reuseTabEl.checked = settings.reuseTab;
-  if (debugModeEl) debugModeEl.checked = settings.debugMode !== false;
+  if (debugModeEl) debugModeEl.checked = settings.debugMode === true;
   defaultPromptEl.value = settings.defaultPrompt;
 
   // AI card selection handler
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       customAiUrl: customUrlVal,
       reuseTab: reuseTabEl.checked,
       enableContextMenu: enableContextMenuEl ? enableContextMenuEl.checked : true,
-      debugMode: debugModeEl ? debugModeEl.checked : true,
+      debugMode: debugModeEl ? debugModeEl.checked : false,
       largePdfThreshold: largePdfThresholdEl ? largePdfThresholdEl.value : "30",
       largePdfAction: largePdfActionEl ? largePdfActionEl.value : "ask",
       defaultPrompt: defaultPromptEl.value,

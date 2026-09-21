@@ -158,32 +158,55 @@ async function setupContextMenus() {
     chrome.contextMenus.removeAll(() => {
       if (chrome.runtime.lastError) {}
 
-      // 1. Current PDF item (initially hidden, dynamically shown on PDF tabs)
+      // 1. Current PDF item: visible on PDF pages and local documents
       chrome.contextMenus.create({
         id: "send_current_pdf",
         title: titleCurrent,
         contexts: ["all"],
-        visible: false
+        documentUrlPatterns: [
+          "*://*/*.pdf",
+          "*://*/*.PDF",
+          "*://*/*.pdf?*",
+          "*://*/*.PDF?*",
+          "*://*/*.pdf#*",
+          "*://*/*.PDF#*",
+          "*://*/pdf/*",
+          "*://*/doi/pdf/*",
+          "file:///*.pdf",
+          "file:///*.PDF",
+          "file:///*"
+        ]
       }, () => {
-        if (chrome.runtime.lastError) {}
+        if (chrome.runtime.lastError) {
+          console.warn("[PDF Import] Error creating send_current_pdf:", chrome.runtime.lastError.message);
+        }
       });
 
-      // 2. Linked PDF item (only visible on links pointing to PDF files)
+      // 2. Linked PDF item: only visible on links pointing directly to PDF files
       chrome.contextMenus.create({
         id: "send_link_pdf",
         title: titleLink,
         contexts: ["link"],
         targetUrlPatterns: [
-          "*://*/*.pdf*",
-          "*://*/*.PDF*",
-          "file://*/*.pdf*",
-          "file://*/*.PDF*"
+          "*://*/*.pdf",
+          "*://*/*.PDF",
+          "*://*/*.pdf?*",
+          "*://*/*.PDF?*",
+          "*://*/*.pdf#*",
+          "*://*/*.PDF#*",
+          "*://*/pdf/*",
+          "*://*/doi/pdf/*",
+          "file:///*.pdf",
+          "file:///*.PDF",
+          "file:///*"
         ]
       }, () => {
-        if (chrome.runtime.lastError) {}
+        if (chrome.runtime.lastError) {
+          console.warn("[PDF Import] Error creating send_link_pdf:", chrome.runtime.lastError.message);
+        }
       });
 
-      // Update visibility for current active tab
+      // Check current active tab for local file filtering
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs && tabs[0]) {
           updateTabContextMenu(tabs[0]);
@@ -201,20 +224,21 @@ async function setupContextMenus() {
 }
 
 /**
- * Updates context menu visibility based on whether the active tab contains a PDF
+ * Updates context menu visibility for local files
  */
 async function updateTabContextMenu(tab) {
-  if (!tab || !tab.url || isRestrictedUrl(tab.url)) {
-    chrome.contextMenus.update("send_current_pdf", { visible: false }, () => {
+  if (!tab || !tab.url) return;
+  if (tab.url.startsWith("file://")) {
+    const isPdf = isLikelyPdf(tab.url, tab.title);
+    chrome.contextMenus.update("send_current_pdf", { visible: isPdf }, () => {
       if (chrome.runtime.lastError) {}
     });
-    return;
+  } else {
+    // Ensure menu item remains visible on web pages matching documentUrlPatterns
+    chrome.contextMenus.update("send_current_pdf", { visible: true }, () => {
+      if (chrome.runtime.lastError) {}
+    });
   }
-
-  const isPdf = await isTabPdf(tab);
-  chrome.contextMenus.update("send_current_pdf", { visible: isPdf }, () => {
-    if (chrome.runtime.lastError) {}
-  });
 }
 
 chrome.runtime.onInstalled.addListener(setupContextMenus);
