@@ -219,6 +219,10 @@
     "message": "PDFImport • Vyvinuto pro efektivní práci bez zbytečného stahování",
     "description": "Footer text"
   },
+  "optionsFooterDesc": {
+    "message": "Vyvinuto pro efektivní práci bez zbytečného stahování",
+    "description": "Footer tagline"
+  },
   "toastProcessing": {
     "message": "Zpracovávám: <strong>$FILENAME$</strong>...",
     "description": "Toast message while processing file",
@@ -254,27 +258,99 @@
     "description": "Toast message on error"
   },
   "toastFallbackWarning": {
-    "message": "Nepodařilo se vložit soubor automaticky. Podrobnosti v Debug panelu.",
+    "message": "Nepodařilo se vložit soubor automaticky. Připojte soubor ručně prosím.",
     "description": "Toast message when automatic upload fails"
   },
-  "debugPanelClear": {
-    "message": "VYČISTIT",
-    "description": "Debug panel clear button"
+  "prefContextMenuTitle": {
+    "message": "Položka v menu pravého tlačítka",
+    "description": "Title for context menu toggle"
   },
-  "debugPanelHide": {
-    "message": "SKRÝT",
-    "description": "Debug panel hide button"
+  "prefContextMenuDesc": {
+    "message": "Pokud je zaškrtnuto, položka je v menu pravého tlačítka pořád. Pokud je odškrtnuto, zobrazuje se pouze u odkazů, obrázků a otevřených PDF.",
+    "description": "Description for context menu toggle"
   },
-  "debugPanelInspect": {
-    "message": "PROZKOUMAT DOM",
-    "description": "Debug panel inspect DOM button"
+  "optionsLargePdfTitle": {
+    "message": "Zpracování velkých PDF souborů",
+    "description": "Title for large PDF handling section"
   },
-  "debugPanelRetry": {
-    "message": "OPAKOVAT VLOŽENÍ",
-    "description": "Debug panel retry button"
+  "optionsLargePdfDesc": {
+    "message": "Nastavení způsobu zpracování PDF dokumentů překračujících doporučenou velikost pro AI.",
+    "description": "Description for large PDF handling section"
   },
-  "debugWaitingActivity": {
-    "message": "Čekám na aktivitu...",
-    "description": "Debug panel initial state text"
+  "optionsLargePdfThreshold": {
+    "message": "Hranice pro velký soubor:",
+    "description": "Label for large PDF threshold"
+  },
+  "optionsLargePdfThresholdDesc": {
+    "message": "Při překročení této velikosti se nabídne optimalizace (např. Claude má limit 30 MB).",
+    "description": "Description for threshold setting"
+  },
+  "optionsLargePdfAction": {
+    "message": "Výchozí akce při překročení:",
+    "description": "Label for default large PDF action"
+  },
+  "optionsLargePdfActionAsk": {
+    "message": "Vždy se dotázat (Komprese / Text)",
+    "description": "Option to always ask user"
+  },
+  "optionsLargePdfActionCompress": {
+    "message": "Vždy automaticky komprimovat PDF",
+    "description": "Option to auto-compress"
+  },
+  "optionsLargePdfActionText": {
+    "message": "Vždy extrahovat pouze text",
+    "description": "Option to auto-extract text"
+  },
+  "sectionFeedbackTitle": {
+    "message": "Návrhy změn a hlášení chyb",
+    "description": "Title for feedback and issue reporting section"
+  },
+  "sectionFeedbackDesc": {
+    "message": "Máte nápad na vylepšení, novou funkci nebo jste narazili na chybu? Napište podrobnosti a kliknutím se přenese předvyplněný text přímo do nového GitHub Issue.",
+    "description": "Description for feedback section"
+  },
+  "feedbackTypeLabel": {
+    "message": "Typ hlášení:",
+    "description": "Label for issue type selector"
+  },
+  "feedbackTypeFeature": {
+    "message": "Návrh na vylepšení (Feature Request)",
+    "description": "Option for feature request"
+  },
+  "feedbackTypeBug": {
+    "message": "Hlášení chyby (Bug Report)",
+    "description": "Option for bug report"
+  },
+  "feedbackTypeGeneral": {
+    "message": "Zpětná vazba (Feedback)",
+    "description": "Option for general feedback"
+  },
+  "feedbackTitleLabel": {
+    "message": "Předmět / Stručný název (volitelné):",
+    "description": "Label for feedback title input"
+  },
+  "feedbackTitlePlaceholder": {
+    "message": "Např.: Podpora pro další AI platformu...",
+    "description": "Placeholder for feedback title input"
+  },
+  "feedbackBodyLabel": {
+    "message": "Popis:",
+    "description": "Label for feedback description textarea"
+  },
+  "feedbackBodyPlaceholder": {
+    "message": "Popište podrobněji váš návrh nebo co přesně se stalo...",
+    "description": "Placeholder for feedback body textarea"
+  },
+  "btnSendFeedback": {
+    "message": "OTEVŘÍT GITHUB ISSUE",
+    "description": "Button to open GitHub new issue"
+  },
+  "feedbackEmptyAlert": {
+    "message": "Prosím napište alespoň krátký popis vašeho návrhu či chyby.",
+    "description": "Alert when feedback text is empty"
+  },
+  "feedbackOpened": {
+    "message": "GitHub Issue byl otevřen v novém okně!",
+    "description": "Status when GitHub issue tab is opened"
   }
 }

@@ -62,9 +62,10 @@ When viewing any PDF article (e.g. [AEM Journal PDF](https://journals.asm.org/do
 
 * Click the extension icon in your browser's extension toolbar.
 
-### Option 3: Context Menu
+### Option 3: Context Menu (Smart & Dynamic)
 
-* Right-click anywhere on a PDF page or on a link pointing to a PDF, and select **Send PDF to [Selected AI] (Alt+G)**.
+* **Always or Contextual Modes**: Configurable in Options. When enabled, always available everywhere. When set to contextual mode, it appears only on links, images, and open PDF documents.
+* **Direct PDF Link Detection**: Right-clicking a link shows **Send linked PDF to [Selected AI]**.
 
 ---
 
@@ -75,14 +76,21 @@ Right-click the extension icon and select **Options**:
 * **Target AI Platform**: Choose between Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, or Custom URL.
 * **Custom AI Web URL**: When "Custom URL" is selected, enter any URL (e.g. `https://openrouter.ai/chat`).
 * **Tab reuse**: Choose whether to switch to an already opened AI tab or always open a new tab.
+* **Right-Click Context Menu**: Choose whether to always display the item in the right-click menu or show it contextually only for links, images, and open PDFs.
 * **Default prompt**: Configure a template prompt that is automatically typed into the chat after the PDF is attached (with built-in presets for **Quick Summary**, **Key Points**, **Peer Review**, and **Feynman**).
+* **Feedback & Issue Reporting**: Submit feature proposals or bug reports directly from Options with automatic diagnostic environment info pre-filled into a new GitHub Issue.
 * **Extension Language**: Switch between English and Czech.
 
 ---
 
-## File Size Limits
+## File Size Limits & Large PDF Optimization
 
-The extension operates completely in browser memory and supports PDF documents up to **50 MB**. Files exceeding 50 MB are stopped before downloading to save bandwidth, and a warning notification is displayed.
+The extension features an intelligent **Large PDF Optimizer** to ensure seamless uploads even with heavy documents (e.g. 100–300 MB):
+
+* **Threshold Detection (Default 30 MB / Configurable)**: When a PDF exceeds the threshold (or target AI platform limits like Claude's 30 MB ceiling), a clean optimization dialog is presented.
+* **1. Compress PDF (Optimized PDF)**: Downscales embedded high-resolution graphics, photos, and scans to balanced web resolutions (JPEG 65%, max 1200px) or completely strips images if chosen. Retains vector text, typography, layout, and visual diagram readability.
+* **2. Text Only (Extracted Text)**: Instantly extracts all readable text layers into a lightweight `.txt` attachment. Reduces size by up to 99.9%, eliminating token and upload overhead across all AI platforms.
+* **100% Client-Side**: All compression and text extraction runs directly in your browser using bundled WebAssembly / JS engines (`pdf-lib` and `pdf.js`) with zero data leaving your machine.
 
 ---
 

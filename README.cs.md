@@ -62,9 +62,10 @@ Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journ
 
 * Klikněte na ikonu rozšíření v pravém horním rohu lišty prohlížeče.
 
-### Možnost 3: Kontextové menu
+### Možnost 3: Kontextové menu (Chytré a dynamické)
 
-* Kdekoliv na stránce nebo na odkazu vedoucím na PDF klikněte pravým tlačítkem myši a zvolte **Odeslat PDF do [Zvolená AI] (Alt+G)**.
+* **Trvalé nebo kontextové zobrazení**: Nastavitelné v Možnostech. Při zaškrtnutí je položka k dispozici pořád na všech stránkách. Při odškrtnutí se zobrazuje pouze kontextově: u odkazů, obrázků a otevřených PDF.
+* **Detekce PDF odkazů**: Při kliknutí pravým tlačítkem na odkaz se nabízí možnost **Odeslat odkazované PDF**.
 
 ---
 
@@ -75,14 +76,21 @@ Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Op
 * **Cílová AI platforma**: Vyberte mezi Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, nebo Vlastní URL.
 * **Vlastní adresa AI chatu**: Při volbě „Custom URL“ zadejte libovolnou adresu (např. `https://openrouter.ai/chat`).
 * **Použít již otevřenou záložku**: Zvolte, zda se má přepnout do otevřené záložky dané AI, nebo otevírat nová.
+* **Položka v menu pravého tlačítka**: Volba mezi trvalým zobrazením na všech stránkách nebo pouze kontextovým zobrazením u odkazů, obrázků a otevřených PDF.
 * **Automatický prompt**: Nastavte šablonu dotazu, která se po vložení souboru automaticky vyplní do chatu (k dispozici jsou předvolby **Rychlé shrnutí**, **Klíčové body**, **Peer Review** a **Feynman**).
+* **Návrhy změn a hlášení chyb**: Přímo ze stránky nastavení můžete odeslat námět nebo nahlásit chybu s automatickým předvyplněním textu i diagnostických dat do nového GitHub Issue.
 * **Jazyk rozšíření**: Přepínejte mezi češtinou a angličtinou.
 
 ---
 
-## Limity velikosti souborů
+## Limity velikosti souborů a optimalizace velkých PDF
 
-Rozšíření pracuje výhradně v operační paměti prohlížeče a podporuje PDF dokumenty až do velikosti **50 MB**. Pokud soubor limit 50 MB přesáhne, stahování se zastaví ještě před přenesením celého souboru pro úsporu dat a uživatel je upozorněn notifikací.
+Rozšíření obsahuje inteligentní **optimalizátor velkých PDF**, který zajišťuje bezproblémový import i u masivních dokumentů (např. 100–300 MB):
+
+* **Detekce překročení limitu (výchozí 30 MB / nastavitelné)**: Pokud PDF překročí hranici (nebo limity cílové AI, jako je strop 30 MB na Claude.ai), otevře se přehledný minimalistický dialog pro přípravu souboru.
+* **1. Komprese PDF (Optimalizované PDF)**: Zmenší rozlišení vložených tiskových fotografií, rastrů a skenů na efektivní webové rozlišení (JPEG 65 %, max 1200 px) nebo volitelně odstraní obrázky úplně. Zachovává kompletní vektorový text, sazbu stránek i čitelnost schémat a grafů.
+* **2. Pouze text (Extrakce textové vrstvy)**: Bleskově vytáhne veškerý čitelný text do samostatné přílohy `.txt`. Zmenší datovou velikost až o 99.9 % a eliminuje zbytečnou spotřebu tokenů a přenosových limitů u všech AI.
+* **100% zpracování v prohlížeči**: Veškerá komprese a extrakce probíhá lokálně na vašem počítači pomocí vestavěných knihoven (`pdf-lib` a `pdf.js`), žádná data se neposílají na žádný externí server.
 
 ---
 

@@ -219,6 +219,10 @@
     "message": "PDFImport • Designed for efficient workflows without manual downloads",
     "description": "Footer text"
   },
+  "optionsFooterDesc": {
+    "message": "Designed for efficient workflows without manual downloads",
+    "description": "Footer tagline"
+  },
   "toastProcessing": {
     "message": "Processing: <strong>$FILENAME$</strong>...",
     "description": "Toast message while processing file",
@@ -254,27 +258,99 @@
     "description": "Toast message on error"
   },
   "toastFallbackWarning": {
-    "message": "Could not insert file automatically. See Debug panel for details.",
+    "message": "Could not insert file automatically. Please attach the file manually.",
     "description": "Toast message when automatic upload fails"
   },
-  "debugPanelClear": {
-    "message": "CLEAR",
-    "description": "Debug panel clear button"
+  "prefContextMenuTitle": {
+    "message": "Right-Click Context Menu",
+    "description": "Title for context menu toggle"
   },
-  "debugPanelHide": {
-    "message": "HIDE",
-    "description": "Debug panel hide button"
+  "prefContextMenuDesc": {
+    "message": "When checked, always shows in the context menu. When unchecked, only shows for links, images, and open PDFs.",
+    "description": "Description for context menu toggle"
   },
-  "debugPanelInspect": {
-    "message": "INSPECT DOM",
-    "description": "Debug panel inspect DOM button"
+  "optionsLargePdfTitle": {
+    "message": "Large PDF Document Handling",
+    "description": "Title for large PDF handling section"
   },
-  "debugPanelRetry": {
-    "message": "RETRY INSERT",
-    "description": "Debug panel retry button"
+  "optionsLargePdfDesc": {
+    "message": "Configure how PDF documents exceeding recommended AI platform limits are processed.",
+    "description": "Description for large PDF handling section"
   },
-  "debugWaitingActivity": {
-    "message": "Waiting for activity...",
-    "description": "Debug panel initial state text"
+  "optionsLargePdfThreshold": {
+    "message": "Large file threshold:",
+    "description": "Label for large PDF threshold"
+  },
+  "optionsLargePdfThresholdDesc": {
+    "message": "Files exceeding this size will prompt optimization options (Claude limit is 30 MB).",
+    "description": "Description for threshold setting"
+  },
+  "optionsLargePdfAction": {
+    "message": "Default action when exceeded:",
+    "description": "Label for default large PDF action"
+  },
+  "optionsLargePdfActionAsk": {
+    "message": "Always ask (Compress / Text Only)",
+    "description": "Option to always ask user"
+  },
+  "optionsLargePdfActionCompress": {
+    "message": "Always auto-compress PDF",
+    "description": "Option to auto-compress"
+  },
+  "optionsLargePdfActionText": {
+    "message": "Always extract text only",
+    "description": "Option to auto-extract text"
+  },
+  "sectionFeedbackTitle": {
+    "message": "Feedback & Issue Reporting",
+    "description": "Title for feedback and issue reporting section"
+  },
+  "sectionFeedbackDesc": {
+    "message": "Have an idea for improvement, a new feature, or encountered a bug? Enter the details below and click to open a pre-filled GitHub Issue.",
+    "description": "Description for feedback section"
+  },
+  "feedbackTypeLabel": {
+    "message": "Issue type:",
+    "description": "Label for issue type selector"
+  },
+  "feedbackTypeFeature": {
+    "message": "Feature Request",
+    "description": "Option for feature request"
+  },
+  "feedbackTypeBug": {
+    "message": "Bug Report",
+    "description": "Option for bug report"
+  },
+  "feedbackTypeGeneral": {
+    "message": "Feedback",
+    "description": "Option for general feedback"
+  },
+  "feedbackTitleLabel": {
+    "message": "Title / Summary (optional):",
+    "description": "Label for feedback title input"
+  },
+  "feedbackTitlePlaceholder": {
+    "message": "E.g.: Support for additional AI platform...",
+    "description": "Placeholder for feedback title input"
+  },
+  "feedbackBodyLabel": {
+    "message": "Description:",
+    "description": "Label for feedback description textarea"
+  },
+  "feedbackBodyPlaceholder": {
+    "message": "Describe your suggestion or what happened in detail...",
+    "description": "Placeholder for feedback body textarea"
+  },
+  "btnSendFeedback": {
+    "message": "OPEN GITHUB ISSUE",
+    "description": "Button to open GitHub new issue"
+  },
+  "feedbackEmptyAlert": {
+    "message": "Please enter at least a brief description of your request or issue.",
+    "description": "Alert when feedback text is empty"
+  },
+  "feedbackOpened": {
+    "message": "GitHub Issue opened in a new tab!",
+    "description": "Status when GitHub issue tab is opened"
   }
 }
