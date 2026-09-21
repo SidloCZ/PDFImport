@@ -607,3 +607,27 @@ textarea:focus {
   border-top: 2px solid #000000;
   color: #333333;
 }
+
+.footer-link {
+  color: #000000;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.footer-link:hover {
+  background-color: var(--color-yellow-bright);
+  color: #000000;
+}
+
+.footer-sep {
+  margin: 0 6px;
+  color: #888888;
+}
+
+.footer-sub {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #555555;
+}

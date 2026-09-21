@@ -219,6 +219,10 @@
     "message": "PDFImport • Vyvinuto pro efektivní práci bez zbytečného stahování",
     "description": "Footer text"
   },
+  "optionsFooterDesc": {
+    "message": "Vyvinuto pro efektivní práci bez zbytečného stahování",
+    "description": "Footer tagline"
+  },
   "toastProcessing": {
     "message": "Zpracovávám: <strong>$FILENAME$</strong>...",
     "description": "Toast message while processing file",

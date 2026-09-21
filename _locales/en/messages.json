@@ -219,6 +219,10 @@
     "message": "PDFImport • Designed for efficient workflows without manual downloads",
     "description": "Footer text"
   },
+  "optionsFooterDesc": {
+    "message": "Designed for efficient workflows without manual downloads",
+    "description": "Footer tagline"
+  },
   "toastProcessing": {
     "message": "Processing: <strong>$FILENAME$</strong>...",
     "description": "Toast message while processing file",
