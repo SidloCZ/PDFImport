@@ -487,18 +487,40 @@ async function ensureOffscreenDocument() {
   });
 }
 
-async function fetchLocalFile(url) {
+async function getLocalFileInfo(url) {
   await ensureOffscreenDocument();
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage({
-      action: "OFFSCREEN_FETCH_LOCAL_FILE",
+      action: "OFFSCREEN_GET_FILE_INFO",
       url: url
     }, (res) => {
       if (chrome.runtime.lastError) {
         return reject(new Error(chrome.runtime.lastError.message));
       }
       if (!res || !res.success) {
-        return reject(new Error(res?.error || "Failed to read local file."));
+        return reject(new Error(res?.error || "Failed to inspect local file."));
+      }
+      resolve(res);
+    });
+  });
+}
+
+async function storeLocalFilePendingPdf(params) {
+  await ensureOffscreenDocument();
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({
+      action: "OFFSCREEN_STORE_PENDING_PDF",
+      url: params.url,
+      filename: params.filename,
+      prompt: params.prompt,
+      targetAi: params.targetAi,
+      targetAiName: params.targetAiName
+    }, (res) => {
+      if (chrome.runtime.lastError) {
+        return reject(new Error(chrome.runtime.lastError.message));
+      }
+      if (!res || !res.success) {
+        return reject(new Error(res?.error || "Failed to store local file."));
       }
       resolve(res);
     });
@@ -539,9 +561,9 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
         return;
       }
 
-      console.log("[PDF Import] Reading local file via offscreen document:", url);
-      const localData = await fetchLocalFile(url);
-      const sizeBytes = localData.size;
+      console.log("[PDF Import] Inspecting local file via offscreen document:", url);
+      const fileInfo = await getLocalFileInfo(url);
+      const sizeBytes = fileInfo.size;
 
       if (sizeBytes > absoluteMaxBytes) {
         handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
@@ -560,7 +582,7 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
         filename += ".pdf";
       }
 
-      if (sizeBytes > thresholdBytes && settings.largePdfAction === "ask") {
+      if (sizeBytes > thresholdBytes) {
         await openLargePdfDialog({
           url: url,
           filename: filename,
@@ -569,23 +591,20 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
           targetAi: aiInfo.id,
           targetAiName: aiInfo.name,
           defaultPrompt: settings.defaultPrompt,
-          reuseTab: settings.reuseTab
+          reuseTab: settings.reuseTab,
+          autoAction: settings.largePdfAction
         });
         return;
       }
 
-      // Store pending PDF
-      await chrome.storage.local.set({
-        pendingPdf: {
-          filename: filename,
-          dataUrl: localData.dataUrl,
-          size: sizeBytes,
-          mimeType: localData.mimeType || "application/pdf",
-          prompt: settings.defaultPrompt,
-          targetAi: aiInfo.id,
-          targetAiName: aiInfo.name,
-          timestamp: Date.now()
-        }
+      // Small file: store directly to storage via offscreen document
+      console.log("[PDF Import] Storing local file via offscreen document:", filename);
+      await storeLocalFilePendingPdf({
+        url: url,
+        filename: filename,
+        prompt: settings.defaultPrompt,
+        targetAi: aiInfo.id,
+        targetAiName: aiInfo.name
       });
 
       await openOrActivateAi(aiInfo, settings.reuseTab);
@@ -610,7 +629,7 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
                 handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
                 return;
               }
-              if (sizeBytes > thresholdBytes && settings.largePdfAction === "ask") {
+              if (sizeBytes > thresholdBytes) {
                 await openLargePdfDialog({
                   url: url,
                   filename: fallbackTitle,
@@ -619,7 +638,8 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
                   targetAi: aiInfo.id,
                   targetAiName: aiInfo.name,
                   defaultPrompt: settings.defaultPrompt,
-                  reuseTab: settings.reuseTab
+                  reuseTab: settings.reuseTab,
+                  autoAction: settings.largePdfAction
                 });
                 return;
               }
@@ -654,7 +674,7 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
           handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
           return;
         }
-        if (sizeBytes > thresholdBytes && settings.largePdfAction === "ask") {
+        if (sizeBytes > thresholdBytes) {
           await openLargePdfDialog({
             url: url,
             filename: filename,
@@ -663,7 +683,8 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
             targetAi: aiInfo.id,
             targetAiName: aiInfo.name,
             defaultPrompt: settings.defaultPrompt,
-            reuseTab: settings.reuseTab
+            reuseTab: settings.reuseTab,
+            autoAction: settings.largePdfAction
           });
           return;
         }
@@ -676,7 +697,7 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
       return;
     }
 
-    if (blob.size > thresholdBytes && settings.largePdfAction === "ask") {
+    if (blob.size > thresholdBytes) {
       await openLargePdfDialog({
         url: url,
         filename: filename,
@@ -685,7 +706,8 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
         targetAi: aiInfo.id,
         targetAiName: aiInfo.name,
         defaultPrompt: settings.defaultPrompt,
-        reuseTab: settings.reuseTab
+        reuseTab: settings.reuseTab,
+        autoAction: settings.largePdfAction
       });
       return;
     }
@@ -861,4 +883,10 @@ function handleSizeLimitExceeded(sizeBytes, maxBytes) {
 
 function notifyError(message) {
   console.error("[PDF Import Error]", message);
+  chrome.notifications.create({
+    type: "basic",
+    iconUrl: "icons/icon128.png",
+    title: "PDFImport",
+    message: String(message || "Failed to process PDF.")
+  }).catch(() => {});
 }

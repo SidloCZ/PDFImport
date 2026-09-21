@@ -78,6 +78,7 @@ Right-click the extension icon and select **Options**:
 * **Tab reuse**: Choose whether to switch to an already opened AI tab or always open a new tab.
 * **Right-Click Context Menu**: Choose whether to always display the item in the right-click menu or show it contextually only for links, images, and open PDFs.
 * **Default prompt**: Configure a template prompt that is automatically typed into the chat after the PDF is attached (with built-in presets for **Quick Summary**, **Key Points**, **Peer Review**, and **Feynman**).
+* **File Size Limits & Large PDF Action**: Configure the large file threshold (20, 30, 50, 100 MB) and preferred action (always ask, auto-compress, or text only).
 * **Feedback & Issue Reporting**: Submit feature proposals or bug reports directly from Options with automatic diagnostic environment info pre-filled into a new GitHub Issue.
 * **Extension Language**: Switch between English and Czech.
 

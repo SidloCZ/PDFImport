@@ -119,6 +119,13 @@
       elBtnText.addEventListener("click", onTextClicked);
       elBtnCancel.addEventListener("click", onCancelClicked);
 
+      // Automatically execute action if preset in options
+      if (session.autoAction === "compress") {
+        onCompressClicked();
+      } else if (session.autoAction === "text") {
+        onTextClicked();
+      }
+
     } catch (e) {
       showError(e.message);
     }
@@ -184,8 +191,16 @@
 
     const fetchOptions = url.startsWith("file://") ? {} : { credentials: "include" };
     const response = await fetch(url, fetchOptions);
-    if (!response.ok) {
+    if (!response.ok && !(url.startsWith("file://") && response.status === 0)) {
       throw new Error(`${texts.errorDownload} (${response.status}: ${response.statusText})`);
+    }
+
+    // Direct buffer reading for local files (optimal memory & performance)
+    if (url.startsWith("file://")) {
+      setProgress(texts.statusDownloading, 25, "Reading local document...");
+      const buffer = await response.arrayBuffer();
+      setProgress(texts.statusDownloading, 40, "Local document loaded.");
+      return buffer;
     }
 
     const contentLength = response.headers.get("content-length");
