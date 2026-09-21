@@ -129,16 +129,25 @@ async function setupContextMenus() {
   isSettingUpMenus = true;
 
   try {
+    const settings = await chrome.storage.sync.get({
+      userLanguage: "auto",
+      enableContextMenu: true
+    });
+
+    if (settings.enableContextMenu === false) {
+      chrome.contextMenus.removeAll(() => {
+        if (chrome.runtime.lastError) {}
+      });
+      return;
+    }
+
     let lang = "en";
-    try {
-      const settings = await chrome.storage.sync.get({ userLanguage: "auto" });
-      if (settings.userLanguage && settings.userLanguage !== "auto") {
-        lang = settings.userLanguage;
-      } else {
-        const uiLang = (chrome.i18n.getUILanguage() || "en").toLowerCase();
-        lang = uiLang.startsWith("cs") ? "cs" : "en";
-      }
-    } catch (e) {}
+    if (settings.userLanguage && settings.userLanguage !== "auto") {
+      lang = settings.userLanguage;
+    } else {
+      const uiLang = (chrome.i18n.getUILanguage() || "en").toLowerCase();
+      lang = uiLang.startsWith("cs") ? "cs" : "en";
+    }
 
     const aiInfo = await getActiveAiInfo();
     const aiName = aiInfo.name;
@@ -149,20 +158,36 @@ async function setupContextMenus() {
     chrome.contextMenus.removeAll(() => {
       if (chrome.runtime.lastError) {}
 
+      // 1. Current PDF item (initially hidden, dynamically shown on PDF tabs)
       chrome.contextMenus.create({
         id: "send_current_pdf",
         title: titleCurrent,
-        contexts: ["all"]
+        contexts: ["all"],
+        visible: false
       }, () => {
         if (chrome.runtime.lastError) {}
       });
 
+      // 2. Linked PDF item (only visible on links pointing to PDF files)
       chrome.contextMenus.create({
         id: "send_link_pdf",
         title: titleLink,
-        contexts: ["link"]
+        contexts: ["link"],
+        targetUrlPatterns: [
+          "*://*/*.pdf*",
+          "*://*/*.PDF*",
+          "file://*/*.pdf*",
+          "file://*/*.PDF*"
+        ]
       }, () => {
         if (chrome.runtime.lastError) {}
+      });
+
+      // Update visibility for current active tab
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs && tabs[0]) {
+          updateTabContextMenu(tabs[0]);
+        }
       });
     });
 
@@ -175,8 +200,44 @@ async function setupContextMenus() {
   }
 }
 
+/**
+ * Updates context menu visibility based on whether the active tab contains a PDF
+ */
+async function updateTabContextMenu(tab) {
+  if (!tab || !tab.url || isRestrictedUrl(tab.url)) {
+    chrome.contextMenus.update("send_current_pdf", { visible: false }, () => {
+      if (chrome.runtime.lastError) {}
+    });
+    return;
+  }
+
+  const isPdf = await isTabPdf(tab);
+  chrome.contextMenus.update("send_current_pdf", { visible: isPdf }, () => {
+    if (chrome.runtime.lastError) {}
+  });
+}
+
 chrome.runtime.onInstalled.addListener(setupContextMenus);
 chrome.runtime.onStartup.addListener(setupContextMenus);
+
+// Listen for tab changes to dynamically show/hide context menu item
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  try {
+    const tab = await chrome.tabs.get(activeInfo.tabId);
+    await updateTabContextMenu(tab);
+  } catch (e) {}
+});
+
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (changeInfo.status === "complete" || changeInfo.url) {
+    try {
+      const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (activeTab && activeTab.id === tabId) {
+        await updateTabContextMenu(tab);
+      }
+    } catch (e) {}
+  }
+});
 
 /**
  * Checks if a URL is restricted by the browser
@@ -300,7 +361,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "TARGET_AI_CHANGED" || message.action === "LANGUAGE_CHANGED") {
+  if (message.action === "TARGET_AI_CHANGED" || message.action === "LANGUAGE_CHANGED" || message.action === "CONTEXT_MENUS_CHANGED") {
     setupContextMenus();
     sendResponse({ status: "ok" });
   } else if (message.action === "LARGE_PDF_COMPLETED") {

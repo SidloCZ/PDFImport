@@ -297,6 +297,14 @@
     "message": "Zobrazit plovoucí ladicí panel na stránkách AI s podrobnými logy a exportem do schránky.",
     "description": "Description for debug mode toggle"
   },
+  "prefContextMenuTitle": {
+    "message": "Položka v menu pravého tlačítka",
+    "description": "Title for context menu toggle"
+  },
+  "prefContextMenuDesc": {
+    "message": "Zobrazovat rychlý import v kontextovém menu pravého tlačítka (zobrazuje se automaticky pouze u PDF stránek a PDF odkazů).",
+    "description": "Description for context menu toggle"
+  },
   "optionsLargePdfTitle": {
     "message": "Zpracování velkých PDF souborů",
     "description": "Title for large PDF handling section"

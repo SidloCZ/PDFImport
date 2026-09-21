@@ -297,6 +297,14 @@
     "message": "Show floating debug HUD on AI chat pages with real-time logs and one-click log export.",
     "description": "Description for debug mode toggle"
   },
+  "prefContextMenuTitle": {
+    "message": "Right-Click Context Menu",
+    "description": "Title for context menu toggle"
+  },
+  "prefContextMenuDesc": {
+    "message": "Show quick import action in the right-click context menu (only visible on PDF pages and PDF links).",
+    "description": "Description for context menu toggle"
+  },
   "optionsLargePdfTitle": {
     "message": "Large PDF Document Handling",
     "description": "Title for large PDF handling section"

@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     targetAi: "gemini",
     customAiUrl: "https://openrouter.ai/chat",
     reuseTab: true,
+    enableContextMenu: true,
     debugMode: true,
     largePdfThreshold: "30",
     largePdfAction: "ask",
@@ -32,8 +33,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const largePdfThresholdEl = document.getElementById("largePdfThreshold");
   const largePdfActionEl = document.getElementById("largePdfAction");
+  const enableContextMenuEl = document.getElementById("enableContextMenu");
   if (largePdfThresholdEl) largePdfThresholdEl.value = String(settings.largePdfThreshold || "30");
   if (largePdfActionEl) largePdfActionEl.value = settings.largePdfAction || "ask";
+  if (enableContextMenuEl) enableContextMenuEl.checked = settings.enableContextMenu !== false;
 
   selectedAi = settings.targetAi || "gemini";
   if (customAiUrlEl) {
@@ -125,6 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       targetAi: selectedAi,
       customAiUrl: customUrlVal,
       reuseTab: reuseTabEl.checked,
+      enableContextMenu: enableContextMenuEl ? enableContextMenuEl.checked : true,
       debugMode: debugModeEl ? debugModeEl.checked : true,
       largePdfThreshold: largePdfThresholdEl ? largePdfThresholdEl.value : "30",
       largePdfAction: largePdfActionEl ? largePdfActionEl.value : "ask",
@@ -132,9 +136,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       userLanguage: currentLang
     });
 
-    // Notify background script to update context menu labels
+    // Notify background script to update context menu labels & visibility
     chrome.runtime.sendMessage({
-      action: "TARGET_AI_CHANGED",
+      action: "CONTEXT_MENUS_CHANGED",
       targetAi: selectedAi,
       customAiUrl: customUrlVal
     }).catch(() => {});

@@ -62,9 +62,10 @@ When viewing any PDF article (e.g. [AEM Journal PDF](https://journals.asm.org/do
 
 * Click the extension icon in your browser's extension toolbar.
 
-### Option 3: Context Menu
+### Option 3: Context Menu (Smart & Dynamic)
 
-* Right-click anywhere on a PDF page or on a link pointing to a PDF, and select **Send PDF to [Selected AI] (Alt+G)**.
+* **Smart PDF Page Detection**: The right-click menu item automatically appears **only when viewing a PDF** (it remains hidden on normal web pages to keep your context menu clean).
+* **Direct PDF Link Detection**: Right-clicking a link shows **Send linked PDF to [Selected AI]** only when the link points directly to a PDF file.
 
 ---
 
@@ -75,6 +76,7 @@ Right-click the extension icon and select **Options**:
 * **Target AI Platform**: Choose between Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, or Custom URL.
 * **Custom AI Web URL**: When "Custom URL" is selected, enter any URL (e.g. `https://openrouter.ai/chat`).
 * **Tab reuse**: Choose whether to switch to an already opened AI tab or always open a new tab.
+* **Right-Click Context Menu**: Toggle to show or completely remove the extension from the right-click menu.
 * **Default prompt**: Configure a template prompt that is automatically typed into the chat after the PDF is attached (with built-in presets for **Quick Summary**, **Key Points**, **Peer Review**, and **Feynman**).
 * **Extension Language**: Switch between English and Czech.
 
