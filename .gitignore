@@ -58,6 +58,7 @@ out/
 npm-debug.log*
 yarn-debug.log*
 debug/
+debug-extension/
 debug_output/
 *.tmp
 *.bak
