@@ -631,3 +631,79 @@ textarea:focus {
   font-size: 11px;
   color: #555555;
 }
+
+/* FEEDBACK & GITHUB ISSUE BOX */
+.feedback-card {
+  background: #ffffff;
+  border: var(--border-thick);
+  box-shadow: var(--shadow-brutal);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.feedback-row {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 600px) {
+  .feedback-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.select-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: var(--border-thick);
+  box-shadow: 2px 2px 0px 0px #000000;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  outline: none;
+}
+
+.select-input:focus {
+  background: #fffbeb;
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.btn-yellow {
+  background: var(--color-yellow-bright);
+  color: #000000;
+  box-shadow: var(--shadow-brutal);
+  border: var(--border-thick);
+  font-family: var(--font-display);
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-yellow:hover {
+  background: var(--color-yellow);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-brutal-hover);
+}
+
+.btn-yellow:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-brutal-active);
+}
+
+.feedback-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}

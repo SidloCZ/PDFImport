@@ -151,6 +151,77 @@ document.addEventListener("DOMContentLoaded", async () => {
       saveStatus.textContent = "";
     }, 2500);
   });
+
+  // Feedback & GitHub Issue handler
+  const feedbackTypeEl = document.getElementById("feedbackType");
+  const feedbackTitleEl = document.getElementById("feedbackTitle");
+  const feedbackBodyEl = document.getElementById("feedbackBody");
+  const feedbackSendBtn = document.getElementById("feedbackSendBtn");
+  const feedbackStatusEl = document.getElementById("feedbackStatus");
+
+  if (feedbackSendBtn) {
+    feedbackSendBtn.addEventListener("click", () => {
+      const bodyText = feedbackBodyEl ? feedbackBodyEl.value.trim() : "";
+      const customTitle = feedbackTitleEl ? feedbackTitleEl.value.trim() : "";
+      const type = feedbackTypeEl ? feedbackTypeEl.value : "feature";
+
+      if (!bodyText && !customTitle) {
+        if (feedbackStatusEl) {
+          feedbackStatusEl.textContent = getMsg("feedbackEmptyAlert") || "Please enter at least a brief description of your request or issue.";
+          feedbackStatusEl.style.color = "#b91c1c";
+          feedbackStatusEl.style.background = "#fee2e2";
+          feedbackStatusEl.style.display = "inline-block";
+          setTimeout(() => {
+            feedbackStatusEl.style.display = "none";
+          }, 4000);
+        }
+        if (feedbackBodyEl) feedbackBodyEl.focus();
+        return;
+      }
+
+      // Title prefix based on issue type
+      let prefix = "[Feature]";
+      if (type === "bug") prefix = "[Bug]";
+      else if (type === "feedback") prefix = "[Feedback]";
+
+      let title = customTitle;
+      if (!title) {
+        const firstLine = bodyText.split("\n")[0].trim().slice(0, 60);
+        title = `${prefix} ${firstLine}`;
+      } else if (!title.startsWith("[")) {
+        title = `${prefix} ${title}`;
+      }
+
+      // Format markdown body with diagnostic details
+      const manifest = chrome.runtime.getManifest();
+      const extVersion = manifest ? manifest.version : "1.1.0";
+      const browserInfo = navigator.userAgent;
+
+      const fullBody = [
+        bodyText || "(No description provided)",
+        "",
+        "---",
+        "**Environment / Diagnostika:**",
+        `- PDFImport: v${extVersion}`,
+        `- Target AI: ${selectedAi}`,
+        `- Browser: ${browserInfo}`
+      ].join("\n");
+
+      const githubIssueUrl = `https://github.com/SidloCZ/PDFImport/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(fullBody)}`;
+
+      window.open(githubIssueUrl, "_blank", "noopener,noreferrer");
+
+      if (feedbackStatusEl) {
+        feedbackStatusEl.textContent = getMsg("feedbackOpened") || "GitHub Issue opened in a new tab!";
+        feedbackStatusEl.style.color = "#059669";
+        feedbackStatusEl.style.background = "#d1fae5";
+        feedbackStatusEl.style.display = "inline-block";
+        setTimeout(() => {
+          feedbackStatusEl.style.display = "none";
+        }, 4000);
+      }
+    });
+  }
 });
 
 async function loadLocales() {

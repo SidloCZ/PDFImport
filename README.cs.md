@@ -64,8 +64,8 @@ Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journ
 
 ### Možnost 3: Kontextové menu (Chytré a dynamické)
 
-* **Dynamické zobrazení na stránce**: Položka v menu pravého tlačítka se automaticky zobrazuje **pouze při otevřeném PDF dokumentu** (na běžných webových stránkách zůstává skrytá, aby nezabírala místo).
-* **Detekce PDF odkazů**: Při kliknutí pravým tlačítkem na odkaz se možnost **Odeslat odkazované PDF** zobrazí pouze tehdy, směřuje-li odkaz skutečně na PDF soubor.
+* **Trvalé nebo kontextové zobrazení**: Nastavitelné v Možnostech. Při zaškrtnutí je položka k dispozici pořád na všech stránkách. Při odškrtnutí se zobrazuje pouze kontextově: u odkazů, obrázků a otevřených PDF.
+* **Detekce PDF odkazů**: Při kliknutí pravým tlačítkem na odkaz se nabízí možnost **Odeslat odkazované PDF**.
 
 ---
 
@@ -76,8 +76,9 @@ Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Op
 * **Cílová AI platforma**: Vyberte mezi Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, nebo Vlastní URL.
 * **Vlastní adresa AI chatu**: Při volbě „Custom URL“ zadejte libovolnou adresu (např. `https://openrouter.ai/chat`).
 * **Použít již otevřenou záložku**: Zvolte, zda se má přepnout do otevřené záložky dané AI, nebo otevírat nová.
-* **Položka v menu pravého tlačítka**: Možnost zapnout nebo zcela skrýt kontextové menu pravého tlačítka.
+* **Položka v menu pravého tlačítka**: Volba mezi trvalým zobrazením na všech stránkách nebo pouze kontextovým zobrazením u odkazů, obrázků a otevřených PDF.
 * **Automatický prompt**: Nastavte šablonu dotazu, která se po vložení souboru automaticky vyplní do chatu (k dispozici jsou předvolby **Rychlé shrnutí**, **Klíčové body**, **Peer Review** a **Feynman**).
+* **Návrhy změn a hlášení chyb**: Přímo ze stránky nastavení můžete odeslat námět nebo nahlásit chybu s automatickým předvyplněním textu i diagnostických dat do nového GitHub Issue.
 * **Jazyk rozšíření**: Přepínejte mezi češtinou a angličtinou.
 
 ---

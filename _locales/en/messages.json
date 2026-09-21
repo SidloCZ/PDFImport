@@ -340,5 +340,57 @@
   "optionsLargePdfActionText": {
     "message": "Always extract text only",
     "description": "Option to auto-extract text"
+  },
+  "sectionFeedbackTitle": {
+    "message": "Feedback & Issue Reporting",
+    "description": "Title for feedback and issue reporting section"
+  },
+  "sectionFeedbackDesc": {
+    "message": "Have an idea for improvement, a new feature, or encountered a bug? Enter the details below and click to open a pre-filled GitHub Issue.",
+    "description": "Description for feedback section"
+  },
+  "feedbackTypeLabel": {
+    "message": "Issue type:",
+    "description": "Label for issue type selector"
+  },
+  "feedbackTypeFeature": {
+    "message": "Feature Request",
+    "description": "Option for feature request"
+  },
+  "feedbackTypeBug": {
+    "message": "Bug Report",
+    "description": "Option for bug report"
+  },
+  "feedbackTypeGeneral": {
+    "message": "Feedback",
+    "description": "Option for general feedback"
+  },
+  "feedbackTitleLabel": {
+    "message": "Title / Summary (optional):",
+    "description": "Label for feedback title input"
+  },
+  "feedbackTitlePlaceholder": {
+    "message": "E.g.: Support for additional AI platform...",
+    "description": "Placeholder for feedback title input"
+  },
+  "feedbackBodyLabel": {
+    "message": "Description:",
+    "description": "Label for feedback description textarea"
+  },
+  "feedbackBodyPlaceholder": {
+    "message": "Describe your suggestion or what happened in detail...",
+    "description": "Placeholder for feedback body textarea"
+  },
+  "btnSendFeedback": {
+    "message": "OPEN GITHUB ISSUE",
+    "description": "Button to open GitHub new issue"
+  },
+  "feedbackEmptyAlert": {
+    "message": "Please enter at least a brief description of your request or issue.",
+    "description": "Alert when feedback text is empty"
+  },
+  "feedbackOpened": {
+    "message": "GitHub Issue opened in a new tab!",
+    "description": "Status when GitHub issue tab is opened"
   }
 }

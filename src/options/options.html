@@ -234,6 +234,59 @@
           <li data-i18n="localFilesStep3">Enable "Allow access to file URLs"</li>
         </ol>
       </section>
+
+      <!-- Section: Feedback & GitHub Issues -->
+      <section class="card feedback-card">
+        <div class="card-header">
+          <span class="card-tag">GITHUB / ISSUES</span>
+          <h2 data-i18n="sectionFeedbackTitle">FEEDBACK & ISSUE REPORTING</h2>
+        </div>
+        <p class="section-desc" data-i18n="sectionFeedbackDesc">
+          Have an idea for improvement, a new feature, or encountered a bug? Enter the details below and click to open a pre-filled GitHub Issue.
+        </p>
+
+        <div class="feedback-row">
+          <div>
+            <label for="feedbackType" class="input-label">
+              <strong data-i18n="feedbackTypeLabel">Issue type:</strong>
+            </label>
+            <select id="feedbackType" class="select-input">
+              <option value="feature" data-i18n="feedbackTypeFeature">Feature Request</option>
+              <option value="bug" data-i18n="feedbackTypeBug">Bug Report</option>
+              <option value="feedback" data-i18n="feedbackTypeGeneral">Feedback</option>
+            </select>
+          </div>
+          <div>
+            <label for="feedbackTitle" class="input-label">
+              <strong data-i18n="feedbackTitleLabel">Title / Summary (optional):</strong>
+            </label>
+            <input type="text" id="feedbackTitle" class="text-input"
+              data-i18n-placeholder="feedbackTitlePlaceholder"
+              placeholder="E.g.: Support for additional AI platform...">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="feedbackBody" class="input-label">
+            <strong data-i18n="feedbackBodyLabel">Description:</strong>
+          </label>
+          <textarea id="feedbackBody" rows="4"
+            data-i18n-placeholder="feedbackBodyPlaceholder"
+            placeholder="Describe your suggestion or what happened in detail..."></textarea>
+        </div>
+
+        <div class="feedback-actions">
+          <button type="button" id="feedbackSendBtn" class="btn-yellow">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span data-i18n="btnSendFeedback">OPEN GITHUB ISSUE</span>
+          </button>
+          <span id="feedbackStatus" class="status-msg" style="display: none;"></span>
+        </div>
+      </section>
     </main>
 
     <footer class="footer">

@@ -340,5 +340,57 @@
   "optionsLargePdfActionText": {
     "message": "Vždy extrahovat pouze text",
     "description": "Option to auto-extract text"
+  },
+  "sectionFeedbackTitle": {
+    "message": "Návrhy změn a hlášení chyb",
+    "description": "Title for feedback and issue reporting section"
+  },
+  "sectionFeedbackDesc": {
+    "message": "Máte nápad na vylepšení, novou funkci nebo jste narazili na chybu? Napište podrobnosti a kliknutím se přenese předvyplněný text přímo do nového GitHub Issue.",
+    "description": "Description for feedback section"
+  },
+  "feedbackTypeLabel": {
+    "message": "Typ hlášení:",
+    "description": "Label for issue type selector"
+  },
+  "feedbackTypeFeature": {
+    "message": "Návrh na vylepšení (Feature Request)",
+    "description": "Option for feature request"
+  },
+  "feedbackTypeBug": {
+    "message": "Hlášení chyby (Bug Report)",
+    "description": "Option for bug report"
+  },
+  "feedbackTypeGeneral": {
+    "message": "Zpětná vazba (Feedback)",
+    "description": "Option for general feedback"
+  },
+  "feedbackTitleLabel": {
+    "message": "Předmět / Stručný název (volitelné):",
+    "description": "Label for feedback title input"
+  },
+  "feedbackTitlePlaceholder": {
+    "message": "Např.: Podpora pro další AI platformu...",
+    "description": "Placeholder for feedback title input"
+  },
+  "feedbackBodyLabel": {
+    "message": "Popis:",
+    "description": "Label for feedback description textarea"
+  },
+  "feedbackBodyPlaceholder": {
+    "message": "Popište podrobněji váš návrh nebo co přesně se stalo...",
+    "description": "Placeholder for feedback body textarea"
+  },
+  "btnSendFeedback": {
+    "message": "OTEVŘÍT GITHUB ISSUE",
+    "description": "Button to open GitHub new issue"
+  },
+  "feedbackEmptyAlert": {
+    "message": "Prosím napište alespoň krátký popis vašeho návrhu či chyby.",
+    "description": "Alert when feedback text is empty"
+  },
+  "feedbackOpened": {
+    "message": "GitHub Issue byl otevřen v novém okně!",
+    "description": "Status when GitHub issue tab is opened"
   }
 }
