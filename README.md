@@ -80,9 +80,14 @@ Right-click the extension icon and select **Options**:
 
 ---
 
-## File Size Limits
+## File Size Limits & Large PDF Optimization
 
-The extension operates completely in browser memory and supports PDF documents up to **50 MB**. Files exceeding 50 MB are stopped before downloading to save bandwidth, and a warning notification is displayed.
+The extension features an intelligent **Large PDF Optimizer** to ensure seamless uploads even with heavy documents (e.g. 100–300 MB):
+
+* **Threshold Detection (Default 30 MB / Configurable)**: When a PDF exceeds the threshold (or target AI platform limits like Claude's 30 MB ceiling), a clean optimization dialog is presented.
+* **1. Compress PDF (Optimized PDF)**: Downscales embedded high-resolution graphics, photos, and scans to balanced web resolutions (JPEG 65%, max 1200px) or completely strips images if chosen. Retains vector text, typography, layout, and visual diagram readability.
+* **2. Text Only (Extracted Text)**: Instantly extracts all readable text layers into a lightweight `.txt` attachment. Reduces size by up to 99.9%, eliminating token and upload overhead across all AI platforms.
+* **100% Client-Side**: All compression and text extraction runs directly in your browser using bundled WebAssembly / JS engines (`pdf-lib` and `pdf.js`) with zero data leaving your machine.
 
 ---
 

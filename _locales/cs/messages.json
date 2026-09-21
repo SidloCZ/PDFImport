@@ -296,5 +296,37 @@
   "prefDebugModeDesc": {
     "message": "Zobrazit plovoucí ladicí panel na stránkách AI s podrobnými logy a exportem do schránky.",
     "description": "Description for debug mode toggle"
+  },
+  "optionsLargePdfTitle": {
+    "message": "Zpracování velkých PDF souborů",
+    "description": "Title for large PDF handling section"
+  },
+  "optionsLargePdfDesc": {
+    "message": "Nastavení způsobu zpracování PDF dokumentů překračujících doporučenou velikost pro AI.",
+    "description": "Description for large PDF handling section"
+  },
+  "optionsLargePdfThreshold": {
+    "message": "Hranice pro velký soubor:",
+    "description": "Label for large PDF threshold"
+  },
+  "optionsLargePdfThresholdDesc": {
+    "message": "Při překročení této velikosti se nabídne optimalizace (např. Claude má limit 30 MB).",
+    "description": "Description for threshold setting"
+  },
+  "optionsLargePdfAction": {
+    "message": "Výchozí akce při překročení:",
+    "description": "Label for default large PDF action"
+  },
+  "optionsLargePdfActionAsk": {
+    "message": "Vždy se dotázat (Komprese / Text)",
+    "description": "Option to always ask user"
+  },
+  "optionsLargePdfActionCompress": {
+    "message": "Vždy automaticky komprimovat PDF",
+    "description": "Option to auto-compress"
+  },
+  "optionsLargePdfActionText": {
+    "message": "Vždy extrahovat pouze text",
+    "description": "Option to auto-extract text"
   }
 }

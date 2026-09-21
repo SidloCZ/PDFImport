@@ -296,5 +296,37 @@
   "prefDebugModeDesc": {
     "message": "Show floating debug HUD on AI chat pages with real-time logs and one-click log export.",
     "description": "Description for debug mode toggle"
+  },
+  "optionsLargePdfTitle": {
+    "message": "Large PDF Document Handling",
+    "description": "Title for large PDF handling section"
+  },
+  "optionsLargePdfDesc": {
+    "message": "Configure how PDF documents exceeding recommended AI platform limits are processed.",
+    "description": "Description for large PDF handling section"
+  },
+  "optionsLargePdfThreshold": {
+    "message": "Large file threshold:",
+    "description": "Label for large PDF threshold"
+  },
+  "optionsLargePdfThresholdDesc": {
+    "message": "Files exceeding this size will prompt optimization options (Claude limit is 30 MB).",
+    "description": "Description for threshold setting"
+  },
+  "optionsLargePdfAction": {
+    "message": "Default action when exceeded:",
+    "description": "Label for default large PDF action"
+  },
+  "optionsLargePdfActionAsk": {
+    "message": "Always ask (Compress / Text Only)",
+    "description": "Option to always ask user"
+  },
+  "optionsLargePdfActionCompress": {
+    "message": "Always auto-compress PDF",
+    "description": "Option to auto-compress"
+  },
+  "optionsLargePdfActionText": {
+    "message": "Always extract text only",
+    "description": "Option to auto-extract text"
   }
 }

@@ -164,7 +164,7 @@
 
     const chatInput = inputs.find(inp => {
       const acc = (inp.accept || "").toLowerCase();
-      return acc.includes("pdf") || acc.includes("*") || acc.includes("document") || inp.multiple;
+      return acc.includes("pdf") || acc.includes("txt") || acc.includes("text") || acc.includes("*") || acc.includes("document") || inp.multiple;
     }) || inputs[0];
 
     if (chatInput) {

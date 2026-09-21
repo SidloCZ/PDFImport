@@ -24,9 +24,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     customAiUrl: "https://openrouter.ai/chat",
     reuseTab: true,
     debugMode: true,
+    largePdfThreshold: "30",
+    largePdfAction: "ask",
     defaultPrompt: "",
     userLanguage: "auto"
   });
+
+  const largePdfThresholdEl = document.getElementById("largePdfThreshold");
+  const largePdfActionEl = document.getElementById("largePdfAction");
+  if (largePdfThresholdEl) largePdfThresholdEl.value = String(settings.largePdfThreshold || "30");
+  if (largePdfActionEl) largePdfActionEl.value = settings.largePdfAction || "ask";
 
   selectedAi = settings.targetAi || "gemini";
   if (customAiUrlEl) {
@@ -119,6 +126,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       customAiUrl: customUrlVal,
       reuseTab: reuseTabEl.checked,
       debugMode: debugModeEl ? debugModeEl.checked : true,
+      largePdfThreshold: largePdfThresholdEl ? largePdfThresholdEl.value : "30",
+      largePdfAction: largePdfActionEl ? largePdfActionEl.value : "ask",
       defaultPrompt: defaultPromptEl.value,
       userLanguage: currentLang
     });

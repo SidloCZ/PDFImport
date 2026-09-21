@@ -149,6 +149,37 @@
           </label>
         </div>
 
+        <!-- Large PDF Handling Option -->
+        <div class="form-group" style="margin-top: 14px; border-top: 1.5px dashed #000000; padding-top: 14px;">
+          <label class="input-label">
+            <strong data-i18n="optionsLargePdfTitle">Large PDF Document Handling</strong>
+            <small data-i18n="optionsLargePdfDesc">Configure how PDF documents exceeding recommended AI platform limits are processed.</small>
+          </label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+            <div>
+              <label for="largePdfThreshold" class="input-label" style="margin-bottom: 4px;">
+                <strong data-i18n="optionsLargePdfThreshold">Large file threshold:</strong>
+              </label>
+              <select id="largePdfThreshold" style="width: 100%; padding: 8px; border: var(--border-thick); font-family: var(--font-mono); font-weight: 700; background: #ffffff;">
+                <option value="20">20 MB</option>
+                <option value="30" selected>30 MB (Claude / Recommended)</option>
+                <option value="50">50 MB</option>
+                <option value="100">100 MB</option>
+              </select>
+            </div>
+            <div>
+              <label for="largePdfAction" class="input-label" style="margin-bottom: 4px;">
+                <strong data-i18n="optionsLargePdfAction">Default action when exceeded:</strong>
+              </label>
+              <select id="largePdfAction" style="width: 100%; padding: 8px; border: var(--border-thick); font-family: var(--font-mono); font-weight: 700; background: #ffffff;">
+                <option value="ask" data-i18n="optionsLargePdfActionAsk">Always ask (Compress / Text Only)</option>
+                <option value="compress" data-i18n="optionsLargePdfActionCompress">Always auto-compress PDF</option>
+                <option value="text" data-i18n="optionsLargePdfActionText">Always extract text only</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <!-- Default Prompt -->
         <div class="form-group">
           <label for="defaultPrompt" class="input-label">

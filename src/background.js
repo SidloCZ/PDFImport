@@ -121,53 +121,62 @@ async function getActiveAiInfo() {
   };
 }
 
+let isSettingUpMenus = false;
+
 // Context menu setup
 async function setupContextMenus() {
-  let lang = "en";
+  if (isSettingUpMenus) return;
+  isSettingUpMenus = true;
+
   try {
-    const settings = await chrome.storage.sync.get({ userLanguage: "auto" });
-    if (settings.userLanguage && settings.userLanguage !== "auto") {
-      lang = settings.userLanguage;
-    } else {
-      const uiLang = (chrome.i18n.getUILanguage() || "en").toLowerCase();
-      lang = uiLang.startsWith("cs") ? "cs" : "en";
-    }
-  } catch (e) {}
+    let lang = "en";
+    try {
+      const settings = await chrome.storage.sync.get({ userLanguage: "auto" });
+      if (settings.userLanguage && settings.userLanguage !== "auto") {
+        lang = settings.userLanguage;
+      } else {
+        const uiLang = (chrome.i18n.getUILanguage() || "en").toLowerCase();
+        lang = uiLang.startsWith("cs") ? "cs" : "en";
+      }
+    } catch (e) {}
 
-  const aiInfo = await getActiveAiInfo();
-  const aiName = aiInfo.name;
+    const aiInfo = await getActiveAiInfo();
+    const aiName = aiInfo.name;
 
-  const titleCurrent = lang === "cs" ? `Odeslat PDF do ${aiName} (Alt+G)` : `Send PDF to ${aiName} (Alt+G)`;
-  const titleLink = lang === "cs" ? `Odeslat odkazované PDF do ${aiName}` : `Send linked PDF to ${aiName}`;
+    const titleCurrent = lang === "cs" ? `Odeslat PDF do ${aiName} (Alt+G)` : `Send PDF to ${aiName} (Alt+G)`;
+    const titleLink = lang === "cs" ? `Odeslat odkazované PDF do ${aiName}` : `Send linked PDF to ${aiName}`;
 
-  chrome.contextMenus.removeAll(() => {
-    chrome.contextMenus.create({
-      id: "send_current_pdf",
-      title: titleCurrent,
-      contexts: ["all"]
+    chrome.contextMenus.removeAll(() => {
+      if (chrome.runtime.lastError) {}
+
+      chrome.contextMenus.create({
+        id: "send_current_pdf",
+        title: titleCurrent,
+        contexts: ["all"]
+      }, () => {
+        if (chrome.runtime.lastError) {}
+      });
+
+      chrome.contextMenus.create({
+        id: "send_link_pdf",
+        title: titleLink,
+        contexts: ["link"]
+      }, () => {
+        if (chrome.runtime.lastError) {}
+      });
     });
 
-    chrome.contextMenus.create({
-      id: "send_link_pdf",
-      title: titleLink,
-      contexts: ["link"]
-    });
-  });
-
-  // Update action title tooltip
-  chrome.action.setTitle({
-    title: titleCurrent
-  }).catch(() => {});
+    // Update action title tooltip
+    chrome.action.setTitle({
+      title: titleCurrent
+    }).catch(() => {});
+  } finally {
+    isSettingUpMenus = false;
+  }
 }
 
 chrome.runtime.onInstalled.addListener(setupContextMenus);
 chrome.runtime.onStartup.addListener(setupContextMenus);
-chrome.runtime.onMessage.addListener((message) => {
-  if (message.action === "LANGUAGE_CHANGED" || message.action === "TARGET_AI_CHANGED") {
-    setupContextMenus();
-  }
-});
-setupContextMenus();
 
 /**
  * Checks if a URL is restricted by the browser
@@ -290,8 +299,86 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
-const MAX_PDF_SIZE_MB = 50;
-const MAX_PDF_SIZE_BYTES = MAX_PDF_SIZE_MB * 1024 * 1024;
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "TARGET_AI_CHANGED" || message.action === "LANGUAGE_CHANGED") {
+    setupContextMenus();
+    sendResponse({ status: "ok" });
+  } else if (message.action === "LARGE_PDF_COMPLETED") {
+    (async () => {
+      try {
+        const aiInfo = await getActiveAiInfo();
+        const settings = await chrome.storage.sync.get({ reuseTab: true });
+        await openOrActivateAi(aiInfo, message.reuseTab !== undefined ? message.reuseTab : settings.reuseTab);
+        setBadge("OK", "#34A853");
+        setTimeout(() => clearBadge(), 3000);
+      } catch (err) {
+        console.error("[PDF Import] Error activating AI after large PDF process:", err);
+      }
+    })();
+    sendResponse({ status: "ok" });
+  }
+});
+
+const DEFAULT_LARGE_PDF_THRESHOLD_MB = 30;
+const ABSOLUTE_MAX_PDF_SIZE_MB = 500;
+
+/**
+ * Opens modal dialog for large PDF optimization
+ */
+async function openLargePdfDialog(sessionData) {
+  await chrome.storage.local.set({ largePdfSession: sessionData });
+  clearBadge();
+
+  const width = 500;
+  const height = 550;
+  let left = undefined;
+  let top = undefined;
+
+  try {
+    const currentWin = await chrome.windows.getCurrent();
+    if (currentWin.left !== undefined && currentWin.width !== undefined) {
+      left = Math.round(currentWin.left + (currentWin.width - width) / 2);
+      top = Math.round(currentWin.top + (currentWin.height - height) / 2);
+    }
+  } catch (e) {}
+
+  chrome.windows.create({
+    url: chrome.runtime.getURL("src/dialog/large_pdf_dialog.html"),
+    type: "popup",
+    width: width,
+    height: height,
+    left: left,
+    top: top,
+    focused: true
+  });
+}
+
+async function ensureOffscreenDocument() {
+  if (await chrome.offscreen.hasDocument()) return;
+  await chrome.offscreen.createDocument({
+    url: "src/offscreen/offscreen.html",
+    reasons: ["BLOBS"],
+    justification: "Reading local file:/// PDF documents"
+  });
+}
+
+async function fetchLocalFile(url) {
+  await ensureOffscreenDocument();
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({
+      action: "OFFSCREEN_FETCH_LOCAL_FILE",
+      url: url
+    }, (res) => {
+      if (chrome.runtime.lastError) {
+        return reject(new Error(chrome.runtime.lastError.message));
+      }
+      if (!res || !res.success) {
+        return reject(new Error(res?.error || "Failed to read local file."));
+      }
+      resolve(res);
+    });
+  });
+}
 
 /**
  * Downloads the PDF and opens or activates target AI platform
@@ -305,7 +392,19 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
   try {
     setBadge("...", "#4E82EE");
 
-    // 1. Check file scheme permissions for file:///
+    const settings = await chrome.storage.sync.get({
+      reuseTab: true,
+      defaultPrompt: "",
+      largePdfThreshold: DEFAULT_LARGE_PDF_THRESHOLD_MB,
+      largePdfAction: "ask"
+    });
+
+    const aiInfo = await getActiveAiInfo();
+    const thresholdMb = parseInt(settings.largePdfThreshold, 10) || DEFAULT_LARGE_PDF_THRESHOLD_MB;
+    const thresholdBytes = thresholdMb * 1024 * 1024;
+    const absoluteMaxBytes = ABSOLUTE_MAX_PDF_SIZE_MB * 1024 * 1024;
+
+    // 1. Check file scheme permissions and fetch for file:///
     const isFileUrl = url.startsWith("file://");
     if (isFileUrl) {
       const isAllowed = await chrome.extension.isAllowedFileSchemeAccess();
@@ -314,6 +413,60 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
         showFileAccessWarning();
         return;
       }
+
+      console.log("[PDF Import] Reading local file via offscreen document:", url);
+      const localData = await fetchLocalFile(url);
+      const sizeBytes = localData.size;
+
+      if (sizeBytes > absoluteMaxBytes) {
+        handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
+        return;
+      }
+
+      let filename = fallbackTitle || "document.pdf";
+      try {
+        const decoded = decodeURIComponent(url);
+        const parts = decoded.split("/");
+        const lastPart = parts[parts.length - 1];
+        if (lastPart) filename = lastPart;
+      } catch (e) {}
+
+      if (!filename.toLowerCase().endsWith(".pdf")) {
+        filename += ".pdf";
+      }
+
+      if (sizeBytes > thresholdBytes && settings.largePdfAction === "ask") {
+        await openLargePdfDialog({
+          url: url,
+          filename: filename,
+          sizeBytes: sizeBytes,
+          sourceTabId: sourceTabId,
+          targetAi: aiInfo.id,
+          targetAiName: aiInfo.name,
+          defaultPrompt: settings.defaultPrompt,
+          reuseTab: settings.reuseTab
+        });
+        return;
+      }
+
+      // Store pending PDF
+      await chrome.storage.local.set({
+        pendingPdf: {
+          filename: filename,
+          dataUrl: localData.dataUrl,
+          size: sizeBytes,
+          mimeType: localData.mimeType || "application/pdf",
+          prompt: settings.defaultPrompt,
+          targetAi: aiInfo.id,
+          targetAiName: aiInfo.name,
+          timestamp: Date.now()
+        }
+      });
+
+      await openOrActivateAi(aiInfo, settings.reuseTab);
+      setBadge("OK", "#34A853");
+      setTimeout(() => clearBadge(), 3000);
+      return;
     }
 
     // 2. HEAD request size check for HTTP/HTTPS
@@ -327,9 +480,24 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
           const headLength = headResponse.headers.get("content-length");
           if (headLength) {
             const sizeBytes = parseInt(headLength, 10);
-            if (!isNaN(sizeBytes) && sizeBytes > MAX_PDF_SIZE_BYTES) {
-              handleSizeLimitExceeded(sizeBytes, MAX_PDF_SIZE_BYTES);
-              return;
+            if (!isNaN(sizeBytes)) {
+              if (sizeBytes > absoluteMaxBytes) {
+                handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
+                return;
+              }
+              if (sizeBytes > thresholdBytes && settings.largePdfAction === "ask") {
+                await openLargePdfDialog({
+                  url: url,
+                  filename: fallbackTitle,
+                  sizeBytes: sizeBytes,
+                  sourceTabId: sourceTabId,
+                  targetAi: aiInfo.id,
+                  targetAiName: aiInfo.name,
+                  defaultPrompt: settings.defaultPrompt,
+                  reuseTab: settings.reuseTab
+                });
+                return;
+              }
             }
           }
         }
@@ -348,38 +516,59 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
       throw new Error(`Download error (${response.status}: ${response.statusText})`);
     }
 
-    const contentLength = response.headers.get("content-length");
-    if (contentLength) {
-      const sizeBytes = parseInt(contentLength, 10);
-      if (!isNaN(sizeBytes) && sizeBytes > MAX_PDF_SIZE_BYTES) {
-        handleSizeLimitExceeded(sizeBytes, MAX_PDF_SIZE_BYTES);
-        return;
-      }
-    }
-
     let filename = extractFilename(response, url, fallbackTitle);
     if (!filename.toLowerCase().endsWith(".pdf")) {
       filename += ".pdf";
     }
 
+    const contentLength = response.headers.get("content-length");
+    if (contentLength) {
+      const sizeBytes = parseInt(contentLength, 10);
+      if (!isNaN(sizeBytes)) {
+        if (sizeBytes > absoluteMaxBytes) {
+          handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
+          return;
+        }
+        if (sizeBytes > thresholdBytes && settings.largePdfAction === "ask") {
+          await openLargePdfDialog({
+            url: url,
+            filename: filename,
+            sizeBytes: sizeBytes,
+            sourceTabId: sourceTabId,
+            targetAi: aiInfo.id,
+            targetAiName: aiInfo.name,
+            defaultPrompt: settings.defaultPrompt,
+            reuseTab: settings.reuseTab
+          });
+          return;
+        }
+      }
+    }
+
     const blob = await response.blob();
-    if (blob.size > MAX_PDF_SIZE_BYTES) {
-      handleSizeLimitExceeded(blob.size, MAX_PDF_SIZE_BYTES);
+    if (blob.size > absoluteMaxBytes) {
+      handleSizeLimitExceeded(blob.size, absoluteMaxBytes);
+      return;
+    }
+
+    if (blob.size > thresholdBytes && settings.largePdfAction === "ask") {
+      await openLargePdfDialog({
+        url: url,
+        filename: filename,
+        sizeBytes: blob.size,
+        sourceTabId: sourceTabId,
+        targetAi: aiInfo.id,
+        targetAiName: aiInfo.name,
+        defaultPrompt: settings.defaultPrompt,
+        reuseTab: settings.reuseTab
+      });
       return;
     }
 
     const base64Data = await blobToBase64(blob);
     console.log(`[PDF Import] PDF fetched: ${filename}, size: ${(blob.size / 1024 / 1024).toFixed(2)} MB`);
 
-    // 4. Retrieve settings
-    const settings = await chrome.storage.sync.get({
-      reuseTab: true,
-      defaultPrompt: ""
-    });
-
-    const aiInfo = await getActiveAiInfo();
-
-    // 5. Store pending PDF
+    // 4. Store pending PDF
     await chrome.storage.local.set({
       pendingPdf: {
         filename: filename,
@@ -393,7 +582,7 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
       }
     });
 
-    // 6. Open or focus target AI platform tab
+    // 5. Open or focus target AI platform tab
     await openOrActivateAi(aiInfo, settings.reuseTab);
     setBadge("OK", "#34A853");
     setTimeout(() => clearBadge(), 3000);
