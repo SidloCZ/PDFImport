@@ -86,7 +86,6 @@ h1 {
   font-size: 28px;
   font-weight: 900;
   letter-spacing: -0.5px;
-  text-transform: uppercase;
   color: var(--color-black);
   line-height: 1.1;
 }

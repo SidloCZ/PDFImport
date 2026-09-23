@@ -5,5 +5,5 @@
 - SVG icons instead of emojis: simple clean, symbols look better than emojis and can be used sparingly in the app.
 - **Simple style**: Adhere to a clean, minimalist, functional and professional design without visual clutter.
 - Language: Main language of extension and github readme is English, secondary is Czech (if browser is in czech, use czech)
-- Update README.md: After singnificant changes to the extension, update readme.
+- Update README.md: After singnificant changes to the extension, update readme. Update all language versions of README accordingly.
 - After every msg in chat, include a commit message based on latest changes.
