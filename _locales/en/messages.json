@@ -352,5 +352,13 @@
   "feedbackOpened": {
     "message": "GitHub Issue opened in a new tab!",
     "description": "Status when GitHub issue tab is opened"
+  },
+  "btnShowMorePlatforms": {
+    "message": "Show more platforms",
+    "description": "Button to expand additional AI platforms"
+  },
+  "btnShowLessPlatforms": {
+    "message": "Show less",
+    "description": "Button to collapse additional AI platforms"
   }
 }

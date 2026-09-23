@@ -8,10 +8,11 @@ Supports the **Top 10 AI platforms** out of the box, plus any **Custom AI URL**:
 
 * **Anthropic** (Claude)
 * **OpenAI** (ChatGPT)
+* **Google** (Gemini)
+* **DeepSeek**
+* **Microsoft** (Copilot)
 * **Moonshot** (Kimi)
 * **Tencent** (Hy4 / Yuanbao)
-* **DeepSeek**
-* **Google** (Gemini)
 * **Z.ai** (GLM)
 * **Meta** (Meta AI)
 * **Alibaba** (Qwen)

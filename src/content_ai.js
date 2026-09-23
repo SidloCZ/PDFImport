@@ -22,6 +22,7 @@
     if (hostname.includes("tongyi.ai") || hostname.includes("qwen.ai")) return { id: "qwen", name: "Qwen" };
     if (hostname.includes("grok.com") || hostname.includes("x.com")) return { id: "grok", name: "Grok" };
     if (hostname.includes("perplexity.ai")) return { id: "perplexity", name: "Perplexity" };
+    if (hostname.includes("copilot.microsoft.com")) return { id: "copilot", name: "Copilot" };
     if (hostname.includes("openrouter.ai")) return { id: "openrouter", name: "OpenRouter" };
     return { id: "custom", name: "AI" };
   }

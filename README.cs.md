@@ -8,10 +8,11 @@ Nativně podporuje **10 nejlepších AI platforem** a možnost zadat libovolnou 
 
 * **Anthropic** (Claude)
 * **OpenAI** (ChatGPT)
+* **Google** (Gemini)
+* **DeepSeek**
+* **Microsoft** (Copilot)
 * **Moonshot** (Kimi)
 * **Tencent** (Hy4 / Yuanbao)
-* **DeepSeek**
-* **Google** (Gemini)
 * **Z.ai** (GLM)
 * **Meta** (Meta AI)
 * **Alibaba** (Qwen)

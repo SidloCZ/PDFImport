@@ -352,5 +352,13 @@
   "feedbackOpened": {
     "message": "GitHub Issue byl otevřen v novém okně!",
     "description": "Status when GitHub issue tab is opened"
+  },
+  "btnShowMorePlatforms": {
+    "message": "Zobrazit více platforem",
+    "description": "Tlačítko pro rozbalení dalších AI platforem"
+  },
+  "btnShowLessPlatforms": {
+    "message": "Zobrazit méně",
+    "description": "Tlačítko pro sbalení dalších AI platforem"
   }
 }

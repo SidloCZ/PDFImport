@@ -65,7 +65,8 @@
         "https://grok.com/*",
         "https://openrouter.ai/*",
         "https://www.perplexity.ai/*",
-        "https://perplexity.ai/*"
+        "https://perplexity.ai/*",
+        "https://copilot.microsoft.com/*"
       ],
       "js": [
         "src/content_ai.js"

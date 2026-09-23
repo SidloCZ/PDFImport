@@ -64,54 +64,113 @@
             <strong data-i18n="prefTargetAiTitle">Target AI Platform</strong>
             <small data-i18n="prefTargetAiDesc">Choose where you want to import your PDF documents.</small>
           </label>
-          <div class="ai-platform-grid" id="aiPlatformGrid">
+          <div class="ai-platform-grid" id="aiPrimaryGrid">
             <button type="button" class="ai-card" data-ai="claude">
-              <span class="ai-card-badge">Anthropic</span>
+              <div class="ai-card-top">
+                <img src="../../icons/platforms/claude.svg" alt="" class="ai-card-icon" width="22" height="22">
+                <span class="ai-card-badge">Anthropic</span>
+              </div>
               <span class="ai-card-name">Claude</span>
             </button>
             <button type="button" class="ai-card" data-ai="chatgpt">
-              <span class="ai-card-badge">OpenAI</span>
+              <div class="ai-card-top">
+                <img src="../../icons/platforms/chatgpt.svg" alt="" class="ai-card-icon ai-card-icon-invertible" width="22" height="22">
+                <span class="ai-card-badge">OpenAI</span>
+              </div>
               <span class="ai-card-name">ChatGPT</span>
             </button>
-            <button type="button" class="ai-card" data-ai="kimi">
-              <span class="ai-card-badge">Moonshot</span>
-              <span class="ai-card-name">Kimi</span>
-            </button>
-            <button type="button" class="ai-card" data-ai="tencent">
-              <span class="ai-card-badge">Tencent</span>
-              <span class="ai-card-name">Hy4 / Yuanbao</span>
-            </button>
-            <button type="button" class="ai-card" data-ai="deepseek">
-              <span class="ai-card-badge">DeepSeek</span>
-              <span class="ai-card-name">DeepSeek</span>
-            </button>
             <button type="button" class="ai-card" data-ai="gemini">
-              <span class="ai-card-badge">Google</span>
+              <div class="ai-card-top">
+                <img src="../../icons/platforms/gemini.svg" alt="" class="ai-card-icon" width="22" height="22">
+                <span class="ai-card-badge">Google</span>
+              </div>
               <span class="ai-card-name">Gemini</span>
             </button>
-            <button type="button" class="ai-card" data-ai="glm">
-              <span class="ai-card-badge">Z.ai</span>
-              <span class="ai-card-name">GLM</span>
+            <button type="button" class="ai-card" data-ai="deepseek">
+              <div class="ai-card-top">
+                <img src="../../icons/platforms/deepseek.svg" alt="" class="ai-card-icon" width="22" height="22">
+                <span class="ai-card-badge">DeepSeek</span>
+              </div>
+              <span class="ai-card-name">DeepSeek</span>
             </button>
-            <button type="button" class="ai-card" data-ai="meta">
-              <span class="ai-card-badge">Meta</span>
-              <span class="ai-card-name">Meta AI</span>
-            </button>
-            <button type="button" class="ai-card" data-ai="qwen">
-              <span class="ai-card-badge">Alibaba</span>
-              <span class="ai-card-name">Qwen</span>
-            </button>
-            <button type="button" class="ai-card" data-ai="grok">
-              <span class="ai-card-badge">SpaceXAI</span>
-              <span class="ai-card-name">Grok</span>
-            </button>
-            <button type="button" class="ai-card" data-ai="perplexity">
-              <span class="ai-card-badge">Perplexity</span>
-              <span class="ai-card-name">Perplexity</span>
-            </button>
-            <button type="button" class="ai-card ai-card-custom" data-ai="custom">
-              <span class="ai-card-badge">Custom</span>
-              <span class="ai-card-name">Custom URL</span>
+          </div>
+
+          <!-- Secondary AI Platforms (Collapsible) -->
+          <div class="ai-more-container" id="aiMoreContainer" style="display: none;">
+            <div class="ai-platform-grid ai-more-grid">
+              <button type="button" class="ai-card" data-ai="copilot">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/copilot.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Microsoft</span>
+                </div>
+                <span class="ai-card-name">Copilot</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="kimi">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/kimi.svg" alt="" class="ai-card-icon ai-card-icon-invertible" width="22" height="22">
+                  <span class="ai-card-badge">Moonshot</span>
+                </div>
+                <span class="ai-card-name">Kimi</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="tencent">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/tencent.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Tencent</span>
+                </div>
+                <span class="ai-card-name">Hy4 / Yuanbao</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="glm">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/glm.svg" alt="" class="ai-card-icon ai-card-icon-invertible" width="22" height="22">
+                  <span class="ai-card-badge">Z.ai</span>
+                </div>
+                <span class="ai-card-name">GLM</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="meta">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/meta.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Meta</span>
+                </div>
+                <span class="ai-card-name">Meta AI</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="qwen">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/qwen.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Alibaba</span>
+                </div>
+                <span class="ai-card-name">Qwen</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="grok">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/grok.svg" alt="" class="ai-card-icon ai-card-icon-invertible" width="22" height="22">
+                  <span class="ai-card-badge">SpaceXAI</span>
+                </div>
+                <span class="ai-card-name">Grok</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="perplexity">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/perplexity.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Perplexity</span>
+                </div>
+                <span class="ai-card-name">Perplexity</span>
+              </button>
+              <button type="button" class="ai-card ai-card-custom" data-ai="custom">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/custom.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Custom</span>
+                </div>
+                <span class="ai-card-name">Custom URL</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Toggle Button for More Platforms -->
+          <div class="ai-toggle-row">
+            <button type="button" class="btn-more-platforms" id="toggleMorePlatformsBtn">
+              <span id="toggleMorePlatformsText" data-i18n="btnShowMorePlatforms">Show more platforms</span>
+              <svg class="toggle-icon" id="toggleMorePlatformsIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
             </button>
           </div>
 

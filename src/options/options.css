@@ -289,9 +289,15 @@ label[for="defaultPrompt"] small {
 
 .ai-platform-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+  .ai-platform-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .ai-card {
@@ -301,11 +307,12 @@ label[for="defaultPrompt"] small {
   padding: 10px 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   align-items: flex-start;
   text-align: left;
   cursor: pointer;
   transition: all 0.12s ease;
+  min-height: 64px;
 }
 
 .ai-card:hover {
@@ -318,6 +325,26 @@ label[for="defaultPrompt"] small {
   background: #000000;
   color: #ffffff;
   box-shadow: 2px 2px 0px 0px #000000;
+}
+
+.ai-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 6px;
+}
+
+.ai-card-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+.ai-card.active .ai-card-icon-invertible {
+  filter: invert(1);
 }
 
 .ai-card-badge {
@@ -347,6 +374,53 @@ label[for="defaultPrompt"] small {
 
 .ai-card-custom {
   border-style: dashed;
+}
+
+.ai-more-container {
+  margin-top: 10px;
+}
+
+.ai-toggle-row {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-more-platforms {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: #ffffff;
+  color: var(--color-black);
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px 0px #000000;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.btn-more-platforms:hover {
+  background: #f4f4f4;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.btn-more-platforms:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+.toggle-icon {
+  transition: transform 0.2s ease;
+}
+
+.btn-more-platforms.expanded .toggle-icon {
+  transform: rotate(180deg);
 }
 
 .custom-url-box {

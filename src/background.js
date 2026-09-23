@@ -81,6 +81,13 @@ const AI_PROVIDERS = {
     urlMatchPatterns: ["*://www.perplexity.ai/*", "*://perplexity.ai/*"],
     newTabUrl: "https://www.perplexity.ai/"
   },
+  copilot: {
+    id: "copilot",
+    name: "Copilot",
+    fullName: "Microsoft (Copilot)",
+    urlMatchPatterns: ["*://copilot.microsoft.com/*"],
+    newTabUrl: "https://copilot.microsoft.com/"
+  },
   custom: {
     id: "custom",
     name: "Custom AI",

@@ -79,6 +79,42 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // More AI Platforms toggle button handler
+  const toggleMorePlatformsBtn = document.getElementById("toggleMorePlatformsBtn");
+  const aiMoreContainer = document.getElementById("aiMoreContainer");
+  const toggleMorePlatformsText = document.getElementById("toggleMorePlatformsText");
+
+  function setMorePlatformsExpanded(expanded) {
+    if (!aiMoreContainer || !toggleMorePlatformsBtn) return;
+    if (expanded) {
+      aiMoreContainer.style.display = "block";
+      toggleMorePlatformsBtn.classList.add("expanded");
+      if (toggleMorePlatformsText) {
+        toggleMorePlatformsText.setAttribute("data-i18n", "btnShowLessPlatforms");
+        toggleMorePlatformsText.textContent = getMsg("btnShowLessPlatforms") || "Show less";
+      }
+    } else {
+      aiMoreContainer.style.display = "none";
+      toggleMorePlatformsBtn.classList.remove("expanded");
+      if (toggleMorePlatformsText) {
+        toggleMorePlatformsText.setAttribute("data-i18n", "btnShowMorePlatforms");
+        toggleMorePlatformsText.textContent = getMsg("btnShowMorePlatforms") || "Show more platforms";
+      }
+    }
+  }
+
+  if (toggleMorePlatformsBtn) {
+    toggleMorePlatformsBtn.addEventListener("click", () => {
+      const isExpanded = toggleMorePlatformsBtn.classList.contains("expanded");
+      setMorePlatformsExpanded(!isExpanded);
+    });
+  }
+
+  // Auto-expand if the saved selected AI is inside aiMoreContainer
+  if (aiMoreContainer && aiMoreContainer.querySelector(`.ai-card[data-ai="${selectedAi}"]`)) {
+    setMorePlatformsExpanded(true);
+  }
+
   // Language switch handlers
   if (langBtnEn) {
     langBtnEn.addEventListener("click", async () => {
