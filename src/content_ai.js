@@ -120,6 +120,8 @@
         return;
       }
 
+      await sleep(400); // Allow editor framework (Quill/Angular/React) to settle event listeners
+
       // Execute single upload attempt with verification
       await executeUploadWorkflow(file, lastPendingPrompt, targetAiName);
 
@@ -407,7 +409,8 @@
     return new Promise((resolve) => {
       const startTime = Date.now();
       const interval = setInterval(() => {
-        if (findChatInput()) {
+        const input = findChatInput();
+        if (input && (input.offsetParent !== null || input.getClientRects().length > 0)) {
           clearInterval(interval);
           resolve(true);
         } else if (Date.now() - startTime > timeoutMs) {
@@ -419,12 +422,21 @@
   }
 
   function findChatInput() {
+    if (currentPlatform.id === "gemini") {
+      return (
+        document.querySelector("rich-textarea [contenteditable='true']") ||
+        document.querySelector(".ql-editor[contenteditable='true']") ||
+        document.querySelector("[contenteditable='true'].new-input-ui") ||
+        document.querySelector("rich-textarea div[contenteditable='true']")
+      );
+    }
+
     return (
       document.querySelector("#prompt-textarea") ||
       document.querySelector("rich-textarea [contenteditable='true']") ||
       document.querySelector(".ProseMirror[contenteditable='true']") ||
-      document.querySelector("#chat-input") ||
       document.querySelector(".ql-editor[contenteditable='true']") ||
+      document.querySelector("#chat-input") ||
       document.querySelector("div[contenteditable='true']") ||
       document.querySelector("textarea")
     );

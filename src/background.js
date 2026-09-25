@@ -534,6 +534,103 @@ async function storeLocalFilePendingPdf(params) {
   });
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Listens until a tab finishes loading its final destination,
+ * waiting through any anti-bot or security challenge interstitials.
+ */
+function waitForTabReady(tabId, timeoutMs = 25000) {
+  return new Promise((resolve, reject) => {
+    let timer = null;
+
+    function cleanup() {
+      if (timer) clearTimeout(timer);
+      chrome.tabs.onUpdated.removeListener(onUpdated);
+      chrome.tabs.onRemoved.removeListener(onRemoved);
+    }
+
+    timer = setTimeout(() => {
+      cleanup();
+      chrome.tabs.get(tabId).then((tab) => {
+        if (tab && tab.url && !isRestrictedUrl(tab.url)) {
+          resolve(tab);
+        } else {
+          reject(new Error("Timeout waiting for PDF to load in tab."));
+        }
+      }).catch(() => reject(new Error("Timeout waiting for PDF to load in tab.")));
+    }, timeoutMs);
+
+    function onRemoved(removedTabId) {
+      if (removedTabId === tabId) {
+        cleanup();
+        reject(new Error("PDF tab was closed before loading completed."));
+      }
+    }
+
+    function onUpdated(updatedTabId, changeInfo, updatedTab) {
+      if (updatedTabId !== tabId) return;
+
+      if (changeInfo.status === "complete") {
+        const title = (updatedTab.title || "").toLowerCase();
+        // If Cloudflare or anti-bot challenge interstitial is still displaying, wait for actual PDF navigation
+        if (
+          title.includes("just a moment") ||
+          title.includes("cloudflare") ||
+          title.includes("security check") ||
+          title.includes("attention required")
+        ) {
+          console.log("[PDF Import] Security challenge in progress, waiting for final PDF navigation...");
+          return;
+        }
+
+        cleanup();
+        resolve(updatedTab);
+      }
+    }
+
+    chrome.tabs.onUpdated.addListener(onUpdated);
+    chrome.tabs.onRemoved.addListener(onRemoved);
+  });
+}
+
+/**
+ * Handles protected PDF links (HTTP 403, Cloudflare challenge, or anti-hotlinking)
+ * by opening the URL in a browser tab so Chrome navigates natively with top-level
+ * request headers, clearing anti-bot challenges and establishing session cookies.
+ */
+async function handleProtectedPdfViaTab(url, fallbackTitle) {
+  console.log(`[PDF Import] Protected PDF link detected (403/WAF). Opening tab to clear protection: ${url}`);
+  setBadge("LOAD", "#4E82EE");
+
+  let navTab = null;
+  try {
+    navTab = await chrome.tabs.create({ url: url, active: true });
+    const loadedTab = await waitForTabReady(navTab.id, 25000);
+    console.log(`[PDF Import] Protected tab navigation completed: ${loadedTab.url} ("${loadedTab.title}")`);
+
+    // Settle delay for cookies, clearance tokens, and disk cache
+    await sleep(600);
+
+    const finalUrl = loadedTab.url || url;
+    const finalTitle = loadedTab.title || fallbackTitle;
+
+    // Retry processPdfUrl with isRetry = true so it doesn't loop
+    await processPdfUrl(finalUrl, finalTitle, navTab.id, true);
+
+    // If import and dispatch succeeded, close the temporary bypass tab
+    if (navTab && navTab.id) {
+      chrome.tabs.remove(navTab.id).catch(() => {});
+    }
+  } catch (err) {
+    console.error("[PDF Import] Failed to process protected PDF via tab navigation:", err);
+    clearBadge();
+    notifyError(err.message || "Failed to download protected PDF.");
+  }
+}
+
 /**
  * Fetches PDF directly within the source tab context.
  * This sends the webpage's active cookies, session tokens, and Referer header,
@@ -551,40 +648,50 @@ async function fetchPdfViaTab(tabId, url) {
   const results = await chrome.scripting.executeScript({
     target: { tabId: tabId },
     func: async (targetUrl) => {
-      const resp = await fetch(targetUrl, {
-        credentials: "include",
-        headers: {
-          "Accept": "application/pdf,application/xhtml+xml,text/html;q=0.9,*/*;q=0.8"
+      try {
+        const resp = await fetch(targetUrl, {
+          credentials: "include",
+          headers: {
+            "Accept": "application/pdf,application/xhtml+xml,text/html;q=0.9,*/*;q=0.8"
+          }
+        });
+        if (!resp.ok) {
+          return { error: `Tab fetch failed (${resp.status}: ${resp.statusText})` };
         }
-      });
-      if (!resp.ok) {
-        throw new Error(`Tab fetch failed (${resp.status}: ${resp.statusText})`);
+
+        const disposition = resp.headers.get("content-disposition") || "";
+        const contentType = resp.headers.get("content-type") || "";
+        const blob = await resp.blob();
+
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve({
+              success: true,
+              dataUrl: reader.result,
+              size: blob.size,
+              mimeType: contentType || blob.type || "application/pdf",
+              contentDisposition: disposition,
+              responseUrl: resp.url
+            });
+          };
+          reader.onerror = () => resolve({ error: "Failed to read downloaded data in tab" });
+          reader.readAsDataURL(blob);
+        });
+      } catch (err) {
+        return { error: err.message || "Tab fetch network error" };
       }
-
-      const disposition = resp.headers.get("content-disposition") || "";
-      const contentType = resp.headers.get("content-type") || "";
-      const blob = await resp.blob();
-
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          resolve({
-            dataUrl: reader.result,
-            size: blob.size,
-            mimeType: contentType || blob.type || "application/pdf",
-            contentDisposition: disposition,
-            responseUrl: resp.url
-          });
-        };
-        reader.onerror = () => reject(new Error("Failed to read downloaded data in tab"));
-        reader.readAsDataURL(blob);
-      });
     },
     args: [url]
   });
 
   if (results && results[0] && results[0].result) {
-    return results[0].result;
+    if (results[0].result.error) {
+      throw new Error(results[0].result.error);
+    }
+    if (results[0].result.success) {
+      return results[0].result;
+    }
   }
   throw new Error("No data returned from tab-context fetch.");
 }
@@ -592,7 +699,7 @@ async function fetchPdfViaTab(tabId, url) {
 /**
  * Downloads the PDF and opens or activates target AI platform
  */
-async function processPdfUrl(url, fallbackTitle, sourceTabId) {
+async function processPdfUrl(url, fallbackTitle, sourceTabId, isRetry = false) {
   if (isRestrictedUrl(url)) {
     chrome.runtime.openOptionsPage();
     return;
@@ -698,7 +805,13 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
         }
       });
 
-      if (!response.ok) {
+      const contentType = response.headers.get("content-type") || "";
+
+      if (!response.ok || (contentType.includes("text/html") && isLikelyPdf(url, fallbackTitle))) {
+        if (!isRetry && (response.status === 403 || response.status === 401 || response.status === 503 || contentType.includes("text/html"))) {
+          console.warn(`[PDF Import] Direct fetch returned ${response.status} (${contentType}). Opening protected tab...`);
+          return await handleProtectedPdfViaTab(url, fallbackTitle);
+        }
         throw new Error(`Download error (${response.status}: ${response.statusText})`);
       }
 
@@ -760,8 +873,18 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
     } catch (bgFetchErr) {
       console.warn("[PDF Import] Direct background fetch failed:", bgFetchErr.message);
 
-      // If direct background fetch failed (e.g. 403 Forbidden due to anti-hotlinking or session restrictions)
-      // and a source tab exists, fallback to fetching inside the webpage context
+      // If direct background fetch failed due to 403/401/503 or network protection and hasn't been retried
+      if (!isRetry && (
+        bgFetchErr.message.includes("403") ||
+        bgFetchErr.message.includes("401") ||
+        bgFetchErr.message.includes("503") ||
+        bgFetchErr.message.includes("Failed to fetch")
+      )) {
+        console.log(`[PDF Import] Attempting protected PDF tab navigation fallback for: ${url}`);
+        return await handleProtectedPdfViaTab(url, fallbackTitle);
+      }
+
+      // If already retried or source tab exists, fallback to fetching inside webpage context
       if (sourceTabId) {
         console.log(`[PDF Import] Attempting tab-context fetch fallback in tab #${sourceTabId}...`);
         try {
