@@ -526,24 +526,63 @@ async function getLocalFileInfo(url) {
   });
 }
 
-async function storeLocalFilePendingPdf(params) {
+async function fetchLocalFileViaOffscreen(url) {
   await ensureOffscreenDocument();
   return new Promise((resolve, reject) => {
+    let chunks = [];
+    let expectedChunks = 0;
+    let transferId = null;
+
+    function chunkListener(message) {
+      if (message.action === "OFFSCREEN_TRANSFER_CHUNK" && message.transferId === transferId) {
+        chunks[message.chunkIndex] = message.data;
+        if (Object.keys(chunks).length === expectedChunks) {
+          chrome.runtime.onMessage.removeListener(chunkListener);
+          resolve({
+            dataUrl: chunks.join(""),
+            size: chunks.reduce((acc, c) => acc + c.length, 0),
+            mimeType: "application/pdf"
+          });
+        }
+      }
+    }
+
     chrome.runtime.sendMessage({
-      action: "OFFSCREEN_STORE_PENDING_PDF",
-      url: params.url,
-      filename: params.filename,
-      prompt: params.prompt,
-      targetAi: params.targetAi,
-      targetAiName: params.targetAiName
+      action: "OFFSCREEN_FETCH_LOCAL_FILE",
+      url: url
     }, (res) => {
       if (chrome.runtime.lastError) {
         return reject(new Error(chrome.runtime.lastError.message));
       }
       if (!res || !res.success) {
-        return reject(new Error(res?.error || "Failed to store local file."));
+        return reject(new Error(res?.error || "Failed to read local file."));
       }
-      resolve(res);
+      if (!res.isChunked) {
+        return resolve(res);
+      }
+
+      // Handle chunked transfer
+      transferId = res.transferId;
+      expectedChunks = res.totalChunks;
+      chunks[res.chunkIndex] = res.data;
+
+      if (expectedChunks === 1) {
+        return resolve({
+          dataUrl: res.data,
+          size: res.size,
+          mimeType: res.mimeType
+        });
+      }
+
+      chrome.runtime.onMessage.addListener(chunkListener);
+
+      // Safety timeout: 30 seconds
+      setTimeout(() => {
+        chrome.runtime.onMessage.removeListener(chunkListener);
+        if (Object.keys(chunks).length !== expectedChunks) {
+          reject(new Error("Local file transfer from offscreen timed out."));
+        }
+      }, 30000);
     });
   });
 }
@@ -787,14 +826,21 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId, isRetry = false) {
         return;
       }
 
-      // Small file: store directly to storage via offscreen document
-      console.log("[PDF Import] Storing local file via offscreen document:", filename);
-      await storeLocalFilePendingPdf({
-        url: url,
-        filename: filename,
-        prompt: settings.defaultPrompt,
-        targetAi: aiInfo.id,
-        targetAiName: aiInfo.name
+      // Small file: fetch via offscreen document and store in chrome.storage.local
+      console.log("[PDF Import] Fetching local file via offscreen document:", filename);
+      const fileData = await fetchLocalFileViaOffscreen(url);
+
+      await chrome.storage.local.set({
+        pendingPdf: {
+          filename: filename,
+          dataUrl: fileData.dataUrl,
+          size: fileData.size,
+          mimeType: fileData.mimeType || "application/pdf",
+          prompt: settings.defaultPrompt,
+          targetAi: aiInfo.id,
+          targetAiName: aiInfo.name,
+          timestamp: Date.now()
+        }
       });
 
       await openOrActivateAi(aiInfo, settings.reuseTab);
