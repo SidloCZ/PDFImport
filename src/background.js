@@ -535,12 +535,74 @@ async function storeLocalFilePendingPdf(params) {
 }
 
 /**
+ * Fetches PDF directly within the source tab context.
+ * This sends the webpage's active cookies, session tokens, and Referer header,
+ * resolving HTTP 403 Forbidden errors caused by anti-hotlinking protection or gated sessions.
+ */
+async function fetchPdfViaTab(tabId, url) {
+  if (!tabId) {
+    throw new Error("No source tab available for tab-context fetch.");
+  }
+  const tab = await chrome.tabs.get(tabId).catch(() => null);
+  if (!tab || !tab.url || isRestrictedUrl(tab.url)) {
+    throw new Error("Cannot execute script in restricted tab.");
+  }
+
+  const results = await chrome.scripting.executeScript({
+    target: { tabId: tabId },
+    func: async (targetUrl) => {
+      const resp = await fetch(targetUrl, {
+        credentials: "include",
+        headers: {
+          "Accept": "application/pdf,application/xhtml+xml,text/html;q=0.9,*/*;q=0.8"
+        }
+      });
+      if (!resp.ok) {
+        throw new Error(`Tab fetch failed (${resp.status}: ${resp.statusText})`);
+      }
+
+      const disposition = resp.headers.get("content-disposition") || "";
+      const contentType = resp.headers.get("content-type") || "";
+      const blob = await resp.blob();
+
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve({
+            dataUrl: reader.result,
+            size: blob.size,
+            mimeType: contentType || blob.type || "application/pdf",
+            contentDisposition: disposition,
+            responseUrl: resp.url
+          });
+        };
+        reader.onerror = () => reject(new Error("Failed to read downloaded data in tab"));
+        reader.readAsDataURL(blob);
+      });
+    },
+    args: [url]
+  });
+
+  if (results && results[0] && results[0].result) {
+    return results[0].result;
+  }
+  throw new Error("No data returned from tab-context fetch.");
+}
+
+/**
  * Downloads the PDF and opens or activates target AI platform
  */
 async function processPdfUrl(url, fallbackTitle, sourceTabId) {
   if (isRestrictedUrl(url)) {
     chrome.runtime.openOptionsPage();
     return;
+  }
+
+  if (!sourceTabId) {
+    try {
+      const [curTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (curTab && curTab.id) sourceTabId = curTab.id;
+    } catch (e) {}
   }
 
   try {
@@ -620,115 +682,138 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId) {
       return;
     }
 
-    // 2. HEAD request size check for HTTP/HTTPS
-    if (!isFileUrl) {
-      try {
-        const headResponse = await fetch(url, {
-          method: "HEAD",
-          credentials: "include"
-        });
-        if (headResponse.ok) {
-          const headLength = headResponse.headers.get("content-length");
-          if (headLength) {
-            const sizeBytes = parseInt(headLength, 10);
-            if (!isNaN(sizeBytes)) {
-              if (sizeBytes > absoluteMaxBytes) {
-                handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
-                return;
-              }
-              if (sizeBytes > thresholdBytes) {
-                await openLargePdfDialog({
-                  url: url,
-                  filename: fallbackTitle,
-                  sizeBytes: sizeBytes,
-                  sourceTabId: sourceTabId,
-                  targetAi: aiInfo.id,
-                  targetAiName: aiInfo.name,
-                  defaultPrompt: settings.defaultPrompt,
-                  reuseTab: settings.reuseTab,
-                  autoAction: settings.largePdfAction
-                });
-                return;
-              }
-            }
+    // 2. Fetch PDF (Direct background fetch with automatic tab-context fallback for 403 / anti-hotlink)
+    console.log("[PDF Import] Fetching PDF:", url);
+    let blob = null;
+    let base64Data = null;
+    let filename = "";
+    let mimeType = "application/pdf";
+    let sizeBytes = 0;
+
+    try {
+      const response = await fetch(url, {
+        credentials: "include",
+        headers: {
+          "Accept": "application/pdf,application/xhtml+xml,text/html;q=0.9,*/*;q=0.8"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Download error (${response.status}: ${response.statusText})`);
+      }
+
+      filename = extractFilename(response, url, fallbackTitle);
+      if (!filename.toLowerCase().endsWith(".pdf")) {
+        filename += ".pdf";
+      }
+
+      const contentLength = response.headers.get("content-length");
+      if (contentLength) {
+        sizeBytes = parseInt(contentLength, 10);
+        if (!isNaN(sizeBytes)) {
+          if (sizeBytes > absoluteMaxBytes) {
+            handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
+            return;
+          }
+          if (sizeBytes > thresholdBytes) {
+            await openLargePdfDialog({
+              url: url,
+              filename: filename,
+              sizeBytes: sizeBytes,
+              sourceTabId: sourceTabId,
+              targetAi: aiInfo.id,
+              targetAiName: aiInfo.name,
+              defaultPrompt: settings.defaultPrompt,
+              reuseTab: settings.reuseTab,
+              autoAction: settings.largePdfAction
+            });
+            return;
           }
         }
-      } catch (e) {
-        // Fall through to GET if HEAD fails or CORS blocks HEAD
+      }
+
+      blob = await response.blob();
+      sizeBytes = blob.size;
+      mimeType = blob.type || "application/pdf";
+
+      if (sizeBytes > absoluteMaxBytes) {
+        handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
+        return;
+      }
+
+      if (sizeBytes > thresholdBytes) {
+        await openLargePdfDialog({
+          url: url,
+          filename: filename,
+          sizeBytes: sizeBytes,
+          sourceTabId: sourceTabId,
+          targetAi: aiInfo.id,
+          targetAiName: aiInfo.name,
+          defaultPrompt: settings.defaultPrompt,
+          reuseTab: settings.reuseTab,
+          autoAction: settings.largePdfAction
+        });
+        return;
+      }
+
+      base64Data = await blobToBase64(blob);
+    } catch (bgFetchErr) {
+      console.warn("[PDF Import] Direct background fetch failed:", bgFetchErr.message);
+
+      // If direct background fetch failed (e.g. 403 Forbidden due to anti-hotlinking or session restrictions)
+      // and a source tab exists, fallback to fetching inside the webpage context
+      if (sourceTabId) {
+        console.log(`[PDF Import] Attempting tab-context fetch fallback in tab #${sourceTabId}...`);
+        try {
+          const tabResult = await fetchPdfViaTab(sourceTabId, url);
+          base64Data = tabResult.dataUrl;
+          sizeBytes = tabResult.size;
+          mimeType = tabResult.mimeType || "application/pdf";
+
+          if (sizeBytes > absoluteMaxBytes) {
+            handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
+            return;
+          }
+
+          filename = extractFilename(tabResult.contentDisposition, tabResult.responseUrl || url, fallbackTitle);
+          if (!filename.toLowerCase().endsWith(".pdf")) {
+            filename += ".pdf";
+          }
+
+          if (sizeBytes > thresholdBytes) {
+            await openLargePdfDialog({
+              url: url,
+              filename: filename,
+              sizeBytes: sizeBytes,
+              sourceTabId: sourceTabId,
+              targetAi: aiInfo.id,
+              targetAiName: aiInfo.name,
+              defaultPrompt: settings.defaultPrompt,
+              reuseTab: settings.reuseTab,
+              autoAction: settings.largePdfAction
+            });
+            return;
+          }
+
+          console.log(`[PDF Import] Tab-context fetch succeeded for ${filename} (${(sizeBytes / 1024 / 1024).toFixed(2)} MB)`);
+        } catch (tabFetchErr) {
+          console.error("[PDF Import] Tab-context fetch fallback also failed:", tabFetchErr);
+          throw bgFetchErr;
+        }
+      } else {
+        throw bgFetchErr;
       }
     }
 
-    // 3. Fetch PDF
-    console.log("[PDF Import] Fetching PDF:", url);
-    const response = await fetch(url, {
-      credentials: "include"
-    });
-
-    if (!response.ok) {
-      throw new Error(`Download error (${response.status}: ${response.statusText})`);
-    }
-
-    let filename = extractFilename(response, url, fallbackTitle);
-    if (!filename.toLowerCase().endsWith(".pdf")) {
-      filename += ".pdf";
-    }
-
-    const contentLength = response.headers.get("content-length");
-    if (contentLength) {
-      const sizeBytes = parseInt(contentLength, 10);
-      if (!isNaN(sizeBytes)) {
-        if (sizeBytes > absoluteMaxBytes) {
-          handleSizeLimitExceeded(sizeBytes, absoluteMaxBytes);
-          return;
-        }
-        if (sizeBytes > thresholdBytes) {
-          await openLargePdfDialog({
-            url: url,
-            filename: filename,
-            sizeBytes: sizeBytes,
-            sourceTabId: sourceTabId,
-            targetAi: aiInfo.id,
-            targetAiName: aiInfo.name,
-            defaultPrompt: settings.defaultPrompt,
-            reuseTab: settings.reuseTab,
-            autoAction: settings.largePdfAction
-          });
-          return;
-        }
-      }
-    }
-
-    const blob = await response.blob();
-    if (blob.size > absoluteMaxBytes) {
-      handleSizeLimitExceeded(blob.size, absoluteMaxBytes);
-      return;
-    }
-
-    if (blob.size > thresholdBytes) {
-      await openLargePdfDialog({
-        url: url,
-        filename: filename,
-        sizeBytes: blob.size,
-        sourceTabId: sourceTabId,
-        targetAi: aiInfo.id,
-        targetAiName: aiInfo.name,
-        defaultPrompt: settings.defaultPrompt,
-        reuseTab: settings.reuseTab,
-        autoAction: settings.largePdfAction
-      });
-      return;
-    }
-
-    const base64Data = await blobToBase64(blob);
-    console.log(`[PDF Import] PDF fetched: ${filename}, size: ${(blob.size / 1024 / 1024).toFixed(2)} MB`);
+    console.log(`[PDF Import] PDF ready: ${filename}, size: ${(sizeBytes / 1024 / 1024).toFixed(2)} MB`);
 
     // 4. Store pending PDF
     await chrome.storage.local.set({
       pendingPdf: {
         filename: filename,
         dataUrl: base64Data,
-        size: blob.size,
-        mimeType: blob.type || "application/pdf",
+        size: sizeBytes,
+        mimeType: mimeType,
         prompt: settings.defaultPrompt,
         targetAi: aiInfo.id,
         targetAiName: aiInfo.name,
@@ -796,8 +881,13 @@ async function openOrActivateAi(aiInfo, reuseTab) {
 /**
  * Extract meaningful filename
  */
-function extractFilename(response, url, fallbackTitle) {
-  const disposition = response.headers.get("content-disposition");
+function extractFilename(responseOrDisposition, url, fallbackTitle) {
+  let disposition = "";
+  if (typeof responseOrDisposition === "string") {
+    disposition = responseOrDisposition;
+  } else if (responseOrDisposition && typeof responseOrDisposition.headers?.get === "function") {
+    disposition = responseOrDisposition.headers.get("content-disposition") || "";
+  }
   if (disposition) {
     const matchUtf8 = disposition.match(/filename\*=UTF-8''([^;]+)/i);
     if (matchUtf8 && matchUtf8[1]) {
