@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Format markdown body with diagnostic details
       const manifest = chrome.runtime.getManifest();
-      const extVersion = manifest ? manifest.version : "1.3.5";
+      const extVersion = manifest ? manifest.version : "1.3.6";
       const browserInfo = navigator.userAgent;
 
       const fullBody = [
