@@ -1002,6 +1002,32 @@ async function openOrActivateAi(aiInfo, reuseTab) {
 }
 
 /**
+ * Sanitizes filename by stripping raw HTML tags, publisher slug artifacts, and illegal characters
+ */
+function sanitizeFilename(name) {
+  if (!name) return "";
+  let clean = name;
+  // Decode HTML entities
+  clean = clean
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'");
+  // Strip raw HTML tags (e.g. <div class="title">...</div>, <span>, <i>, <b>)
+  clean = clean.replace(/<[^>]*>/g, " ");
+  // Strip publisher slug artifacts like div-class-title-...-div (e.g. Cambridge Core)
+  clean = clean.replace(/^(?:div[-_]?class[-_]?title[-_]?|div[-_]?title[-_]?)/i, "");
+  clean = clean.replace(/[-_]div(?=\.pdf$|$)/i, "");
+  // Replace illegal filename characters
+  clean = clean.replace(/[\\/:*?"<>|]/g, "_");
+  // Normalize whitespace and underscores
+  clean = clean.replace(/\s+/g, " ").replace(/_+/g, "_").trim();
+  clean = clean.replace(/^[_\s-]+|[_\s-]+$/g, "");
+  return clean;
+}
+
+/**
  * Extract meaningful filename
  */
 function extractFilename(responseOrDisposition, url, fallbackTitle) {
@@ -1014,11 +1040,12 @@ function extractFilename(responseOrDisposition, url, fallbackTitle) {
   if (disposition) {
     const matchUtf8 = disposition.match(/filename\*=UTF-8''([^;]+)/i);
     if (matchUtf8 && matchUtf8[1]) {
-      return decodeURIComponent(matchUtf8[1].replace(/["']/g, ""));
+      const decoded = decodeURIComponent(matchUtf8[1].replace(/["']/g, ""));
+      return sanitizeFilename(decoded);
     }
     const matchSimple = disposition.match(/filename="?([^";]+)"?/i);
     if (matchSimple && matchSimple[1]) {
-      return matchSimple[1].trim();
+      return sanitizeFilename(matchSimple[1].trim());
     }
   }
 
@@ -1029,17 +1056,23 @@ function extractFilename(responseOrDisposition, url, fallbackTitle) {
     if (parts.length > 0) {
       const lastPart = decodeURIComponent(parts[parts.length - 1]);
       if (lastPart.toLowerCase().endsWith(".pdf")) {
-        return lastPart;
+        const sanitized = sanitizeFilename(lastPart);
+        if (sanitized && sanitized !== ".pdf") {
+          return sanitized.endsWith(".pdf") ? sanitized : sanitized + ".pdf";
+        }
       }
       if (parts.length >= 2 && lastPart) {
-        return lastPart + ".pdf";
+        const sanitized = sanitizeFilename(lastPart);
+        if (sanitized && sanitized !== ".pdf") {
+          return sanitized.endsWith(".pdf") ? sanitized : sanitized + ".pdf";
+        }
       }
     }
   } catch (e) {}
 
   if (fallbackTitle && fallbackTitle !== "document.pdf") {
-    const cleaned = fallbackTitle.replace(/[\\/:*?"<>|]/g, "_").trim();
-    if (cleaned.length > 0) {
+    const cleaned = sanitizeFilename(fallbackTitle);
+    if (cleaned.length > 0 && cleaned !== ".pdf") {
       return cleaned.endsWith(".pdf") ? cleaned : cleaned + ".pdf";
     }
   }
