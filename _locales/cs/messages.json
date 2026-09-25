@@ -261,6 +261,18 @@
     "message": "Nepodařilo se vložit soubor automaticky. Připojte soubor ručně prosím.",
     "description": "Toast message when automatic upload fails"
   },
+  "toastUnconfirmedWithAction": {
+    "message": "Soubor byl odeslán, ale příloha nebyla potvrzena.",
+    "description": "Toast message when file was sent once but confirmation timed out"
+  },
+  "toastRetryPaste": {
+    "message": "Zkusit znovu ze schránky",
+    "description": "Action button text to retry upload via clipboard paste"
+  },
+  "toastRetryDrop": {
+    "message": "Zkusit přetažením",
+    "description": "Action button text to retry upload via drag and drop"
+  },
   "prefContextMenuTitle": {
     "message": "Položka v menu pravého tlačítka",
     "description": "Title for context menu toggle"

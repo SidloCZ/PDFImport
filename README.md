@@ -79,6 +79,7 @@ Right-click the extension icon and select **Options**:
 * **Tab reuse**: Choose whether to switch to an already opened AI tab or always open a new tab.
 * **Right-Click Context Menu**: Choose whether to always display the item in the right-click menu or show it contextually only for links, images, and open PDFs.
 * **Default prompt**: Configure a template prompt that is automatically typed into the chat after the PDF is attached (with built-in presets for **Quick Summary**, **Key Points**, **Peer Review**, and **Feynman**).
+* **Single-Attempt Upload & Confirmation**: Never cascades duplicate drops or pastes. Uses scoped polling verification (up to 5 seconds) to accommodate server upload times, with a one-click retry prompt if DOM confirmation times out.
 * **File Size Limits & Large PDF Action**: Configure the large file threshold (20, 30, 50, 100 MB) and preferred action (always ask, auto-compress, or text only).
 * **Feedback & Issue Reporting**: Submit feature proposals or bug reports directly from Options with automatic diagnostic environment info pre-filled into a new GitHub Issue.
 * **Extension Language**: Switch between English and Czech.
@@ -119,4 +120,4 @@ To create a clean distribution ZIP package for Chrome Web Store and Opera Add-on
 python scripts/pack_extension.py
 ```
 
-The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.2.0.zip`).
+The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.2.1.zip`).

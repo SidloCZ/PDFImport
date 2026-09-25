@@ -261,6 +261,18 @@
     "message": "Could not insert file automatically. Please attach the file manually.",
     "description": "Toast message when automatic upload fails"
   },
+  "toastUnconfirmedWithAction": {
+    "message": "File was sent, but attachment was not confirmed.",
+    "description": "Toast message when file was sent once but confirmation timed out"
+  },
+  "toastRetryPaste": {
+    "message": "Retry with Paste",
+    "description": "Action button text to retry upload via clipboard paste"
+  },
+  "toastRetryDrop": {
+    "message": "Retry with Drop",
+    "description": "Action button text to retry upload via drag and drop"
+  },
   "prefContextMenuTitle": {
     "message": "Right-Click Context Menu",
     "description": "Title for context menu toggle"

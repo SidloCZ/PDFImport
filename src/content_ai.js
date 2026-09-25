@@ -4,8 +4,14 @@
  */
 
 (() => {
+  if (window.__pdfImportInjected) {
+    return;
+  }
+  window.__pdfImportInjected = true;
+
   let isProcessing = false;
   let lastReceivedFile = null;
+  let lastPendingPrompt = "";
 
   const hostname = window.location.hostname.toLowerCase();
 
@@ -85,6 +91,9 @@
         return;
       }
 
+      // Immediately claim and clear pending PDF to prevent any duplicate concurrent runs
+      await chrome.storage.local.remove("pendingPdf");
+
       isProcessing = true;
       const targetAiName = pending.targetAiName || currentPlatform.name;
       log(`Pending PDF found: ${pending.filename} (${(pending.size / 1024).toFixed(1)} KB) targeting ${targetAiName}`);
@@ -99,6 +108,7 @@
       });
 
       lastReceivedFile = file;
+      lastPendingPrompt = pending.prompt || "";
 
       // Wait for chat input
       log(`Waiting for ${targetAiName} chat input ready...`);
@@ -110,11 +120,8 @@
         return;
       }
 
-      // Execute multi-tier upload workflow
-      await executeUploadWorkflow(file, pending.prompt, targetAiName);
-
-      // Clear pending PDF upon completion
-      await chrome.storage.local.remove("pendingPdf");
+      // Execute single upload attempt with verification
+      await executeUploadWorkflow(file, lastPendingPrompt, targetAiName);
 
     } catch (err) {
       log(`Error: ${err.message}`, "error");
@@ -126,141 +133,193 @@
   }
 
   /**
-   * Multi-tier resilient upload workflow
+   * Scopes chat composer container to avoid false positive matches elsewhere in DOM
+   */
+  function findChatInputArea() {
+    const input = findChatInput();
+    if (!input) return document.body;
+    return (
+      input.closest("form") ||
+      input.closest(".input-area-container") ||
+      input.closest(".input-area") ||
+      input.closest("[class*='chat-input']") ||
+      input.closest("[class*='input-container']") ||
+      input.closest("[class*='composer']") ||
+      input.parentElement?.parentElement ||
+      document.body
+    );
+  }
+
+  /**
+   * Counts visible attachment chips within the chat input area
+   */
+  function countAttachments() {
+    const inputArea = findChatInputArea();
+    const selectors = [
+      'mat-chip',
+      '[class*="attachment"]',
+      '[class*="file-preview"]',
+      '[class*="file-chip"]',
+      '[class*="file-item"]',
+      '[data-testid*="attachment"]',
+      '[data-testid*="file"]',
+      '.file-container',
+      '[class*="upload-item"]',
+      '[class*="file-card"]',
+      'button[aria-label*="remove" i]',
+      'button[aria-label*="delete" i]',
+      'button[aria-label*="odstranit" i]'
+    ];
+
+    let count = 0;
+    const seen = new Set();
+    for (const sel of selectors) {
+      const elements = inputArea.querySelectorAll(sel);
+      elements.forEach(el => {
+        if (el && el.offsetParent !== null && !seen.has(el)) {
+          seen.add(el);
+          count++;
+        }
+      });
+    }
+    return count;
+  }
+
+  /**
+   * Checks if an attachment card/chip has appeared in the DOM
+   */
+  function checkIfAttachmentAppeared(initialCount = 0, filename = "") {
+    const currentCount = countAttachments();
+    if (currentCount > initialCount) {
+      return true;
+    }
+
+    if (filename) {
+      const inputArea = findChatInputArea();
+      const baseName = filename.replace(/\.pdf$/i, "").slice(0, 15);
+      if (baseName && inputArea.textContent.includes(baseName)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Polling loop to wait for attachment confirmation
+   */
+  async function waitForAttachment(timeoutMs = 5000, initialCount = 0, filename = "") {
+    const pollInterval = 250;
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeoutMs) {
+      if (checkIfAttachmentAppeared(initialCount, filename)) {
+        return true;
+      }
+      await sleep(pollInterval);
+    }
+    return checkIfAttachmentAppeared(initialCount, filename);
+  }
+
+  /**
+   * Single-attempt upload workflow:
+   * Only performs ONE upload method, verifies via polling, and offers user retry if unconfirmed.
    */
   async function executeUploadWorkflow(file, optionalPrompt, targetAiName) {
-    log(`--- Starting insertion workflow: ${file.name} ---`);
-    let success = false;
+    log(`--- Starting single-import workflow: ${file.name} ---`);
+    const initialCount = countAttachments();
+    log(`Initial attachment count: ${initialCount}`);
 
-    // STEP 1: Look for suitable input[type="file"]
-    log("STEP 1: Inspecting input[type='file'] elements...");
-    const inputs = Array.from(document.querySelectorAll('input[type="file"]'));
-    log(`Found ${inputs.length} input[type='file'] element(s) on page.`);
+    const chatInput = findChatInput();
+    if (!chatInput) {
+      log("Chat input missing during upload execution.", "error");
+      return;
+    }
 
-    inputs.forEach((inp, i) => {
-      log(`  Input #${i}: id="${inp.id || ''}", accept="${inp.accept || ''}", visible=${inp.offsetParent !== null}`);
+    // Inspect if a direct file input matching pdf exists in chat area
+    const inputArea = findChatInputArea();
+    const directInput = Array.from(inputArea.querySelectorAll('input[type="file"]')).find(inp => {
+      const acc = (inp.accept || "").toLowerCase();
+      return acc.includes("pdf") || acc.includes("*") || acc.includes("document");
     });
 
-    const chatInput = inputs.find(inp => {
-      const acc = (inp.accept || "").toLowerCase();
-      return acc.includes("pdf") || acc.includes("txt") || acc.includes("text") || acc.includes("*") || acc.includes("document") || inp.multiple;
-    }) || inputs[0];
-
-    if (chatInput) {
-      log(`Assigning file to input[type='file'] (accept="${chatInput.accept || 'all'}")...`);
-      const assigned = assignFilesToInput(chatInput, file);
-      if (assigned) {
-        log("Waiting 1.5s for response...");
-        await sleep(1500);
-        if (checkIfAttachmentAppeared()) {
-          log("[OK] File detected in chat interface after input change!", "success");
-          success = true;
-        } else {
-          log("Input change did not result in confirmed attachment chip, trying Step 2.");
-        }
-      }
+    let methodUsed = "drop";
+    if (directInput) {
+      methodUsed = "fileInput";
+      log(`Attempting native file input assignment (accept="${directInput.accept || 'all'}")...`);
+      assignFilesToInput(directInput, file);
+    } else {
+      methodUsed = "drop";
+      log(`Attempting single Drag & Drop on chat input (<${chatInput.tagName.toLowerCase()}>)...`);
+      simulateDrop(chatInput, file);
     }
 
-    // STEP 2: Click attach / plus button to reveal / trigger input
-    if (!success) {
-      log("STEP 2: Searching for attach / upload button...");
-      const attachBtn = findAttachButton();
-      if (attachBtn) {
-        const btnLabel = attachBtn.getAttribute("aria-label") || attachBtn.getAttribute("title") || attachBtn.textContent.trim();
-        log(`Attach button found (<${attachBtn.tagName.toLowerCase()}> label="${btnLabel}"). Clicking...`);
-        attachBtn.click();
-        await sleep(600);
-
-        const newInputs = Array.from(document.querySelectorAll('input[type="file"]'));
-        log(`After click, ${newInputs.length} input[type='file'] element(s) present.`);
-
-        const menuItems = Array.from(document.querySelectorAll('[role="menuitem"], .mat-mdc-menu-item, button, li, a'));
-        const uploadItem = menuItems.find(el => {
-          const t = (el.textContent || el.getAttribute("aria-label") || "").toLowerCase();
-          return t.includes("upload") || t.includes("nahrát") || t.includes("soubor") || t.includes("file") || t.includes("上传") || t.includes("文件");
-        });
-
-        if (uploadItem) {
-          log(`Found menu upload item: "${uploadItem.textContent.trim().slice(0, 30)}". Clicking...`);
-          uploadItem.click();
-          await sleep(500);
-        }
-
-        const freshInput = Array.from(document.querySelectorAll('input[type="file"]')).pop();
-        if (freshInput) {
-          log("Assigning file to latest input[type='file']...");
-          assignFilesToInput(freshInput, file);
-          await sleep(1500);
-          if (checkIfAttachmentAppeared()) {
-            log("[OK] File detected in chat interface after attach button trigger!", "success");
-            success = true;
-          }
-        }
-      } else {
-        log("Attach button not found.");
-      }
-    }
-
-    // STEP 3: Drag & Drop simulation
-    if (!success) {
-      log("STEP 3: Simulating Drag & Drop...");
-      const targets = [
-        findChatInput(),
-        document.querySelector("#prompt-textarea"),
-        document.querySelector("rich-textarea"),
-        document.querySelector(".ProseMirror"),
-        document.querySelector(".input-area-container"),
-        document.querySelector("form"),
-        document.querySelector("main"),
-        document.body
-      ].filter(Boolean);
-
-      for (const target of targets) {
-        log(`Simulating drop on <${target.tagName.toLowerCase()} class="${(target.className || '').slice(0, 30)}">...`);
-        simulateDrop(target, file);
-        await sleep(800);
-        if (checkIfAttachmentAppeared()) {
-          log("[OK] Attachment verified after Drag & Drop!", "success");
-          success = true;
-          break;
-        }
-      }
-    }
-
-    // STEP 4: Clipboard Paste simulation
-    if (!success) {
-      log("STEP 4: Simulating Clipboard Paste event...");
-      const editable = findChatInput();
-      if (editable) {
-        editable.focus();
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        const pasteEvent = new ClipboardEvent("paste", {
-          bubbles: true,
-          cancelable: true,
-          clipboardData: dt
-        });
-        editable.dispatchEvent(pasteEvent);
-        log("Paste event dispatched, checking...");
-        await sleep(1500);
-        if (checkIfAttachmentAppeared()) {
-          log("[OK] Attachment verified after Paste event!", "success");
-          success = true;
-        }
-      }
-    }
-
-    // Evaluate result
+    log(`Waiting up to 5s for attachment confirmation...`);
+    const confirmed = await waitForAttachment(5000, initialCount, file.name);
     const displayAi = targetAiName || currentPlatform.name;
-    if (success) {
+
+    if (confirmed) {
+      log(`[OK] Attachment verified via ${methodUsed}!`, "success");
       showToast(i18n("toastSuccess", [escapeHtml(file.name), displayAi], `File <strong>${escapeHtml(file.name)}</strong> was inserted into ${displayAi}!`), "success");
       if (optionalPrompt && optionalPrompt.trim().length > 0) {
-        log(`Typing prompt text into chat input...`);
+        log("Typing prompt text into chat input...");
         await insertPromptText(optionalPrompt.trim());
       }
     } else {
+      log(`Automatic attachment was not confirmed after single ${methodUsed} attempt.`, "warning");
+      const secondaryMethod = methodUsed === "drop" ? "paste" : "drop";
+      const retryLabel = secondaryMethod === "paste"
+        ? i18n("toastRetryPaste", null, "Retry with Paste")
+        : i18n("toastRetryDrop", null, "Retry with Drop");
+
+      showToast(
+        i18n("toastUnconfirmedWithAction", null, "File was sent, but attachment was not confirmed."),
+        "warning",
+        {
+          label: retryLabel,
+          onClick: () => {
+            handleSecondaryRetry(file, secondaryMethod, optionalPrompt, targetAiName);
+          }
+        },
+        12000
+      );
+    }
+  }
+
+  /**
+   * User-triggered retry using secondary method
+   */
+  async function handleSecondaryRetry(file, method, optionalPrompt, targetAiName) {
+    log(`--- Retrying insertion using ${method}: ${file.name} ---`);
+    const initialCount = countAttachments();
+    const chatInput = findChatInput();
+    if (!chatInput) {
+      showToast(i18n("toastChatNotFound", [targetAiName || currentPlatform.name], "Chat input not found."), "error");
+      return;
+    }
+
+    if (method === "paste") {
+      log("Simulating Clipboard Paste event on chat input...");
+      simulatePaste(chatInput, file);
+    } else if (method === "drop") {
+      log("Simulating Drag & Drop on chat input...");
+      simulateDrop(chatInput, file);
+    }
+
+    showToast(i18n("toastProcessing", [escapeHtml(file.name)], `Processing: <strong>${escapeHtml(file.name)}</strong>...`), "info");
+
+    const confirmed = await waitForAttachment(5000, initialCount, file.name);
+    const displayAi = targetAiName || currentPlatform.name;
+
+    if (confirmed) {
+      log(`[OK] Attachment verified on retry via ${method}!`, "success");
+      showToast(i18n("toastSuccess", [escapeHtml(file.name), displayAi], `File <strong>${escapeHtml(file.name)}</strong> was inserted into ${displayAi}!`), "success");
+      if (optionalPrompt && optionalPrompt.trim().length > 0) {
+        log("Typing prompt text into chat input...");
+        await insertPromptText(optionalPrompt.trim());
+      }
+    } else {
+      log(`[FAIL] Retry via ${method} also unconfirmed.`, "error");
       showToast(i18n("toastFallbackWarning", null, "Could not insert file automatically. Please attach the file manually."), "warning");
-      log("[FAIL] Automatic attachment insertion was not confirmed by DOM.", "error");
     }
   }
 
@@ -287,33 +346,22 @@
     element.dispatchEvent(new DragEvent("drop", { bubbles: true, cancelable: true, dataTransfer: dt }));
   }
 
-  /**
-   * Checks if an attachment card/chip has appeared in the DOM
-   */
-  function checkIfAttachmentAppeared() {
-    const selectors = [
-      'mat-chip',
-      '[class*="attachment"]',
-      '[class*="file-preview"]',
-      '[class*="file-chip"]',
-      '[class*="file-item"]',
-      '[data-testid*="attachment"]',
-      '[data-testid*="file"]',
-      'button[aria-label*="remove" i]',
-      'button[aria-label*="delete" i]',
-      'button[aria-label*="odstranit" i]',
-      'button[aria-label*="删除" i]',
-      '.file-container'
-    ];
-
-    for (const sel of selectors) {
-      const el = document.querySelector(sel);
-      if (el && el.offsetParent !== null) {
-        log(`Attachment element verified via selector: "${sel}"`);
-        return true;
-      }
+  function simulatePaste(element, file) {
+    try {
+      element.focus();
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const pasteEvent = new ClipboardEvent("paste", {
+        bubbles: true,
+        cancelable: true,
+        clipboardData: dt
+      });
+      element.dispatchEvent(pasteEvent);
+      return true;
+    } catch (e) {
+      log(`Error in simulatePaste: ${e.message}`, "error");
+      return false;
     }
-    return false;
   }
 
   function findAttachButton() {
@@ -398,7 +446,7 @@
   /**
    * Neo-brutalist Toast Notification
    */
-  function showToast(htmlContent, type = "info") {
+  function showToast(htmlContent, type = "info", action = null, timeout = 6000) {
     const id = "pdf-import-toast";
     let toast = document.getElementById(id);
     if (!toast) {
@@ -427,26 +475,43 @@
       font-size: 13px;
       font-weight: 700;
       line-height: 1.4;
-      max-width: 380px;
+      max-width: 440px;
       display: flex;
       align-items: center;
       gap: 12px;
     `;
 
+    let actionHtml = "";
+    if (action && action.label) {
+      actionHtml = `<button id="pdf-toast-action" style="background: #000000; color: #ffffff; border: 2px solid #000000; padding: 6px 12px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; border-radius: 0;">${escapeHtml(action.label)}</button>`;
+    }
+
     toast.innerHTML = `
       <div style="flex: 1;">${htmlContent}</div>
-      <button id="pdf-toast-close" style="background: none; border: none; font-size: 16px; cursor: pointer; font-weight: 900; line-height: 1;">x</button>
+      ${actionHtml}
+      <button id="pdf-toast-close" style="background: none; border: none; font-size: 16px; cursor: pointer; font-weight: 900; line-height: 1; padding: 0 4px;" aria-label="Close">x</button>
     `;
+
+    if (action && typeof action.onClick === "function") {
+      const actionBtn = document.getElementById("pdf-toast-action");
+      if (actionBtn) {
+        actionBtn.addEventListener("click", () => {
+          toast.remove();
+          action.onClick();
+        });
+      }
+    }
 
     document.getElementById("pdf-toast-close").addEventListener("click", () => {
       toast.remove();
     });
 
-    setTimeout(() => {
+    if (toast.__timer) clearTimeout(toast.__timer);
+    toast.__timer = setTimeout(() => {
       if (document.getElementById(id)) {
         toast.remove();
       }
-    }, 6000);
+    }, timeout);
   }
 
   function escapeHtml(str) {

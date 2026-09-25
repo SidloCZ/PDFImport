@@ -79,6 +79,7 @@ Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Op
 * **Použít již otevřenou záložku**: Zvolte, zda se má přepnout do otevřené záložky dané AI, nebo otevírat nová.
 * **Položka v menu pravého tlačítka**: Volba mezi trvalým zobrazením na všech stránkách nebo pouze kontextovým zobrazením u odkazů, obrázků a otevřených PDF.
 * **Automatický prompt**: Nastavte šablonu dotazu, která se po vložení souboru automaticky vyplní do chatu (k dispozici jsou předvolby **Rychlé shrnutí**, **Klíčové body**, **Peer Review** a **Feynman**).
+* **Jediný pokus o vložení a spolehlivé ověření**: Nikdy nespouští vícenásobné přetažení nebo vložení současně. Využívá zacílené dotazování na přítomnost čipu přílohy (až 5 sekund) zohledňující dobu nahrávání na server a v případě nepotvrzení nabídne tlačítko pro okamžité opakování alternativní metodou.
 * **Limity velikosti a akce při velkém PDF**: Nastavení prahové hodnoty (20, 30, 50, 100 MB) a výchozí akce (vždy se zeptat, automaticky komprimovat, pouze text).
 * **Návrhy změn a hlášení chyb**: Přímo ze stránky nastavení můžete odeslat námět nebo nahlásit chybu s automatickým předvyplněním textu i diagnostických dat do nového GitHub Issue.
 * **Jazyk rozšíření**: Přepínejte mezi češtinou a angličtinou.
@@ -119,4 +120,4 @@ Pro vytvoření čistého distribučního ZIP archivu pro Chrome Web Store a Ope
 python scripts/pack_extension.py
 ```
 
-Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.2.0.zip`).
+Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.2.1.zip`).

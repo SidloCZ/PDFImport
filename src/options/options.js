@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentLang = "en";
         await chrome.storage.sync.set({ userLanguage: "en" });
         localizePage("en");
-        chrome.runtime.sendMessage({ action: "LANGUAGE_CHANGED", language: "en" }).catch(() => {});
+        chrome.runtime.sendMessage({ action: "LANGUAGE_CHANGED", language: "en" }).catch(() => { });
       }
     });
   }
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentLang = "cs";
         await chrome.storage.sync.set({ userLanguage: "cs" });
         localizePage("cs");
-        chrome.runtime.sendMessage({ action: "LANGUAGE_CHANGED", language: "cs" }).catch(() => {});
+        chrome.runtime.sendMessage({ action: "LANGUAGE_CHANGED", language: "cs" }).catch(() => { });
       }
     });
   }
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       action: "CONTEXT_MENUS_CHANGED",
       targetAi: selectedAi,
       customAiUrl: customUrlVal
-    }).catch(() => {});
+    }).catch(() => { });
 
     saveStatus.textContent = getMsg("statusSaved") || "Settings saved!";
     saveBtn.disabled = false;
@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Format markdown body with diagnostic details
       const manifest = chrome.runtime.getManifest();
-      const extVersion = manifest ? manifest.version : "1.2.0";
+      const extVersion = manifest ? manifest.version : "1.2.1";
       const browserInfo = navigator.userAgent;
 
       const fullBody = [
