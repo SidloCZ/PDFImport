@@ -67,6 +67,7 @@ Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journ
 
 * **Trvalé nebo kontextové zobrazení**: Nastavitelné v Možnostech. Při zaškrtnutí je položka k dispozici pořád na všech stránkách. Při odškrtnutí se zobrazuje pouze kontextově: u odkazů, obrázků a otevřených PDF.
 * **Detekce PDF odkazů**: Při kliknutí pravým tlačítkem na odkaz se nabízí možnost **Odeslat odkazované PDF**.
+* *Poznámka k externím PDF čtečkám (např. Google Scholar PDF Reader)*: Pokud dokument prohlížíte v izolovaném prohlížeči jiného rozšíření, bezpečnostní pravidla Chromia brání cizím doplňkům vkládat kontextové menu do tohoto vnitřního rámce. V takovém případě použijte zkratku **`Alt + G`** nebo **Ikonu v liště** (obojí pracuje přímo s URL adresou aktivní záložky), případně klikněte pravým tlačítkem na odkaz na PDF ještě před jeho otevřením.
 
 ### Možnost 4: Rychlé tlačítko přímo na stránkách
 
@@ -126,4 +127,4 @@ Pro vytvoření čistého distribučního ZIP archivu pro Chrome Web Store a Ope
 python scripts/pack_extension.py
 ```
 
-Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.4.1.zip`).
+Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.4.2.zip`).

@@ -67,6 +67,7 @@ When viewing any PDF article (e.g. [AEM Journal PDF](https://journals.asm.org/do
 
 * **Always or Contextual Modes**: Configurable in Options. When enabled, always available everywhere. When set to contextual mode, it appears only on links, images, and open PDF documents.
 * **Direct PDF Link Detection**: Right-clicking a link shows **Send linked PDF to [Selected AI]**.
+* *Note on third-party PDF readers (e.g. Google Scholar PDF Reader)*: When reading PDFs inside isolated extension viewers, Chromium security restrictions prevent external extensions from injecting context menus into the reader frame. In such cases, use **`Alt + G`** or the **Toolbar Icon** (both operate on the active tab URL directly), or right-click the PDF link before opening it.
 
 ### Option 4: In-Page Quick Import Button
 
@@ -126,4 +127,4 @@ To create a clean distribution ZIP package for Chrome Web Store and Opera Add-on
 python scripts/pack_extension.py
 ```
 
-The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.4.1.zip`).
+The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.4.2.zip`).
