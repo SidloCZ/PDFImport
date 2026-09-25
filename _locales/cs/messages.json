@@ -95,6 +95,14 @@
     "message": "Kontextové menu na odkazu nebo v PDF dokumentu",
     "description": "Description for context menu"
   },
+  "shortcutWebBtnBadge": {
+    "message": "Tlačítko na webu",
+    "description": "Badge label for in-page button"
+  },
+  "shortcutWebBtnDesc": {
+    "message": "Rychlé tlačítko AI přímo vedle PDF odkazů a tlačítek na stránkách",
+    "description": "Description for in-page button"
+  },
   "sectionPreferences": {
     "message": "PŘEDVOLBY",
     "description": "Heading for preferences section"
@@ -280,6 +288,14 @@
   "prefContextMenuDesc": {
     "message": "Pokud je zaškrtnuto, položka je v menu pravého tlačítka pořád. Pokud je odškrtnuto, zobrazuje se pouze u odkazů, obrázků a otevřených PDF.",
     "description": "Description for context menu toggle"
+  },
+  "prefPagePdfButtonsTitle": {
+    "message": "Tlačítko pro rychlý import na webu",
+    "description": "Title for in-page button toggle"
+  },
+  "prefPagePdfButtonsDesc": {
+    "message": "Zobrazuje nenápadné tlačítko vedle odkazů a tlačítek na PDF dokumenty na webových stránkách.",
+    "description": "Description for in-page button toggle"
   },
   "optionsLargePdfTitle": {
     "message": "Zpracování velkých PDF souborů",

@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     customAiUrl: "https://openrouter.ai/chat",
     reuseTab: true,
     enableContextMenu: true,
+    enablePagePdfButtons: true,
     largePdfThreshold: "30",
     largePdfAction: "ask",
     defaultPrompt: "",
@@ -32,9 +33,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const largePdfThresholdEl = document.getElementById("largePdfThreshold");
   const largePdfActionEl = document.getElementById("largePdfAction");
   const enableContextMenuEl = document.getElementById("enableContextMenu");
+  const enablePagePdfButtonsEl = document.getElementById("enablePagePdfButtons");
   if (largePdfThresholdEl) largePdfThresholdEl.value = String(settings.largePdfThreshold || "30");
   if (largePdfActionEl) largePdfActionEl.value = settings.largePdfAction || "ask";
   if (enableContextMenuEl) enableContextMenuEl.checked = settings.enableContextMenu !== false;
+  if (enablePagePdfButtonsEl) enablePagePdfButtonsEl.checked = settings.enablePagePdfButtons !== false;
 
   selectedAi = settings.targetAi || "gemini";
   if (customAiUrlEl) {
@@ -162,6 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       customAiUrl: customUrlVal,
       reuseTab: reuseTabEl.checked,
       enableContextMenu: enableContextMenuEl ? enableContextMenuEl.checked : true,
+      enablePagePdfButtons: enablePagePdfButtonsEl ? enablePagePdfButtonsEl.checked : true,
       largePdfThreshold: largePdfThresholdEl ? largePdfThresholdEl.value : "30",
       largePdfAction: largePdfActionEl ? largePdfActionEl.value : "ask",
       defaultPrompt: defaultPromptEl.value,
@@ -226,7 +230,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Format markdown body with diagnostic details
       const manifest = chrome.runtime.getManifest();
-      const extVersion = manifest ? manifest.version : "1.3.6";
+      const extVersion = manifest ? manifest.version : "1.4.0";
       const browserInfo = navigator.userAgent;
 
       const fullBody = [

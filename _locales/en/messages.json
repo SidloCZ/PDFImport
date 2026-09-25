@@ -95,6 +95,14 @@
     "message": "Context menu on link or in PDF document",
     "description": "Description for context menu"
   },
+  "shortcutWebBtnBadge": {
+    "message": "Web Button",
+    "description": "Badge label for in-page button"
+  },
+  "shortcutWebBtnDesc": {
+    "message": "Instant AI button next to PDF links and buttons on websites",
+    "description": "Description for in-page button"
+  },
   "sectionPreferences": {
     "message": "PREFERENCES",
     "description": "Heading for preferences section"
@@ -280,6 +288,14 @@
   "prefContextMenuDesc": {
     "message": "When checked, always shows in the context menu. When unchecked, only shows for links, images, and open PDFs.",
     "description": "Description for context menu toggle"
+  },
+  "prefPagePdfButtonsTitle": {
+    "message": "Quick Import Button on Web Pages",
+    "description": "Title for in-page button toggle"
+  },
+  "prefPagePdfButtonsDesc": {
+    "message": "Shows an unobtrusive import button next to PDF links and buttons across the web.",
+    "description": "Description for in-page button toggle"
   },
   "optionsLargePdfTitle": {
     "message": "Large PDF Document Handling",

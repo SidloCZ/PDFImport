@@ -68,6 +68,11 @@ Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journ
 * **Trvalé nebo kontextové zobrazení**: Nastavitelné v Možnostech. Při zaškrtnutí je položka k dispozici pořád na všech stránkách. Při odškrtnutí se zobrazuje pouze kontextově: u odkazů, obrázků a otevřených PDF.
 * **Detekce PDF odkazů**: Při kliknutí pravým tlačítkem na odkaz se nabízí možnost **Odeslat odkazované PDF**.
 
+### Možnost 4: Rychlé tlačítko přímo na stránkách
+
+* **Automatická detekce**: Při procházení webových stránek s PDF odkazy nebo tlačítky pro stažení se přímo vedle nich zobrazí decentní minimalistické tlačítko **AI**.
+* **Přímý import na 1 klik**: Kliknutím se PDF okamžitě načte a odešle do nastavené AI bez nutnosti otvírat kontextové menu nebo soubor manuálně stahovat.
+
 ---
 
 ## Nastavení a volba cílové AI
@@ -78,6 +83,7 @@ Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Op
 * **Vlastní adresa AI chatu**: Při volbě „Custom URL“ zadejte libovolnou adresu (např. `https://openrouter.ai/chat`).
 * **Použít již otevřenou záložku**: Zvolte, zda se má přepnout do otevřené záložky dané AI, nebo otevírat nová.
 * **Položka v menu pravého tlačítka**: Volba mezi trvalým zobrazením na všech stránkách nebo pouze kontextovým zobrazením u odkazů, obrázků a otevřených PDF.
+* **Tlačítko pro rychlý import na webu**: Možnost zapnout nebo vypnout zobrazování tlačítka vedle PDF odkazů a tlačítek na stránkách.
 * **Automatický prompt**: Nastavte šablonu dotazu, která se po vložení souboru automaticky vyplní do chatu (k dispozici jsou předvolby **Rychlé shrnutí**, **Klíčové body**, **Peer Review** a **Feynman**).
 * **Jediný pokus o vložení a spolehlivé ověření**: Nikdy nespouští vícenásobné přetažení nebo vložení současně. Využívá zacílené dotazování na přítomnost čipu přílohy (až 5 sekund) zohledňující dobu nahrávání na server a v případě nepotvrzení nabídne tlačítko pro okamžité opakování alternativní metodou.
 * **Limity velikosti a akce při velkém PDF**: Nastavení prahové hodnoty (20, 30, 50, 100 MB) a výchozí akce (vždy se zeptat, automaticky komprimovat, pouze text).
@@ -120,4 +126,4 @@ Pro vytvoření čistého distribučního ZIP archivu pro Chrome Web Store a Ope
 python scripts/pack_extension.py
 ```
 
-Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.3.6.zip`).
+Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.4.0.zip`).

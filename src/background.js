@@ -448,6 +448,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
     })();
     sendResponse({ status: "ok" });
+  } else if (message.action === "PROCESS_PDF_URL") {
+    (async () => {
+      try {
+        await processPdfUrl(
+          message.url,
+          message.title || "document.pdf",
+          sender.tab ? sender.tab.id : null
+        );
+      } catch (err) {
+        console.error("[PDF Import] Error processing PDF URL from web page button:", err);
+      }
+    })();
+    sendResponse({ status: "ok" });
+    return true;
   }
 });
 

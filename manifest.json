@@ -3,7 +3,7 @@
   "name": "__MSG_extensionName__",
   "short_name": "__MSG_extensionShortName__",
   "default_locale": "en",
-  "version": "1.3.6",
+  "version": "1.4.0",
   "description": "__MSG_extensionDescription__",
   "author": "SidloCZ",
   "homepage_url": "https://github.com/SidloCZ/PDFImport",
@@ -72,6 +72,39 @@
         "src/content_ai.js"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "exclude_matches": [
+        "https://claude.ai/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://kimi.com/*",
+        "https://kimi.moonshot.cn/*",
+        "https://yuanbao.tencent.com/*",
+        "https://hunyuan.tencent.com/*",
+        "https://chat.deepseek.com/*",
+        "https://gemini.google.com/*",
+        "https://chatglm.cn/*",
+        "https://z.ai/*",
+        "https://www.meta.ai/*",
+        "https://tongyi.ai/*",
+        "https://qwen.ai/*",
+        "https://grok.com/*",
+        "https://openrouter.ai/*",
+        "https://www.perplexity.ai/*",
+        "https://perplexity.ai/*",
+        "https://copilot.microsoft.com/*"
+      ],
+      "js": [
+        "src/content_links.js"
+      ],
+      "css": [
+        "src/content_links.css"
+      ],
+      "run_at": "document_idle"
     }
   ],
   "icons": {

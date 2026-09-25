@@ -68,6 +68,11 @@ When viewing any PDF article (e.g. [AEM Journal PDF](https://journals.asm.org/do
 * **Always or Contextual Modes**: Configurable in Options. When enabled, always available everywhere. When set to contextual mode, it appears only on links, images, and open PDF documents.
 * **Direct PDF Link Detection**: Right-clicking a link shows **Send linked PDF to [Selected AI]**.
 
+### Option 4: In-Page Quick Import Button
+
+* **Automatic Detection**: When browsing web pages containing PDF links or download buttons, an unobtrusive **AI** button appears directly beside them.
+* **1-Click Direct Import**: Clicking it immediately fetches the PDF and routes it to your active AI platform without needing context menus or manual downloads.
+
 ---
 
 ## Preferences and Target AI Selection
@@ -78,6 +83,7 @@ Right-click the extension icon and select **Options**:
 * **Custom AI Web URL**: When "Custom URL" is selected, enter any URL (e.g. `https://openrouter.ai/chat`).
 * **Tab reuse**: Choose whether to switch to an already opened AI tab or always open a new tab.
 * **Right-Click Context Menu**: Choose whether to always display the item in the right-click menu or show it contextually only for links, images, and open PDFs.
+* **Quick Import Button on Web Pages**: Toggle the inline quick import button that appears beside PDF links across websites.
 * **Default prompt**: Configure a template prompt that is automatically typed into the chat after the PDF is attached (with built-in presets for **Quick Summary**, **Key Points**, **Peer Review**, and **Feynman**).
 * **Single-Attempt Upload & Confirmation**: Never cascades duplicate drops or pastes. Uses scoped polling verification (up to 5 seconds) to accommodate server upload times, with a one-click retry prompt if DOM confirmation times out.
 * **File Size Limits & Large PDF Action**: Configure the large file threshold (20, 30, 50, 100 MB) and preferred action (always ask, auto-compress, or text only).
@@ -120,4 +126,4 @@ To create a clean distribution ZIP package for Chrome Web Store and Opera Add-on
 python scripts/pack_extension.py
 ```
 
-The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.3.6.zip`).
+The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.4.0.zip`).
