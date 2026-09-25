@@ -248,9 +248,16 @@
       log(`Attempting native file input assignment (accept="${directInput.accept || 'all'}")...`);
       assignFilesToInput(directInput, file);
     } else {
-      methodUsed = "drop";
-      log(`Attempting single Drag & Drop on chat input (<${chatInput.tagName.toLowerCase()}>)...`);
-      simulateDrop(chatInput, file);
+      // Gemini and Copilot handle clipboard events natively in rich composer; other platforms use drop
+      const preferred = (currentPlatform.id === "gemini" || currentPlatform.id === "copilot") ? "paste" : "drop";
+      methodUsed = preferred;
+      if (preferred === "paste") {
+        log(`Attempting single Clipboard Paste on chat input (<${chatInput.tagName.toLowerCase()}>)...`);
+        simulatePaste(chatInput, file);
+      } else {
+        log(`Attempting single Drag & Drop on chat input (<${chatInput.tagName.toLowerCase()}>)...`);
+        simulateDrop(chatInput, file);
+      }
     }
 
     log(`Waiting up to 5s for attachment confirmation...`);
