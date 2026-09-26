@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (aiId) {
         selectedAi = aiId;
         updateActiveAiCard(selectedAi);
+        saveAllSettings();
       }
     });
   });
@@ -126,6 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await chrome.storage.sync.set({ userLanguage: "en" });
         localizePage("en");
         chrome.runtime.sendMessage({ action: "LANGUAGE_CHANGED", language: "en" }).catch(() => { });
+        showSaveFeedback();
       }
     });
   }
@@ -137,6 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await chrome.storage.sync.set({ userLanguage: "cs" });
         localizePage("cs");
         chrome.runtime.sendMessage({ action: "LANGUAGE_CHANGED", language: "cs" }).catch(() => { });
+        showSaveFeedback();
       }
     });
   }
@@ -150,10 +153,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else {
         defaultPromptEl.value = "";
       }
+      saveAllSettings();
     });
   });
 
   let saveTimer = null;
+  let saveDebounceTimer = null;
+
   function showSaveFeedback() {
     if (!saveStatus) return;
     saveStatus.textContent = getMsg("statusSaved") || "Settings saved!";
@@ -163,64 +169,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 2000);
   }
 
-  // Instant save on toggle switches and dropdown options
-  if (enablePagePdfButtonsEl) {
-    enablePagePdfButtonsEl.addEventListener("change", async () => {
-      await chrome.storage.sync.set({ enablePagePdfButtons: enablePagePdfButtonsEl.checked });
-      showSaveFeedback();
-    });
-  }
-
-  if (reuseTabEl) {
-    reuseTabEl.addEventListener("change", async () => {
-      await chrome.storage.sync.set({ reuseTab: reuseTabEl.checked });
-      showSaveFeedback();
-    });
-  }
-
-  if (enableContextMenuEl) {
-    enableContextMenuEl.addEventListener("change", async () => {
-      await chrome.storage.sync.set({ enableContextMenu: enableContextMenuEl.checked });
-      const customUrlVal = customAiUrlEl ? customAiUrlEl.value.trim() : "https://openrouter.ai/chat";
-      chrome.runtime.sendMessage({
-        action: "CONTEXT_MENUS_CHANGED",
-        targetAi: selectedAi,
-        customAiUrl: customUrlVal
-      }).catch(() => { });
-      showSaveFeedback();
-    });
-  }
-
-  if (largePdfThresholdEl) {
-    largePdfThresholdEl.addEventListener("change", async () => {
-      await chrome.storage.sync.set({ largePdfThreshold: largePdfThresholdEl.value });
-      showSaveFeedback();
-    });
-  }
-
-  if (largePdfActionEl) {
-    largePdfActionEl.addEventListener("change", async () => {
-      await chrome.storage.sync.set({ largePdfAction: largePdfActionEl.value });
-      showSaveFeedback();
-    });
-  }
-
-  // Save settings handler
-  saveBtn.addEventListener("click", async () => {
-    saveBtn.disabled = true;
-    saveBtn.textContent = getMsg("btnSaving") || "Saving...";
+  /**
+   * Unified save function that persists all settings and notifies background worker
+   */
+  async function saveAllSettings({ silent = false } = {}) {
+    if (saveDebounceTimer) {
+      clearTimeout(saveDebounceTimer);
+      saveDebounceTimer = null;
+    }
 
     const customUrlVal = customAiUrlEl ? customAiUrlEl.value.trim() : "https://openrouter.ai/chat";
+    const thresholdVal = largePdfThresholdEl ? largePdfThresholdEl.value : "30";
+    const actionVal = largePdfActionEl ? largePdfActionEl.value : "ask";
+    const promptVal = defaultPromptEl ? defaultPromptEl.value : "";
+    const reuseTabVal = reuseTabEl ? reuseTabEl.checked : true;
+    const contextMenuVal = enableContextMenuEl ? enableContextMenuEl.checked : true;
+    const pagePdfButtonsVal = enablePagePdfButtonsEl ? enablePagePdfButtonsEl.checked : true;
 
     await chrome.storage.sync.set({
       targetAi: selectedAi,
       customAiUrl: customUrlVal,
-      reuseTab: reuseTabEl.checked,
-      enableContextMenu: enableContextMenuEl ? enableContextMenuEl.checked : true,
-      enablePagePdfButtons: enablePagePdfButtonsEl ? enablePagePdfButtonsEl.checked : true,
-      largePdfThreshold: largePdfThresholdEl ? largePdfThresholdEl.value : "30",
-      largePdfAction: largePdfActionEl ? largePdfActionEl.value : "ask",
-      defaultPrompt: defaultPromptEl.value,
+      reuseTab: reuseTabVal,
+      enableContextMenu: contextMenuVal,
+      enablePagePdfButtons: pagePdfButtonsVal,
+      largePdfThreshold: thresholdVal,
+      largePdfAction: actionVal,
+      defaultPrompt: promptVal,
       userLanguage: currentLang
     });
 
@@ -231,10 +205,60 @@ document.addEventListener("DOMContentLoaded", async () => {
       customAiUrl: customUrlVal
     }).catch(() => { });
 
-    showSaveFeedback();
-    saveBtn.disabled = false;
-    saveBtn.textContent = getMsg("btnSaveSettings") || "Save settings";
-  });
+    if (!silent) {
+      showSaveFeedback();
+    }
+  }
+
+  function scheduleAutoSave(delayMs = 500) {
+    if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
+    saveDebounceTimer = setTimeout(() => {
+      saveAllSettings();
+    }, delayMs);
+  }
+
+  // Instant save on toggle switches and dropdown options
+  if (enablePagePdfButtonsEl) {
+    enablePagePdfButtonsEl.addEventListener("change", () => saveAllSettings());
+  }
+
+  if (reuseTabEl) {
+    reuseTabEl.addEventListener("change", () => saveAllSettings());
+  }
+
+  if (enableContextMenuEl) {
+    enableContextMenuEl.addEventListener("change", () => saveAllSettings());
+  }
+
+  if (largePdfThresholdEl) {
+    largePdfThresholdEl.addEventListener("change", () => saveAllSettings());
+  }
+
+  if (largePdfActionEl) {
+    largePdfActionEl.addEventListener("change", () => saveAllSettings());
+  }
+
+  // Debounced auto-save on text input / textarea
+  if (defaultPromptEl) {
+    defaultPromptEl.addEventListener("input", () => scheduleAutoSave(500));
+    defaultPromptEl.addEventListener("change", () => saveAllSettings());
+  }
+
+  if (customAiUrlEl) {
+    customAiUrlEl.addEventListener("input", () => scheduleAutoSave(600));
+    customAiUrlEl.addEventListener("change", () => saveAllSettings());
+  }
+
+  // Manual save settings button
+  if (saveBtn) {
+    saveBtn.addEventListener("click", async () => {
+      saveBtn.disabled = true;
+      saveBtn.textContent = getMsg("btnSaving") || "Saving...";
+      await saveAllSettings();
+      saveBtn.disabled = false;
+      saveBtn.textContent = getMsg("btnSaveSettings") || "Save settings";
+    });
+  }
 
   // Feedback & GitHub Issue handler
   const feedbackTypeEl = document.getElementById("feedbackType");
@@ -278,7 +302,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Format markdown body with diagnostic details
       const manifest = chrome.runtime.getManifest();
-      const extVersion = manifest ? manifest.version : "1.4.6";
+      const extVersion = manifest ? manifest.version : "1.4.7";
       const browserInfo = navigator.userAgent;
 
       const fullBody = [
