@@ -290,11 +290,11 @@
     "description": "Description for context menu toggle"
   },
   "prefPagePdfButtonsTitle": {
-    "message": "Quick Import Button on Web Pages",
+    "message": "Buttons next to PDF links",
     "description": "Title for in-page button toggle"
   },
   "prefPagePdfButtonsDesc": {
-    "message": "Shows an unobtrusive import button next to PDF links and buttons across the web.",
+    "message": "Show a small AI import button directly next to PDF links and download buttons on web pages. Turn off to disable them completely.",
     "description": "Description for in-page button toggle"
   },
   "optionsLargePdfTitle": {

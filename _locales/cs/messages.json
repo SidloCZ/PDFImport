@@ -290,11 +290,11 @@
     "description": "Description for context menu toggle"
   },
   "prefPagePdfButtonsTitle": {
-    "message": "Tlačítko pro rychlý import na webu",
+    "message": "Tlačítka u odkazů na PDF",
     "description": "Title for in-page button toggle"
   },
   "prefPagePdfButtonsDesc": {
-    "message": "Zobrazuje nenápadné tlačítko vedle odkazů a tlačítek na PDF dokumenty na webových stránkách.",
+    "message": "Zobrazovat malé tlačítko pro import do AI přímo u odkazů a tlačítek na stažení PDF na webu. Vypněte, pokud tlačítka nechcete zobrazovat.",
     "description": "Description for in-page button toggle"
   },
   "optionsLargePdfTitle": {

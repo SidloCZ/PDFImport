@@ -153,6 +153,58 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
+  let saveTimer = null;
+  function showSaveFeedback() {
+    if (!saveStatus) return;
+    saveStatus.textContent = getMsg("statusSaved") || "Settings saved!";
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      saveStatus.textContent = "";
+    }, 2000);
+  }
+
+  // Instant save on toggle switches and dropdown options
+  if (enablePagePdfButtonsEl) {
+    enablePagePdfButtonsEl.addEventListener("change", async () => {
+      await chrome.storage.sync.set({ enablePagePdfButtons: enablePagePdfButtonsEl.checked });
+      showSaveFeedback();
+    });
+  }
+
+  if (reuseTabEl) {
+    reuseTabEl.addEventListener("change", async () => {
+      await chrome.storage.sync.set({ reuseTab: reuseTabEl.checked });
+      showSaveFeedback();
+    });
+  }
+
+  if (enableContextMenuEl) {
+    enableContextMenuEl.addEventListener("change", async () => {
+      await chrome.storage.sync.set({ enableContextMenu: enableContextMenuEl.checked });
+      const customUrlVal = customAiUrlEl ? customAiUrlEl.value.trim() : "https://openrouter.ai/chat";
+      chrome.runtime.sendMessage({
+        action: "CONTEXT_MENUS_CHANGED",
+        targetAi: selectedAi,
+        customAiUrl: customUrlVal
+      }).catch(() => { });
+      showSaveFeedback();
+    });
+  }
+
+  if (largePdfThresholdEl) {
+    largePdfThresholdEl.addEventListener("change", async () => {
+      await chrome.storage.sync.set({ largePdfThreshold: largePdfThresholdEl.value });
+      showSaveFeedback();
+    });
+  }
+
+  if (largePdfActionEl) {
+    largePdfActionEl.addEventListener("change", async () => {
+      await chrome.storage.sync.set({ largePdfAction: largePdfActionEl.value });
+      showSaveFeedback();
+    });
+  }
+
   // Save settings handler
   saveBtn.addEventListener("click", async () => {
     saveBtn.disabled = true;
@@ -179,13 +231,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       customAiUrl: customUrlVal
     }).catch(() => { });
 
-    saveStatus.textContent = getMsg("statusSaved") || "Settings saved!";
+    showSaveFeedback();
     saveBtn.disabled = false;
     saveBtn.textContent = getMsg("btnSaveSettings") || "Save settings";
-
-    setTimeout(() => {
-      saveStatus.textContent = "";
-    }, 2500);
   });
 
   // Feedback & GitHub Issue handler
@@ -230,7 +278,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Format markdown body with diagnostic details
       const manifest = chrome.runtime.getManifest();
-      const extVersion = manifest ? manifest.version : "1.4.2";
+      const extVersion = manifest ? manifest.version : "1.4.3";
       const browserInfo = navigator.userAgent;
 
       const fullBody = [
