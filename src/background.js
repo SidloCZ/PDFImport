@@ -88,6 +88,13 @@ const AI_PROVIDERS = {
     urlMatchPatterns: ["*://copilot.microsoft.com/*"],
     newTabUrl: "https://copilot.microsoft.com/"
   },
+  aiarena: {
+    id: "aiarena",
+    name: "AI Arena",
+    fullName: "LMSYS (AI Arena)",
+    urlMatchPatterns: ["*://arena.ai/*", "*://lmarena.ai/*"],
+    newTabUrl: "https://arena.ai/"
+  },
   custom: {
     id: "custom",
     name: "Custom AI",

@@ -3,7 +3,7 @@
   "name": "__MSG_extensionName__",
   "short_name": "__MSG_extensionShortName__",
   "default_locale": "en",
-  "version": "1.4.7",
+  "version": "1.5.0",
   "description": "__MSG_extensionDescription__",
   "author": "SidloCZ",
   "homepage_url": "https://github.com/SidloCZ/PDFImport",
@@ -66,7 +66,9 @@
         "https://openrouter.ai/*",
         "https://www.perplexity.ai/*",
         "https://perplexity.ai/*",
-        "https://copilot.microsoft.com/*"
+        "https://copilot.microsoft.com/*",
+        "https://arena.ai/*",
+        "https://lmarena.ai/*"
       ],
       "js": [
         "src/content_ai.js"
@@ -96,7 +98,9 @@
         "https://openrouter.ai/*",
         "https://www.perplexity.ai/*",
         "https://perplexity.ai/*",
-        "https://copilot.microsoft.com/*"
+        "https://copilot.microsoft.com/*",
+        "https://arena.ai/*",
+        "https://lmarena.ai/*"
       ],
       "js": [
         "src/content_links.js"

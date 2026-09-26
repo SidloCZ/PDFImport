@@ -29,6 +29,7 @@
     if (hostname.includes("grok.com") || hostname.includes("x.com")) return { id: "grok", name: "Grok" };
     if (hostname.includes("perplexity.ai")) return { id: "perplexity", name: "Perplexity" };
     if (hostname.includes("copilot.microsoft.com")) return { id: "copilot", name: "Copilot" };
+    if (hostname.includes("arena.ai") || hostname.includes("lmarena.ai")) return { id: "aiarena", name: "AI Arena" };
     if (hostname.includes("openrouter.ai")) return { id: "openrouter", name: "OpenRouter" };
     return { id: "custom", name: "AI" };
   }
@@ -554,6 +555,7 @@
       document.querySelector(".ProseMirror[contenteditable='true']") ||
       document.querySelector(".ql-editor[contenteditable='true']") ||
       document.querySelector("#chat-input") ||
+      document.querySelector('textarea[name="message"]') ||
       document.querySelector("div[contenteditable='true']") ||
       document.querySelector("textarea")
     );

@@ -18,6 +18,7 @@ Supports the **Top 10 AI platforms** out of the box, plus any **Custom AI URL**:
 * **Alibaba** (Qwen)
 * **SpaceXAI** (Grok)
 * **Perplexity**
+* **LMSYS** (AI Arena)
 * **Custom AI URL** (OpenRouter, Poe, Local WebUI, etc.)
 
 Works seamlessly with **online scientific papers and websites** (e.g., *ASM Journals, ScienceDirect, arXiv, Nature*) as well as **local PDF files on your disk** (`file:///...`).
@@ -80,7 +81,7 @@ When viewing any PDF article (e.g. [AEM Journal PDF](https://journals.asm.org/do
 
 Right-click the extension icon and select **Options**:
 
-* **Target AI Platform**: Choose between Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, or Custom URL.
+* **Target AI Platform**: Choose between Claude, ChatGPT, Gemini, DeepSeek, Copilot, Kimi, Hy4, GLM, Meta AI, Qwen, Grok, Perplexity, AI Arena, or Custom URL.
 * **Custom AI Web URL**: When "Custom URL" is selected, enter any URL (e.g. `https://openrouter.ai/chat`).
 * **Tab reuse**: Choose whether to switch to an already opened AI tab or always open a new tab.
 * **Right-Click Context Menu**: Choose whether to always display the item in the right-click menu or show it contextually only for links, images, and open PDFs.
@@ -127,4 +128,4 @@ To create a clean distribution ZIP package for Chrome Web Store and Opera Add-on
 python scripts/pack_extension.py
 ```
 
-The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.4.7.zip`).
+The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.5.0.zip`).

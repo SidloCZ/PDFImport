@@ -18,6 +18,7 @@ Nativně podporuje **10 nejlepších AI platforem** a možnost zadat libovolnou 
 * **Alibaba** (Qwen)
 * **SpaceXAI** (Grok)
 * **Perplexity**
+* **LMSYS** (AI Arena)
 * **Vlastní AI platforma / URL** (OpenRouter, Poe, lokální WebUI apod.)
 
 Funguje jak pro **online vědecké články a weby** (např. *ASM Journals, ScienceDirect, arXiv, Nature*), tak pro **lokální PDF soubory z disku** (`file:///...`).
@@ -80,7 +81,7 @@ Máte otevřený jakýkoliv PDF článek (např. [AEM Journal PDF](https://journ
 
 Klikněte na ikonu rozšíření pravým tlačítkem a zvolte **Možnosti** (*Options*):
 
-* **Cílová AI platforma**: Vyberte mezi Claude, ChatGPT, Kimi, Hy4, DeepSeek, Gemini, GLM, Meta AI, Qwen, Grok, nebo Vlastní URL.
+* **Cílová AI platforma**: Vyberte mezi Claude, ChatGPT, Gemini, DeepSeek, Copilot, Kimi, Hy4, GLM, Meta AI, Qwen, Grok, Perplexity, AI Arena, nebo Vlastní URL.
 * **Vlastní adresa AI chatu**: Při volbě „Custom URL“ zadejte libovolnou adresu (např. `https://openrouter.ai/chat`).
 * **Použít již otevřenou záložku**: Zvolte, zda se má přepnout do otevřené záložky dané AI, nebo otevírat nová.
 * **Položka v menu pravého tlačítka**: Volba mezi trvalým zobrazením na všech stránkách nebo pouze kontextovým zobrazením u odkazů, obrázků a otevřených PDF.
@@ -127,4 +128,4 @@ Pro vytvoření čistého distribučního ZIP archivu pro Chrome Web Store a Ope
 python scripts/pack_extension.py
 ```
 
-Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.4.7.zip`).
+Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.5.0.zip`).

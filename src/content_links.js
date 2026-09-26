@@ -28,6 +28,7 @@
     grok: "Grok",
     perplexity: "Perplexity",
     copilot: "Copilot",
+    aiarena: "AI Arena",
     custom: "AI"
   };
 
