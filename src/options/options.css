@@ -170,18 +170,6 @@ h3 {
   gap: 12px;
 }
 
-.shortcut-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 14px;
-  font-weight: 700;
-  background: #ffffff;
-  border: 2px solid #000000;
-  box-shadow: 2px 2px 0px 0px #000000;
-  padding: 10px 14px;
-}
-
 .badge {
   font-family: var(--font-mono);
   font-weight: 700;
@@ -193,6 +181,30 @@ h3 {
   text-align: center;
   text-transform: uppercase;
   color: var(--color-black);
+  background: var(--color-yellow);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+.badge-subtle-yellow {
+  background: var(--color-yellow);
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px 0px #000000;
+  padding: 10px 14px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.shortcut-item:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px #000000;
 }
 
 .badge-pink {

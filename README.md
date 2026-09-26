@@ -127,4 +127,4 @@ To create a clean distribution ZIP package for Chrome Web Store and Opera Add-on
 python scripts/pack_extension.py
 ```
 
-The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.4.3.zip`).
+The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.4.5.zip`).
