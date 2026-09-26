@@ -140,20 +140,96 @@
   function findChatInputArea() {
     const input = findChatInput();
     if (!input) return document.body;
-    return (
-      input.closest("form") ||
-      input.closest(".input-area-container") ||
-      input.closest(".input-area") ||
-      input.closest("[class*='chat-input']") ||
-      input.closest("[class*='input-container']") ||
-      input.closest("[class*='composer']") ||
-      input.parentElement?.parentElement ||
-      document.body
+
+    const matched = input.closest(
+      "form, fieldset, " +
+      "[class*='composer'], " +
+      "[class*='chat-input'], " +
+      "[class*='input-area'], " +
+      "[class*='input-container'], " +
+      "[class*='inputArea'], " +
+      "[class*='prompt-container'], " +
+      "[class*='search-bar'], " +
+      "[class*='querybox'], " +
+      "[class*='ds-composer'], " +
+      "[class*='ds-chat-input'], " +
+      "[data-testid*='composer'], " +
+      "[data-testid*='chat-input'], " +
+      "[role='region'], " +
+      "[role='form']"
     );
+    if (matched && matched !== document.body && matched.clientHeight < window.innerHeight * 0.85) {
+      return matched;
+    }
+
+    // Walk up from input to find enclosing composer card/box (up to 8 levels)
+    let current = input;
+    let candidate = input.parentElement?.parentElement || document.body;
+    for (let i = 0; i < 8; i++) {
+      if (!current.parentElement || current.parentElement === document.body) break;
+      current = current.parentElement;
+      if (current.clientHeight > window.innerHeight * 0.85) {
+        break;
+      }
+      if (
+        current.querySelector('input[type="file"]') ||
+        current.querySelector('button, [role="button"]')
+      ) {
+        candidate = current;
+      }
+    }
+    return candidate;
   }
 
   /**
-   * Counts visible attachment chips within the chat input area
+   * Finds native file input matching PDF either in composer or in document
+   */
+  function findFileInput() {
+    const inputArea = findChatInputArea();
+    let fileInput = Array.from(inputArea.querySelectorAll('input[type="file"]')).find(inp => {
+      const acc = (inp.accept || "").toLowerCase();
+      return acc.includes("pdf") || acc.includes("*") || acc.includes("document");
+    });
+    if (fileInput) return fileInput;
+
+    const allInputs = Array.from(document.querySelectorAll('input[type="file"]'));
+    return allInputs.find(inp => {
+      const acc = (inp.accept || "").toLowerCase();
+      const meta = `${inp.id} ${inp.className} ${inp.getAttribute('aria-label') || ''}`.toLowerCase();
+      return acc.includes("pdf") || acc.includes("document") || meta.includes("file") || meta.includes("upload") || meta.includes("attach");
+    });
+  }
+
+  function getFilenameOccurrences(filename) {
+    if (!filename) return 0;
+    const baseName = filename.replace(/\.pdf$/i, "").trim();
+    const terms = [filename, baseName];
+    if (baseName.length > 10) {
+      terms.push(baseName.slice(0, 10));
+    }
+    const bodyText = document.body ? (document.body.innerText || document.body.textContent || "") : "";
+    for (const term of terms) {
+      if (!term || term.length < 3) continue;
+      const count = bodyText.split(term).length - 1;
+      if (count > 0) return count;
+    }
+    return 0;
+  }
+
+  function hasFilenameInAttributes(filename) {
+    if (!filename) return false;
+    const baseName = filename.replace(/\.pdf$/i, "").trim().slice(0, 15);
+    if (!baseName || baseName.length < 3) return false;
+    try {
+      const escaped = (typeof CSS !== "undefined" && CSS.escape) ? CSS.escape(baseName) : baseName.replace(/["\\]/g, "");
+      return document.querySelectorAll(`[title*="${escaped}"], [aria-label*="${escaped}"], [alt*="${escaped}"]`).length > 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Counts visible attachment chips within the chat input area or page
    */
   function countAttachments() {
     const inputArea = findChatInputArea();
@@ -163,26 +239,53 @@
       '[class*="file-preview"]',
       '[class*="file-chip"]',
       '[class*="file-item"]',
+      '[class*="file-card"]',
+      '[class*="file-pill"]',
+      '[class*="file-tag"]',
+      '[class*="upload-item"]',
+      '[class*="uploading"]',
+      '[class*="uploaded"]',
+      '[class*="ds-file"]',
+      '[class*="ds-upload"]',
       '[data-testid*="attachment"]',
       '[data-testid*="file"]',
       '.file-container',
-      '[class*="upload-item"]',
-      '[class*="file-card"]',
       'button[aria-label*="remove" i]',
       'button[aria-label*="delete" i]',
-      'button[aria-label*="odstranit" i]'
+      'button[aria-label*="odstranit" i]',
+      'button[aria-label*="smazat" i]',
+      'button[aria-label*="clear" i]',
+      'button[aria-label*="dismiss" i]',
+      'button[title*="remove" i]',
+      'button[title*="delete" i]',
+      'button[title*="odstranit" i]',
+      'button[title*="smazat" i]'
     ];
 
     let count = 0;
     const seen = new Set();
-    for (const sel of selectors) {
-      const elements = inputArea.querySelectorAll(sel);
-      elements.forEach(el => {
-        if (el && el.offsetParent !== null && !seen.has(el)) {
-          seen.add(el);
-          count++;
+    const roots = [inputArea];
+    if (inputArea !== document.body) {
+      roots.push(document.body);
+    }
+
+    for (const root of roots) {
+      for (const sel of selectors) {
+        try {
+          const elements = root.querySelectorAll(sel);
+          elements.forEach(el => {
+            if (el && el.offsetParent !== null && !seen.has(el)) {
+              seen.add(el);
+              count++;
+            }
+          });
+        } catch (e) {
+          // ignore selector errors
         }
-      });
+      }
+      if (count > 0 && root === inputArea) {
+        break; // Found inside inputArea, preferred
+      }
     }
     return count;
   }
@@ -190,7 +293,7 @@
   /**
    * Checks if an attachment card/chip has appeared in the DOM
    */
-  function checkIfAttachmentAppeared(initialCount = 0, filename = "") {
+  function checkIfAttachmentAppeared(initialCount = 0, filename = "", initialOccurrences = 0) {
     const currentCount = countAttachments();
     if (currentCount > initialCount) {
       return true;
@@ -198,8 +301,21 @@
 
     if (filename) {
       const inputArea = findChatInputArea();
-      const baseName = filename.replace(/\.pdf$/i, "").slice(0, 15);
-      if (baseName && inputArea.textContent.includes(baseName)) {
+      const baseName = filename.replace(/\.pdf$/i, "").trim();
+
+      // Check inputArea text content
+      if (baseName && inputArea.textContent && inputArea.textContent.includes(baseName.slice(0, 15))) {
+        return true;
+      }
+
+      // Check occurrences across document
+      const currentOccurrences = getFilenameOccurrences(filename);
+      if (currentOccurrences > initialOccurrences) {
+        return true;
+      }
+
+      // Check title or aria-label attributes
+      if (hasFilenameInAttributes(filename)) {
         return true;
       }
     }
@@ -210,16 +326,16 @@
   /**
    * Polling loop to wait for attachment confirmation
    */
-  async function waitForAttachment(timeoutMs = 5000, initialCount = 0, filename = "") {
-    const pollInterval = 250;
+  async function waitForAttachment(timeoutMs = 8000, initialCount = 0, filename = "", initialOccurrences = 0) {
+    const pollInterval = 200;
     const startTime = Date.now();
     while (Date.now() - startTime < timeoutMs) {
-      if (checkIfAttachmentAppeared(initialCount, filename)) {
+      if (checkIfAttachmentAppeared(initialCount, filename, initialOccurrences)) {
         return true;
       }
       await sleep(pollInterval);
     }
-    return checkIfAttachmentAppeared(initialCount, filename);
+    return checkIfAttachmentAppeared(initialCount, filename, initialOccurrences);
   }
 
   /**
@@ -229,6 +345,7 @@
   async function executeUploadWorkflow(file, optionalPrompt, targetAiName) {
     log(`--- Starting single-import workflow: ${file.name} ---`);
     const initialCount = countAttachments();
+    const initialOccurrences = getFilenameOccurrences(file.name);
     log(`Initial attachment count: ${initialCount}`);
 
     const chatInput = findChatInput();
@@ -237,21 +354,17 @@
       return;
     }
 
-    // Inspect if a direct file input matching pdf exists in chat area
-    const inputArea = findChatInputArea();
-    const directInput = Array.from(inputArea.querySelectorAll('input[type="file"]')).find(inp => {
-      const acc = (inp.accept || "").toLowerCase();
-      return acc.includes("pdf") || acc.includes("*") || acc.includes("document");
-    });
+    // Inspect if a direct file input matching pdf exists in chat area or document
+    const directInput = findFileInput();
 
     let methodUsed = "drop";
-    if (directInput) {
+    if (directInput && currentPlatform.id !== "claude") {
       methodUsed = "fileInput";
       log(`Attempting native file input assignment (accept="${directInput.accept || 'all'}")...`);
       assignFilesToInput(directInput, file);
     } else {
-      // Gemini and Copilot handle clipboard events natively in rich composer; other platforms use drop
-      const preferred = (currentPlatform.id === "gemini" || currentPlatform.id === "copilot") ? "paste" : "drop";
+      // Gemini, Copilot, and Claude handle clipboard paste natively in rich composer; others use drop
+      const preferred = (currentPlatform.id === "gemini" || currentPlatform.id === "copilot" || currentPlatform.id === "claude") ? "paste" : "drop";
       methodUsed = preferred;
       if (preferred === "paste") {
         log(`Attempting single Clipboard Paste on chat input (<${chatInput.tagName.toLowerCase()}>)...`);
@@ -262,8 +375,10 @@
       }
     }
 
-    log(`Waiting up to 5s for attachment confirmation...`);
-    const confirmed = await waitForAttachment(5000, initialCount, file.name);
+    // Dynamic timeout based on file size (8s min, 16s max for large files)
+    const timeoutMs = Math.max(8000, Math.min(16000, Math.round((file.size || 0) / 1024)));
+    log(`Waiting up to ${(timeoutMs / 1000).toFixed(1)}s for attachment confirmation...`);
+    const confirmed = await waitForAttachment(timeoutMs, initialCount, file.name, initialOccurrences);
     const displayAi = targetAiName || currentPlatform.name;
 
     if (confirmed) {
@@ -300,6 +415,7 @@
   async function handleSecondaryRetry(file, method, optionalPrompt, targetAiName) {
     log(`--- Retrying insertion using ${method}: ${file.name} ---`);
     const initialCount = countAttachments();
+    const initialOccurrences = getFilenameOccurrences(file.name);
     const chatInput = findChatInput();
     if (!chatInput) {
       showToast(i18n("toastChatNotFound", [targetAiName || currentPlatform.name], "Chat input not found."), "error");
@@ -316,7 +432,8 @@
 
     showToast(i18n("toastProcessing", [escapeHtml(file.name)], `Processing: <strong>${escapeHtml(file.name)}</strong>...`), "info");
 
-    const confirmed = await waitForAttachment(5000, initialCount, file.name);
+    const timeoutMs = Math.max(8000, Math.min(16000, Math.round((file.size || 0) / 1024)));
+    const confirmed = await waitForAttachment(timeoutMs, initialCount, file.name, initialOccurrences);
     const displayAi = targetAiName || currentPlatform.name;
 
     if (confirmed) {
@@ -443,21 +560,71 @@
   }
 
   async function insertPromptText(text) {
+    if (!text || text.trim().length === 0) return;
+    const trimmed = text.trim();
     const input = findChatInput();
     if (!input) return;
 
     input.focus();
     await sleep(200);
 
-    if (input.tagName.toLowerCase() === "textarea") {
-      input.value = text;
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-    } else {
-      const inserted = document.execCommand("insertText", false, text);
-      if (!inserted) {
-        input.textContent = text;
+    const isTextarea = input.tagName.toLowerCase() === "textarea";
+    const isInput = input.tagName.toLowerCase() === "input";
+
+    if (isTextarea || isInput) {
+      // Use prototype setter so React/Vue/Angular state trackers detect value modification
+      const proto = isTextarea ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
+      const setter = Object.getOwnPropertyDescriptor(proto, "value")?.set;
+
+      if (setter) {
+        setter.call(input, trimmed);
+      } else {
+        input.value = trimmed;
+      }
+
+      // Dispatch comprehensive input events
+      input.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true, cancelable: true }));
+
+      // Fallback via document.execCommand if value didn't stick
+      if (input.value !== trimmed) {
+        input.select();
+        document.execCommand("insertText", false, trimmed);
         input.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    } else {
+      // Contenteditable (ProseMirror, Quill, Draft.js, Tiptap, Lexical)
+      try {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(input);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } catch (e) {
+        // ignore selection positioning failure
+      }
+
+      const inserted = document.execCommand("insertText", false, trimmed);
+      if (!inserted || !input.textContent.includes(trimmed.slice(0, 10))) {
+        // Fallback: clipboard paste event or direct textContent
+        try {
+          const dt = new DataTransfer();
+          dt.setData("text/plain", trimmed);
+          const pasteEvt = new ClipboardEvent("paste", {
+            bubbles: true,
+            cancelable: true,
+            clipboardData: dt
+          });
+          input.dispatchEvent(pasteEvt);
+        } catch (e) {
+          // ignore
+        }
+
+        if (!input.textContent.includes(trimmed.slice(0, 10))) {
+          input.textContent = trimmed;
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+        }
       }
     }
   }
