@@ -129,3 +129,9 @@ python scripts/pack_extension.py
 ```
 
 The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.5.0.zip`).
+
+---
+
+## Privacy Policy
+
+PDFImport does not collect, store, or transmit any user data or browsing activity. All document processing takes place client-side in the browser. For complete details, see [PRIVACY_POLICY.md](PRIVACY_POLICY.md).

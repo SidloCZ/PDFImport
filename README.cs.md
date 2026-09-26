@@ -129,3 +129,9 @@ python scripts/pack_extension.py
 ```
 
 Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.5.0.zip`).
+
+---
+
+## Ochrana soukromí (Privacy Policy)
+
+PDFImport neshromažďuje, neukládá ani nepředává žádné osobní údaje ani historii prohlížení. Veškeré zpracování dokumentů probíhá lokálně přímo v prohlížeči. Podrobné znění naleznete v [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
