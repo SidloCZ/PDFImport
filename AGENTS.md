@@ -10,4 +10,5 @@
   - **PATCH** (`x.y.Z+1`): Bug fixes, styling tweaks, minor text/translation adjustments, or internal refactoring.
   - **MINOR** (`x.Y+1.0`): New features, new AI platform support, new UI components/settings, or significant functional improvements.
   - **MAJOR** (`X+1.0.0`): Breaking changes, major architectural overhauls, or fundamental workflow redesigns.
+- **Firefox and multi-browser isolation**: Keep all Firefox-specific modifications (Gecko manifest, data collection permissions, AMO DOM linting adjustments, event page background scripts) strictly isolated within the dedicated `firefox/` directory (packaged into `dist/firefox/`). Do not alter the core Chromium `src/` codebase with browser-specific workarounds. Target Firefox Desktop only; Firefox for Android is unsupported (due to absence of `contextMenus`, `windows.create`, and shortcut commands).
 - After every msg in chat, include a commit message based on latest changes.

@@ -101,5 +101,5 @@ PDF to AI klade důraz na maximální bezpečnost. Rozšíření zpracovává so
    - Upravte **Popis (Detailed description)** pro angličtinu i češtinu výše uvedenými texty (odstraněn seznam značek).
 4. Pokud Google požaduje nahrání nového balíčku kvůli verzi:
    - Spusťte: `python scripts/pack_extension.py`
-   - V sekci **Balíček (Package)** nahrajte nový `dist/pdfimport-v1.5.1.zip`.
+   - V sekci **Balíček (Package)** nahrajte nový `dist/chrome/pdfimport-v1.6.0.zip`.
 5. Klikněte na **Odeslat ke kontrole (Submit for review)**.
