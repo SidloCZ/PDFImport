@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDFImport - Optimize Large PDF</title>
+  <link rel="stylesheet" href="large_pdf_dialog.css">
+</head>
+<body>
+  <div class="dialog-container">
+    <!-- Header -->
+    <header class="dialog-header">
+      <div class="brand-badge" id="brandBadge">PDFImport</div>
+      <h1 id="dialogTitle">Large PDF Document</h1>
+      <p class="subtitle" id="dialogSubtitle">File exceeds standard AI platform limits. Choose how to prepare it.</p>
+    </header>
+
+    <!-- File Info Card -->
+    <div class="info-card">
+      <div class="info-row">
+        <span class="info-label" id="labelFileName">File:</span>
+        <span class="info-value info-filename" id="valFileName">document.pdf</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label" id="labelFileSize">Size:</span>
+        <span class="info-value info-size" id="valFileSize">0 MB</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label" id="labelTargetAi">Target AI:</span>
+        <span class="info-value badge-ai" id="valTargetAi">Gemini</span>
+      </div>
+    </div>
+
+    <!-- Options Section -->
+    <div class="choices-container" id="choicesContainer">
+      <!-- Option 1: Compress PDF -->
+      <div class="choice-card" id="cardCompress">
+        <div class="choice-header">
+          <div class="choice-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+              <path d="M12 12v9"></path>
+              <path d="m8 17 4 4 4-4"></path>
+            </svg>
+          </div>
+          <div class="choice-text">
+            <h2 id="titleCompress">1. Compress PDF</h2>
+            <p class="choice-desc" id="descCompress">Downscale high-res images and scans. Preserves text, fonts, layout, and visual readability.</p>
+          </div>
+        </div>
+
+        <div class="choice-suboptions">
+          <label class="checkbox-label">
+            <input type="checkbox" id="chkStripImages">
+            <span class="checkbox-custom"></span>
+            <span id="labelStripImages">Remove images completely (smallest file, text only)</span>
+          </label>
+        </div>
+
+        <button class="btn btn-primary" id="btnCompress">
+          <span id="btnCompressText">Compress &amp; Import</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Option 2: Extract Text -->
+      <div class="choice-card" id="cardText">
+        <div class="choice-header">
+          <div class="choice-icon choice-icon-cyan">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div class="choice-text">
+            <h2 id="titleText">2. Text Only</h2>
+            <p class="choice-desc" id="descText">Instant extraction of readable text into a .txt file. 99.9% size reduction, zero image overhead.</p>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" id="btnText">
+          <span id="btnTextText">Extract Text &amp; Import</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress View (Initially Hidden) -->
+    <div class="progress-container" id="progressContainer" style="display: none;">
+      <div class="progress-status" id="progressStatus">Initializing...</div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+      </div>
+      <div class="progress-details" id="progressDetails">Please keep this window open while processing.</div>
+      <div class="result-summary" id="resultSummary" style="display: none;"></div>
+    </div>
+
+    <!-- Warning / Error banner -->
+    <div class="alert-banner" id="alertBanner" style="display: none;"></div>
+
+    <!-- Footer with Cancel button -->
+    <footer class="dialog-footer" id="dialogFooter">
+      <button class="btn-link" id="btnCancel">Cancel</button>
+    </footer>
+  </div>
+
+  <script src="../vendor/pdf-lib.min.js"></script>
+  <script src="../vendor/pdf.min.js"></script>
+  <script src="large_pdf_dialog.js"></script>
+</body>
+</html>

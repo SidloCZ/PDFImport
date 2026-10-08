@@ -1,0 +1,132 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extensionName__",
+  "short_name": "__MSG_extensionShortName__",
+  "default_locale": "en",
+  "version": "1.5.1",
+  "description": "__MSG_extensionDescription__",
+  "author": "SidloCZ",
+  "homepage_url": "https://github.com/SidloCZ/PDFImport",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "pdfimport@sidlocz.github.io",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage",
+    "unlimitedStorage",
+    "notifications",
+    "scripting",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "file:///*"
+  ],
+  "background": {
+    "scripts": [
+      "src/background.js"
+    ]
+  },
+  "action": {
+    "default_title": "__MSG_actionTitle__",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "commands": {
+    "send-pdf-to-gemini": {
+      "suggested_key": {
+        "default": "Alt+G"
+      },
+      "description": "__MSG_commandDescription__"
+    }
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://claude.ai/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://kimi.com/*",
+        "https://kimi.moonshot.cn/*",
+        "https://yuanbao.tencent.com/*",
+        "https://hunyuan.tencent.com/*",
+        "https://chat.deepseek.com/*",
+        "https://gemini.google.com/*",
+        "https://chatglm.cn/*",
+        "https://z.ai/*",
+        "https://www.meta.ai/*",
+        "https://tongyi.ai/*",
+        "https://qwen.ai/*",
+        "https://grok.com/*",
+        "https://openrouter.ai/*",
+        "https://www.perplexity.ai/*",
+        "https://perplexity.ai/*",
+        "https://copilot.microsoft.com/*",
+        "https://arena.ai/*",
+        "https://lmarena.ai/*"
+      ],
+      "js": [
+        "src/content_ai.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "exclude_matches": [
+        "https://claude.ai/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://kimi.com/*",
+        "https://kimi.moonshot.cn/*",
+        "https://yuanbao.tencent.com/*",
+        "https://hunyuan.tencent.com/*",
+        "https://chat.deepseek.com/*",
+        "https://gemini.google.com/*",
+        "https://chatglm.cn/*",
+        "https://z.ai/*",
+        "https://www.meta.ai/*",
+        "https://tongyi.ai/*",
+        "https://qwen.ai/*",
+        "https://grok.com/*",
+        "https://openrouter.ai/*",
+        "https://www.perplexity.ai/*",
+        "https://perplexity.ai/*",
+        "https://copilot.microsoft.com/*",
+        "https://arena.ai/*",
+        "https://lmarena.ai/*"
+      ],
+      "js": [
+        "src/content_links.js"
+      ],
+      "css": [
+        "src/content_links.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

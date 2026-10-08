@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title data-i18n="optionsTitle">PDFImport - Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-brand">
+        <img src="../../icons/icon.svg" alt="Logo" class="logo">
+        <div>
+          <h1 data-i18n="optionsHeaderTitle">PDFImport</h1>
+          <p class="subtitle" data-i18n="optionsHeaderSubtitle">PDF to AI – Fast Import</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Section: How to use -->
+      <section class="card">
+        <h2 data-i18n="sectionHowToUse">HOW TO USE</h2>
+        <div class="shortcut-box">
+          <div class="shortcut-item">
+            <span class="badge" data-i18n="shortcutKeyBadge">Alt + G</span>
+            <span data-i18n="shortcutKeyDesc">Default keyboard shortcut on any page or PDF</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="badge" data-i18n="shortcutIconBadge">Toolbar Icon</span>
+            <span data-i18n="shortcutIconDesc">1 click on the extension icon in browser toolbar</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="badge" data-i18n="shortcutContextBadge">Right Click</span>
+            <span data-i18n="shortcutContextDesc">Context menu on link or in PDF document</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="badge" data-i18n="shortcutWebBtnBadge">Web Button</span>
+            <span data-i18n="shortcutWebBtnDesc">Instant AI button next to PDF links and buttons on websites</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Preferences -->
+      <section class="card">
+        <h2 data-i18n="sectionPreferences">PREFERENCES</h2>
+
+        <!-- Language Selector -->
+        <div class="form-group lang-group">
+          <label class="input-label">
+            <strong data-i18n="prefLanguageTitle">Extension Language</strong>
+            <small data-i18n="prefLanguageDesc">Choose between English and Czech for the extension interface.</small>
+          </label>
+          <div class="lang-switch-buttons">
+            <button type="button" class="lang-btn" id="langBtnEn" data-lang="en">English (EN)</button>
+            <button type="button" class="lang-btn" id="langBtnCs" data-lang="cs">Čeština (CS)</button>
+          </div>
+        </div>
+
+        <!-- Target AI Platform Selection -->
+        <div class="form-group ai-group">
+          <label class="input-label">
+            <strong data-i18n="prefTargetAiTitle">Target AI Platform</strong>
+            <small data-i18n="prefTargetAiDesc">Choose where you want to import your PDF documents.</small>
+          </label>
+          <div class="ai-platform-grid" id="aiPrimaryGrid">
+            <button type="button" class="ai-card" data-ai="claude">
+              <div class="ai-card-top">
+                <img src="../../icons/platforms/claude.svg" alt="" class="ai-card-icon" width="22" height="22">
+                <span class="ai-card-badge">Anthropic</span>
+              </div>
+              <span class="ai-card-name">Claude</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="chatgpt">
+              <div class="ai-card-top">
+                <img src="../../icons/platforms/chatgpt.svg" alt="" class="ai-card-icon ai-card-icon-invertible" width="22" height="22">
+                <span class="ai-card-badge">OpenAI</span>
+              </div>
+              <span class="ai-card-name">ChatGPT</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="gemini">
+              <div class="ai-card-top">
+                <img src="../../icons/platforms/gemini.svg" alt="" class="ai-card-icon" width="22" height="22">
+                <span class="ai-card-badge">Google</span>
+              </div>
+              <span class="ai-card-name">Gemini</span>
+            </button>
+            <button type="button" class="ai-card" data-ai="deepseek">
+              <div class="ai-card-top">
+                <img src="../../icons/platforms/deepseek.svg" alt="" class="ai-card-icon" width="22" height="22">
+                <span class="ai-card-badge">DeepSeek</span>
+              </div>
+              <span class="ai-card-name">DeepSeek</span>
+            </button>
+          </div>
+
+          <!-- Secondary AI Platforms (Collapsible) -->
+          <div class="ai-more-container" id="aiMoreContainer" style="display: none;">
+            <div class="ai-platform-grid ai-more-grid">
+              <button type="button" class="ai-card" data-ai="copilot">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/copilot.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Microsoft</span>
+                </div>
+                <span class="ai-card-name">Copilot</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="kimi">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/kimi.svg" alt="" class="ai-card-icon ai-card-icon-invertible" width="22" height="22">
+                  <span class="ai-card-badge">Moonshot</span>
+                </div>
+                <span class="ai-card-name">Kimi</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="tencent">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/tencent.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Tencent</span>
+                </div>
+                <span class="ai-card-name">Hy4 / Yuanbao</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="glm">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/glm.svg" alt="" class="ai-card-icon ai-card-icon-invertible" width="22" height="22">
+                  <span class="ai-card-badge">Z.ai</span>
+                </div>
+                <span class="ai-card-name">GLM</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="meta">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/meta.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Meta</span>
+                </div>
+                <span class="ai-card-name">Meta AI</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="qwen">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/qwen.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Alibaba</span>
+                </div>
+                <span class="ai-card-name">Qwen</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="grok">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/grok.svg" alt="" class="ai-card-icon ai-card-icon-invertible" width="22" height="22">
+                  <span class="ai-card-badge">SpaceXAI</span>
+                </div>
+                <span class="ai-card-name">Grok</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="perplexity">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/perplexity.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Perplexity</span>
+                </div>
+                <span class="ai-card-name">Perplexity</span>
+              </button>
+              <button type="button" class="ai-card" data-ai="aiarena">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/aiarena.svg" alt="" class="ai-card-icon ai-card-icon-invertible" width="22" height="22">
+                  <span class="ai-card-badge">LMSYS</span>
+                </div>
+                <span class="ai-card-name">AI Arena</span>
+              </button>
+              <button type="button" class="ai-card ai-card-custom" data-ai="custom">
+                <div class="ai-card-top">
+                  <img src="../../icons/platforms/custom.svg" alt="" class="ai-card-icon" width="22" height="22">
+                  <span class="ai-card-badge">Custom</span>
+                </div>
+                <span class="ai-card-name">Custom URL</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Toggle Button for More Platforms -->
+          <div class="ai-toggle-row">
+            <button type="button" class="btn-more-platforms" id="toggleMorePlatformsBtn">
+              <span id="toggleMorePlatformsText" data-i18n="btnShowMorePlatforms">Show more platforms</span>
+              <svg class="toggle-icon" id="toggleMorePlatformsIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Custom URL Input (shown when Custom is selected) -->
+          <div class="custom-url-box" id="customUrlBox" style="display: none;">
+            <label for="customAiUrl" class="input-label">
+              <strong data-i18n="prefCustomUrlTitle">Custom AI Web URL</strong>
+              <small data-i18n="prefCustomUrlDesc">Full URL of your preferred AI chat interface (e.g. OpenRouter, Perplexity, Poe, or self-hosted WebUI).</small>
+            </label>
+            <input type="url" id="customAiUrl" class="text-input" placeholder="https://openrouter.ai/chat" data-i18n-placeholder="prefCustomUrlPlaceholder">
+          </div>
+        </div>
+
+        <!-- Reuse Tab Option -->
+        <div class="form-group">
+          <label class="toggle-label">
+            <input type="checkbox" id="reuseTab" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">
+              <strong data-i18n="prefReuseTabTitle">Reuse existing AI tab</strong>
+              <small data-i18n="prefReuseTabDesc">If the selected AI chat is already open, switches to it. Otherwise opens a new tab.</small>
+            </span>
+          </label>
+        </div>
+
+        <!-- Context Menu Option -->
+        <div class="form-group">
+          <label class="toggle-label">
+            <input type="checkbox" id="enableContextMenu" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">
+              <strong data-i18n="prefContextMenuTitle">Right-Click Context Menu</strong>
+              <small data-i18n="prefContextMenuDesc">When checked, always shows in the context menu. When unchecked, only shows for links, images, and open PDFs.</small>
+            </span>
+          </label>
+        </div>
+
+        <!-- Page PDF Buttons Option -->
+        <div class="form-group">
+          <label class="toggle-label">
+            <input type="checkbox" id="enablePagePdfButtons" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">
+              <strong data-i18n="prefPagePdfButtonsTitle">Buttons next to PDF links</strong>
+              <small data-i18n="prefPagePdfButtonsDesc">Show a small AI import button directly next to PDF links and download buttons on web pages. Turn off to disable them completely.</small>
+            </span>
+          </label>
+        </div>
+
+
+        <!-- Large PDF Handling Option -->
+        <div class="form-group" style="margin-top: 14px; border-top: 1.5px dashed #000000; padding-top: 14px;">
+          <label class="input-label">
+            <strong data-i18n="optionsLargePdfTitle">Large PDF Document Handling</strong>
+            <small data-i18n="optionsLargePdfDesc">Configure how PDF documents exceeding recommended AI platform limits are processed.</small>
+          </label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+            <div>
+              <label for="largePdfThreshold" class="input-label" style="margin-bottom: 4px;">
+                <strong data-i18n="optionsLargePdfThreshold">Large file threshold:</strong>
+              </label>
+              <select id="largePdfThreshold" style="width: 100%; padding: 8px; border: var(--border-thick); font-family: var(--font-mono); font-weight: 700; background: #ffffff;">
+                <option value="20">20 MB</option>
+                <option value="30" selected>30 MB (Claude / Recommended)</option>
+                <option value="50">50 MB</option>
+                <option value="100">100 MB</option>
+              </select>
+            </div>
+            <div>
+              <label for="largePdfAction" class="input-label" style="margin-bottom: 4px;">
+                <strong data-i18n="optionsLargePdfAction">Default action when exceeded:</strong>
+              </label>
+              <select id="largePdfAction" style="width: 100%; padding: 8px; border: var(--border-thick); font-family: var(--font-mono); font-weight: 700; background: #ffffff;">
+                <option value="ask" data-i18n="optionsLargePdfActionAsk">Always ask (Compress / Text Only)</option>
+                <option value="compress" data-i18n="optionsLargePdfActionCompress">Always auto-compress PDF</option>
+                <option value="text" data-i18n="optionsLargePdfActionText">Always extract text only</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Default Prompt -->
+        <div class="form-group">
+          <label for="defaultPrompt" class="input-label">
+            <strong data-i18n="prefDefaultPromptTitle">Automatic default prompt (optional):</strong>
+            <small data-i18n="prefDefaultPromptDesc">This text will be automatically inserted into the chat message after attaching the file.</small>
+          </label>
+          <textarea id="defaultPrompt" rows="3"
+            data-i18n-placeholder="prefDefaultPromptPlaceholder"
+            placeholder="E.g.: Analyze this PDF document and summarize key findings, methodology, and conclusion:"></textarea>
+          <div class="prompt-presets">
+            <button type="button" class="preset-btn"
+              data-preset-key="presetSummaryText"
+              data-i18n="presetSummaryBtn">QUICK SUMMARY</button>
+            <button type="button" class="preset-btn"
+              data-preset-key="presetPointsText"
+              data-i18n="presetPointsBtn">KEY POINTS</button>
+            <button type="button" class="preset-btn"
+              data-preset-key="presetPeerReviewText"
+              data-i18n="presetPeerReviewBtn">PEER REVIEW</button>
+            <button type="button" class="preset-btn"
+              data-preset-key="presetFeynmanText"
+              data-i18n="presetFeynmanBtn">FEYNMAN</button>
+            <button type="button" class="preset-btn"
+              data-preset-key=""
+              data-i18n="presetClearBtn">CLEAR</button>
+          </div>
+        </div>
+
+        <button id="saveBtn" class="btn primary-btn" data-i18n="btnSaveSettings">Save settings</button>
+        <span id="saveStatus" class="status-msg"></span>
+      </section>
+
+      <!-- Section: Local files (file:///) -->
+      <section class="card alert-card">
+        <h3 data-i18n="sectionLocalFiles">LOCAL FILES (file:///)</h3>
+        <p data-i18n="localFilesDesc">To work with local PDF files opened in browser (e.g. file:///...):</p>
+        <ol>
+          <li data-i18n="localFilesStep1">Open the extensions page in your browser (e.g. opera://extensions or chrome://extensions)</li>
+          <li data-i18n="localFilesStep2">Find PDFImport and click Details</li>
+          <li data-i18n="localFilesStep3">Enable "Allow access to file URLs"</li>
+        </ol>
+      </section>
+
+      <!-- Section: Feedback & GitHub Issues -->
+      <section class="card feedback-card">
+        <div class="card-header">
+          <span class="card-tag">GITHUB / ISSUES</span>
+          <h2 data-i18n="sectionFeedbackTitle">FEEDBACK & ISSUE REPORTING</h2>
+        </div>
+        <p class="section-desc" data-i18n="sectionFeedbackDesc">
+          Have an idea for improvement, a new feature, or encountered a bug? Enter the details below and click to open a pre-filled GitHub Issue.
+        </p>
+
+        <div class="feedback-row">
+          <div>
+            <label for="feedbackType" class="input-label">
+              <strong data-i18n="feedbackTypeLabel">Issue type:</strong>
+            </label>
+            <select id="feedbackType" class="select-input">
+              <option value="feature" data-i18n="feedbackTypeFeature">Feature Request</option>
+              <option value="bug" data-i18n="feedbackTypeBug">Bug Report</option>
+              <option value="feedback" data-i18n="feedbackTypeGeneral">Feedback</option>
+            </select>
+          </div>
+          <div>
+            <label for="feedbackTitle" class="input-label">
+              <strong data-i18n="feedbackTitleLabel">Title / Summary (optional):</strong>
+            </label>
+            <input type="text" id="feedbackTitle" class="text-input"
+              data-i18n-placeholder="feedbackTitlePlaceholder"
+              placeholder="E.g.: Support for additional AI platform...">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="feedbackBody" class="input-label">
+            <strong data-i18n="feedbackBodyLabel">Description:</strong>
+          </label>
+          <textarea id="feedbackBody" rows="4"
+            data-i18n-placeholder="feedbackBodyPlaceholder"
+            placeholder="Describe your suggestion or what happened in detail..."></textarea>
+        </div>
+
+        <div class="feedback-actions">
+          <button type="button" id="feedbackSendBtn" class="btn-yellow">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span data-i18n="btnSendFeedback">OPEN GITHUB ISSUE</span>
+          </button>
+          <span id="feedbackStatus" class="status-msg" style="display: none;"></span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        <a href="https://github.com/SidloCZ/PDFImport" target="_blank" rel="noopener noreferrer" class="footer-link">PDFImport</a>
+        <span class="footer-sep">•</span>
+        <span data-i18n="optionsFooterDesc">Designed for efficient workflows without manual downloads</span>
+      </p>
+      <p class="footer-sub">
+        <a href="https://github.com/SidloCZ/PDFImport/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">Apache-2.0</a>
+        <span class="footer-sep">•</span>
+        <a href="https://github.com/SidloCZ" target="_blank" rel="noopener noreferrer" class="footer-link">SidloCZ</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+
+</html>

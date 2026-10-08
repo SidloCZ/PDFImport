@@ -1,0 +1,392 @@
+{
+  "extensionName": {
+    "message": "PDF to AI – Fast Import",
+    "description": "The title of the extension"
+  },
+  "extensionShortName": {
+    "message": "PDFImport",
+    "description": "The short name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Instantly imports opened PDF documents directly into AI chat without manual downloading.",
+    "description": "The description of the extension"
+  },
+  "actionTitle": {
+    "message": "Send PDF to AI (Alt+G)",
+    "description": "Tooltip title for action icon"
+  },
+  "commandDescription": {
+    "message": "Send current PDF document to AI chat",
+    "description": "Description of shortcut command"
+  },
+  "contextMenuSendCurrentPdf": {
+    "message": "Send PDF to AI (Alt+G)",
+    "description": "Context menu item for current page/PDF"
+  },
+  "contextMenuSendLinkPdf": {
+    "message": "Send linked PDF to AI",
+    "description": "Context menu item for links"
+  },
+  "fileAccessWarningTitle": {
+    "message": "File URL permission required",
+    "description": "Notification title for missing file:// permission"
+  },
+  "fileAccessWarningMessage": {
+    "message": "To import 'file:///' local files, please enable 'Allow access to file URLs' on the browser extensions page.",
+    "description": "Notification message for missing file:// permission"
+  },
+  "fileSizeLimitErrorTitle": {
+    "message": "PDF file is too large",
+    "description": "Notification title when PDF exceeds maximum size"
+  },
+  "fileSizeLimitErrorMessage": {
+    "message": "The file size ($SIZE$ MB) exceeds the maximum allowed limit of $LIMIT$ MB.",
+    "description": "Notification message when PDF exceeds size limit",
+    "placeholders": {
+      "size": {
+        "content": "$1"
+      },
+      "limit": {
+        "content": "$2"
+      }
+    }
+  },
+  "defaultFileNamePrefix": {
+    "message": "document_",
+    "description": "Prefix used when generating a fallback PDF filename"
+  },
+  "optionsTitle": {
+    "message": "PDFImport - Settings",
+    "description": "Title of the options page"
+  },
+  "optionsHeaderTitle": {
+    "message": "PDFImport",
+    "description": "Main heading in options header"
+  },
+  "optionsHeaderSubtitle": {
+    "message": "PDF to AI – Fast Import",
+    "description": "Subtitle in options header"
+  },
+  "sectionHowToUse": {
+    "message": "HOW TO USE",
+    "description": "Heading for how-to section"
+  },
+  "shortcutKeyBadge": {
+    "message": "Alt + G",
+    "description": "Badge label for keyboard shortcut"
+  },
+  "shortcutKeyDesc": {
+    "message": "Default keyboard shortcut on any page or PDF",
+    "description": "Description for keyboard shortcut"
+  },
+  "shortcutIconBadge": {
+    "message": "Toolbar Icon",
+    "description": "Badge label for toolbar button"
+  },
+  "shortcutIconDesc": {
+    "message": "1 click on the extension icon in browser toolbar",
+    "description": "Description for toolbar button"
+  },
+  "shortcutContextBadge": {
+    "message": "Right Click",
+    "description": "Badge label for context menu"
+  },
+  "shortcutContextDesc": {
+    "message": "Context menu on link or in PDF document",
+    "description": "Description for context menu"
+  },
+  "shortcutWebBtnBadge": {
+    "message": "Web Button",
+    "description": "Badge label for in-page button"
+  },
+  "shortcutWebBtnDesc": {
+    "message": "Instant AI button next to PDF links and buttons on websites",
+    "description": "Description for in-page button"
+  },
+  "sectionPreferences": {
+    "message": "PREFERENCES",
+    "description": "Heading for preferences section"
+  },
+  "prefTargetAiTitle": {
+    "message": "Target AI Platform",
+    "description": "Label for target AI service selector"
+  },
+  "prefTargetAiDesc": {
+    "message": "Choose where you want to import your PDF documents.",
+    "description": "Description for target AI service selector"
+  },
+  "prefCustomUrlTitle": {
+    "message": "Custom AI Web URL",
+    "description": "Label for custom AI URL field"
+  },
+  "prefCustomUrlDesc": {
+    "message": "Full URL of your preferred AI chat interface (e.g. OpenRouter, Perplexity, Poe, or self-hosted WebUI).",
+    "description": "Description for custom AI URL field"
+  },
+  "prefCustomUrlPlaceholder": {
+    "message": "https://openrouter.ai/chat",
+    "description": "Placeholder for custom AI URL field"
+  },
+  "prefReuseTabTitle": {
+    "message": "Reuse existing AI tab",
+    "description": "Title for tab reuse toggle"
+  },
+  "prefReuseTabDesc": {
+    "message": "If the selected AI chat is already open, switches to it. Otherwise opens a new tab.",
+    "description": "Description for tab reuse toggle"
+  },
+  "prefLanguageTitle": {
+    "message": "Extension Language",
+    "description": "Label for extension language selector"
+  },
+  "prefLanguageDesc": {
+    "message": "Choose between English and Czech for the extension interface.",
+    "description": "Description for extension language selector"
+  },
+  "prefDefaultPromptTitle": {
+    "message": "Automatic default prompt (optional):",
+    "description": "Label for default prompt textarea"
+  },
+  "prefDefaultPromptDesc": {
+    "message": "This text will be automatically inserted into the chat message after attaching the file.",
+    "description": "Sublabel for default prompt"
+  },
+  "prefDefaultPromptPlaceholder": {
+    "message": "E.g.: Analyze this PDF document and summarize key findings, methodology, and conclusion:",
+    "description": "Placeholder for prompt textarea"
+  },
+  "presetSummaryBtn": {
+    "message": "QUICK SUMMARY",
+    "description": "Label for quick summary preset button"
+  },
+  "presetSummaryText": {
+    "message": "Provide a concise executive summary of the attached document:\n\n1. Overview: Core topic and objective in 1–2 sentences.\n2. Key Takeaways: Top 3–4 essential findings or insights.\n3. Bottom Line: Main implication or practical conclusion.\n4. Limitations & Constraints: Key caveats, limitations, or scope boundaries in 1–2 sentences.\n\nKeep it structured, clear, and scannable.",
+    "description": "Text filled by quick summary preset button"
+  },
+  "presetPointsBtn": {
+    "message": "KEY POINTS",
+    "description": "Label for key points preset button"
+  },
+  "presetPointsText": {
+    "message": "Extract the key points from the attached document into structured bullet points:\n\n• Core Insights: Most critical ideas, facts, or arguments.\n• Evidence & Data: Specific figures, findings, or proof points.\n• Practical Takeaways: Direct conclusions or actionable implications.\n• Limitations & Constraints: Key caveats, limitations, or scope boundaries in 1–2 sentences.\n\nBe specific, concise, and avoid generic filler.",
+    "description": "Text filled by key points preset button"
+  },
+  "presetPeerReviewBtn": {
+    "message": "PEER REVIEW",
+    "description": "Label for peer review preset button"
+  },
+  "presetPeerReviewText": {
+    "message": "Act as an expert scientific researcher and critical peer reviewer. Read the attached research paper (or text provided below) and generate an in-depth, rigorous summary using the exact structure below. Rely strictly on the provided text; do not extrapolate, assume, or add external references.\n\n1. Metadata\nTitle, Journal, & Year: [Extract]\nAuthors & Institutions: [Extract]\n\n2. Research Core\nMain Research Question/Objective: [1–2 sentences defining what the study aims to find out]\nCore Hypothesis / Central Thesis: [What specific prediction or premise is tested]\n\n3. Methodology & Data\nStudy Design: [e.g., randomized controlled trial, in vitro, observational, computational model]\nSample Size & Data Source: [Exact numbers, organisms, materials, or datasets used]\nAnalytical Approach: [Statistical tests or computational methods applied]\n\n4. Key Findings & Evidence\nPresent the top 3–5 primary findings. For each finding, provide a short paraphrased summary followed by a direct verbatim quote (1–2 sentences) from the paper that supports it.\n\n5. Limitations & Constraints\nMethodological/Data Limitations: [Explicit constraints or unaddressed confounding variables noted by authors]\nGeneralizability: [Limits on where or to whom these findings apply]\n\n6. Significance\nField Impact: [1 sentence on how this materially advances the discipline]",
+    "description": "Text filled by peer review preset button"
+  },
+  "presetFeynmanBtn": {
+    "message": "FEYNMAN",
+    "description": "Label for Feynman technique preset button"
+  },
+  "presetFeynmanText": {
+    "message": "Explain this paper to me in depth using the Feynman technique, as if you were its author.",
+    "description": "Text filled by Feynman technique preset button"
+  },
+  "presetClearBtn": {
+    "message": "CLEAR",
+    "description": "Label for clear preset button"
+  },
+  "btnSaveSettings": {
+    "message": "Save settings",
+    "description": "Label for save settings button"
+  },
+  "btnSaving": {
+    "message": "Saving...",
+    "description": "Button label while saving"
+  },
+  "statusSaved": {
+    "message": "Settings saved!",
+    "description": "Status message after saving"
+  },
+  "sectionLocalFiles": {
+    "message": "LOCAL FILES (file:///)",
+    "description": "Heading for local files section"
+  },
+  "localFilesDesc": {
+    "message": "To work with local PDF files opened in browser (e.g. file:///...):",
+    "description": "Intro text for local files instruction"
+  },
+  "localFilesStep1": {
+    "message": "Open the extensions page in your browser (e.g. opera://extensions or chrome://extensions)",
+    "description": "Step 1 for local files"
+  },
+  "localFilesStep2": {
+    "message": "Find PDFImport and click Details",
+    "description": "Step 2 for local files"
+  },
+  "localFilesStep3": {
+    "message": "Enable 'Allow access to file URLs'",
+    "description": "Step 3 for local files"
+  },
+  "optionsFooter": {
+    "message": "PDFImport • Designed for efficient workflows without manual downloads",
+    "description": "Footer text"
+  },
+  "optionsFooterDesc": {
+    "message": "Designed for efficient workflows without manual downloads",
+    "description": "Footer tagline"
+  },
+  "toastProcessing": {
+    "message": "Processing: <strong>$FILENAME$</strong>...",
+    "description": "Toast message while processing file",
+    "placeholders": {
+      "filename": {
+        "content": "$1"
+      }
+    }
+  },
+  "toastSuccess": {
+    "message": "File <strong>$FILENAME$</strong> was inserted into $AI$!",
+    "description": "Toast message when file insertion succeeds",
+    "placeholders": {
+      "filename": {
+        "content": "$1"
+      },
+      "ai": {
+        "content": "$2"
+      }
+    }
+  },
+  "toastChatNotFound": {
+    "message": "$AI$ chat input was not found within timeout.",
+    "description": "Toast message when chat input is missing",
+    "placeholders": {
+      "ai": {
+        "content": "$1"
+      }
+    }
+  },
+  "toastError": {
+    "message": "An error occurred while inserting the PDF.",
+    "description": "Toast message on error"
+  },
+  "toastFallbackWarning": {
+    "message": "Could not insert file automatically. Please attach the file manually.",
+    "description": "Toast message when automatic upload fails"
+  },
+  "toastUnconfirmedWithAction": {
+    "message": "File was sent, but attachment was not confirmed.",
+    "description": "Toast message when file was sent once but confirmation timed out"
+  },
+  "toastRetryPaste": {
+    "message": "Retry with Paste",
+    "description": "Action button text to retry upload via clipboard paste"
+  },
+  "toastRetryDrop": {
+    "message": "Retry with Drop",
+    "description": "Action button text to retry upload via drag and drop"
+  },
+  "prefContextMenuTitle": {
+    "message": "Right-Click Context Menu",
+    "description": "Title for context menu toggle"
+  },
+  "prefContextMenuDesc": {
+    "message": "When checked, always shows in the context menu. When unchecked, only shows for links, images, and open PDFs.",
+    "description": "Description for context menu toggle"
+  },
+  "prefPagePdfButtonsTitle": {
+    "message": "Buttons next to PDF links",
+    "description": "Title for in-page button toggle"
+  },
+  "prefPagePdfButtonsDesc": {
+    "message": "Show a small AI import button directly next to PDF links and download buttons on web pages. Turn off to disable them completely.",
+    "description": "Description for in-page button toggle"
+  },
+  "optionsLargePdfTitle": {
+    "message": "Large PDF Document Handling",
+    "description": "Title for large PDF handling section"
+  },
+  "optionsLargePdfDesc": {
+    "message": "Configure how PDF documents exceeding recommended AI platform limits are processed.",
+    "description": "Description for large PDF handling section"
+  },
+  "optionsLargePdfThreshold": {
+    "message": "Large file threshold:",
+    "description": "Label for large PDF threshold"
+  },
+  "optionsLargePdfThresholdDesc": {
+    "message": "Files exceeding this size will prompt optimization options (Claude limit is 30 MB).",
+    "description": "Description for threshold setting"
+  },
+  "optionsLargePdfAction": {
+    "message": "Default action when exceeded:",
+    "description": "Label for default large PDF action"
+  },
+  "optionsLargePdfActionAsk": {
+    "message": "Always ask (Compress / Text Only)",
+    "description": "Option to always ask user"
+  },
+  "optionsLargePdfActionCompress": {
+    "message": "Always auto-compress PDF",
+    "description": "Option to auto-compress"
+  },
+  "optionsLargePdfActionText": {
+    "message": "Always extract text only",
+    "description": "Option to auto-extract text"
+  },
+  "sectionFeedbackTitle": {
+    "message": "Feedback & Issue Reporting",
+    "description": "Title for feedback and issue reporting section"
+  },
+  "sectionFeedbackDesc": {
+    "message": "Have an idea for improvement, a new feature, or encountered a bug? Enter the details below and click to open a pre-filled GitHub Issue.",
+    "description": "Description for feedback section"
+  },
+  "feedbackTypeLabel": {
+    "message": "Issue type:",
+    "description": "Label for issue type selector"
+  },
+  "feedbackTypeFeature": {
+    "message": "Feature Request",
+    "description": "Option for feature request"
+  },
+  "feedbackTypeBug": {
+    "message": "Bug Report",
+    "description": "Option for bug report"
+  },
+  "feedbackTypeGeneral": {
+    "message": "Feedback",
+    "description": "Option for general feedback"
+  },
+  "feedbackTitleLabel": {
+    "message": "Title / Summary (optional):",
+    "description": "Label for feedback title input"
+  },
+  "feedbackTitlePlaceholder": {
+    "message": "E.g.: Support for additional AI platform...",
+    "description": "Placeholder for feedback title input"
+  },
+  "feedbackBodyLabel": {
+    "message": "Description:",
+    "description": "Label for feedback description textarea"
+  },
+  "feedbackBodyPlaceholder": {
+    "message": "Describe your suggestion or what happened in detail...",
+    "description": "Placeholder for feedback body textarea"
+  },
+  "btnSendFeedback": {
+    "message": "OPEN GITHUB ISSUE",
+    "description": "Button to open GitHub new issue"
+  },
+  "feedbackEmptyAlert": {
+    "message": "Please enter at least a brief description of your request or issue.",
+    "description": "Alert when feedback text is empty"
+  },
+  "feedbackOpened": {
+    "message": "GitHub Issue opened in a new tab!",
+    "description": "Status when GitHub issue tab is opened"
+  },
+  "btnShowMorePlatforms": {
+    "message": "Show more platforms",
+    "description": "Button to expand additional AI platforms"
+  },
+  "btnShowLessPlatforms": {
+    "message": "Show less",
+    "description": "Button to collapse additional AI platforms"
+  }
+}

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 PDFImport - Multi-Browser Packaging Script
-Builds tailored distribution ZIP packages for Chrome, Opera, Edge, and Firefox
-according to the distribution guidelines.
+Builds tailored distribution ZIP packages for Chrome, Opera, Edge, and Firefox.
+- Chromium browsers (Chrome, Opera, Edge) are built directly from the pristine repository root.
+- Firefox is built from the dedicated, isolated `firefox/` directory to prevent any regressions in Chromium.
 """
 
 import os
@@ -15,6 +16,7 @@ import argparse
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MANIFEST_PATH = os.path.join(REPO_ROOT, "manifest.json")
 DIST_DIR = os.path.join(REPO_ROOT, "dist")
+FIREFOX_ROOT = os.path.join(REPO_ROOT, "firefox")
 
 SUPPORTED_BROWSERS = ["chrome", "opera", "edge", "firefox"]
 
@@ -25,54 +27,10 @@ DIST_ITEMS = [
     "_locales"
 ]
 
-def get_base_manifest():
-    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
-
 def get_extension_version():
-    data = get_base_manifest()
+    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
     return data.get("version", "1.0.0")
-
-def customize_manifest(base_manifest, browser):
-    """
-    Applies browser-specific manifest adjustments.
-    - Chromium browsers (Chrome, Opera, Edge) share the standard Manifest V3 specification.
-    - Firefox requires browser_specific_settings.gecko.id, background scripts instead of service worker,
-      and omits the Chromium-specific 'offscreen' permission.
-    """
-    manifest = json.loads(json.dumps(base_manifest))
-
-    if browser == "firefox":
-        # Firefox requires gecko ID in browser_specific_settings
-        manifest["browser_specific_settings"] = {
-            "gecko": {
-                "id": "pdfimport@sidlocz.github.io",
-                "strict_min_version": "109.0"
-            }
-        }
-
-        # Firefox uses background.scripts for MV3 event pages
-        manifest["background"] = {
-            "scripts": ["src/background.js"]
-        }
-
-        # Firefox does not support 'offscreen' API
-        if "permissions" in manifest and "offscreen" in manifest["permissions"]:
-            manifest["permissions"] = [p for p in manifest["permissions"] if p != "offscreen"]
-
-    elif browser == "edge":
-        # Standard Chromium MV3; fully compatible with Microsoft Edge Add-ons
-        pass
-
-    elif browser == "opera":
-        # Standard Chromium MV3; fully compatible with Opera Add-ons
-        pass
-
-    elif browser == "chrome":
-        # Standard Chromium MV3 for Chrome Web Store
-        pass
-
-    return manifest
 
 def organize_legacy_dist_files():
     """
@@ -93,7 +51,7 @@ def organize_legacy_dist_files():
             else:
                 os.remove(item_path)
 
-def pack_browser(browser, version, base_manifest):
+def pack_browser(browser, version):
     browser_dist_dir = os.path.join(DIST_DIR, browser)
     os.makedirs(browser_dist_dir, exist_ok=True)
 
@@ -103,24 +61,20 @@ def pack_browser(browser, version, base_manifest):
     zip_path_typed = os.path.join(browser_dist_dir, zip_filename_typed)
     zip_path_generic = os.path.join(browser_dist_dir, zip_filename_generic)
 
-    manifest_data = customize_manifest(base_manifest, browser)
-    manifest_bytes = json.dumps(manifest_data, indent=2, ensure_ascii=False).encode("utf-8")
+    # Determine source directory: Firefox uses its own isolated folder, Chromium uses root
+    if browser == "firefox":
+        source_root = FIREFOX_ROOT
+        if not os.path.exists(source_root):
+            raise FileNotFoundError(f"Firefox source directory not found: {source_root}")
+    else:
+        source_root = REPO_ROOT
 
-    print(f"\nPackaging PDFImport v{version} for [{browser.upper()}]...")
+    print(f"\nPackaging PDFImport v{version} for [{browser.upper()}] from '{os.path.basename(source_root)}'...")
     file_count = 0
 
     with zipfile.ZipFile(zip_path_typed, "w", zipfile.ZIP_DEFLATED) as zf:
-        # Write tailored manifest
-        zf.writestr("manifest.json", manifest_bytes)
-        file_count += 1
-        print("  Added: manifest.json (customized)")
-
-        # Write remaining items
         for item in DIST_ITEMS:
-            if item == "manifest.json":
-                continue
-
-            item_path = os.path.join(REPO_ROOT, item)
+            item_path = os.path.join(source_root, item)
             if not os.path.exists(item_path):
                 print(f"  Warning: Item {item} does not exist at {item_path}")
                 continue
@@ -132,12 +86,7 @@ def pack_browser(browser, version, base_manifest):
                 for root, _, files in os.walk(item_path):
                     for file in sorted(files):
                         abs_file = os.path.join(root, file)
-                        rel_file = os.path.relpath(abs_file, REPO_ROOT).replace(os.sep, "/")
-
-                        # Skip offscreen document files in Firefox package
-                        if browser == "firefox" and rel_file.startswith("src/offscreen"):
-                            continue
-
+                        rel_file = os.path.relpath(abs_file, source_root).replace(os.sep, "/")
                         zf.write(abs_file, arcname=rel_file)
                         file_count += 1
 
@@ -170,9 +119,7 @@ def main():
 
     organize_legacy_dist_files()
 
-    base_manifest = get_base_manifest()
-    version = base_manifest.get("version", "1.0.0")
-
+    version = get_extension_version()
     targets = SUPPORTED_BROWSERS if args.target == "all" else [args.target]
 
     print("=" * 60)
@@ -182,7 +129,7 @@ def main():
 
     results = []
     for browser in targets:
-        res = pack_browser(browser, version, base_manifest)
+        res = pack_browser(browser, version)
         results.append(res)
 
     print("\n" + "=" * 60)
