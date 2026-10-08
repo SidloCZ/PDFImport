@@ -507,6 +507,7 @@ async function openLargePdfDialog(sessionData) {
 }
 
 async function ensureOffscreenDocument() {
+  if (typeof chrome === "undefined" || !chrome.offscreen) return;
   if (await chrome.offscreen.hasDocument()) return;
   await chrome.offscreen.createDocument({
     url: "src/offscreen/offscreen.html",
@@ -516,6 +517,18 @@ async function ensureOffscreenDocument() {
 }
 
 async function getLocalFileInfo(url) {
+  if (typeof chrome === "undefined" || !chrome.offscreen) {
+    const response = await fetch(url);
+    if (!response.ok && !(url.startsWith("file://") && response.status === 0)) {
+      throw new Error(`Failed to read local file (${response.status}: ${response.statusText})`);
+    }
+    const blob = await response.blob();
+    return {
+      success: true,
+      size: blob.size,
+      mimeType: blob.type || "application/pdf"
+    };
+  }
   await ensureOffscreenDocument();
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage({
@@ -534,6 +547,25 @@ async function getLocalFileInfo(url) {
 }
 
 async function fetchLocalFileViaOffscreen(url) {
+  if (typeof chrome === "undefined" || !chrome.offscreen) {
+    const response = await fetch(url);
+    if (!response.ok && !(url.startsWith("file://") && response.status === 0)) {
+      throw new Error(`Failed to read local file (${response.status}: ${response.statusText})`);
+    }
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve({
+          dataUrl: reader.result,
+          size: blob.size,
+          mimeType: blob.type || "application/pdf"
+        });
+      };
+      reader.onerror = () => reject(new Error("Failed to convert local file to DataURL."));
+      reader.readAsDataURL(blob);
+    });
+  }
   await ensureOffscreenDocument();
   return new Promise((resolve, reject) => {
     let chunks = [];
@@ -790,7 +822,9 @@ async function processPdfUrl(url, fallbackTitle, sourceTabId, isRetry = false) {
     // 1. Check file scheme permissions and fetch for file:///
     const isFileUrl = url.startsWith("file://");
     if (isFileUrl) {
-      const isAllowed = await chrome.extension.isAllowedFileSchemeAccess();
+      const isAllowed = (chrome.extension && typeof chrome.extension.isAllowedFileSchemeAccess === "function")
+        ? await chrome.extension.isAllowedFileSchemeAccess()
+        : true;
       if (!isAllowed) {
         setBadge("ERR", "#D32F2F");
         showFileAccessWarning();

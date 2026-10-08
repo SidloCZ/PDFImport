@@ -122,13 +122,24 @@ PDFImport/
 
 ## Sestavení produkčního balíčku
 
-Pro vytvoření čistého distribučního ZIP archivu pro Chrome Web Store a Opera Add-ons spusťte:
+Pro vytvoření optimalizovaných distribučních ZIP balíčků pro Chrome, Opera, Edge a Firefox spusťte:
 
 ```bash
+# Sestavení pro všechny prohlížeče najednou
 python scripts/pack_extension.py
+
+# Nebo sestavení pro konkrétní prohlížeč
+python scripts/pack_extension.py --target chrome
+python scripts/pack_extension.py --target opera
+python scripts/pack_extension.py --target edge
+python scripts/pack_extension.py --target firefox
 ```
 
-Výsledný ZIP archiv se vygeneruje do složky `dist/` (např. `dist/pdfimport-v1.5.1.zip`).
+Výsledné archivy budou přehledně rozděleny v adresáři `dist/`:
+- `dist/chrome/pdfimport-v1.5.1-chrome.zip` (a `pdfimport-v1.5.1.zip`)
+- `dist/opera/pdfimport-v1.5.1-opera.zip` (a `pdfimport-v1.5.1.zip`)
+- `dist/edge/pdfimport-v1.5.1-edge.zip` (a `pdfimport-v1.5.1.zip`)
+- `dist/firefox/pdfimport-v1.5.1-firefox.zip` (a `pdfimport-v1.5.1.zip`)
 
 ---
 

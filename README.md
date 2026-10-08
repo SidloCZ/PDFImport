@@ -122,13 +122,24 @@ PDFImport/
 
 ## Building for Release
 
-To create a clean distribution ZIP package for Chrome Web Store and Opera Add-ons:
+To create clean distribution ZIP packages tailored for Chrome, Opera, Edge, and Firefox:
 
 ```bash
+# Package for all browsers
 python scripts/pack_extension.py
+
+# Or package for a specific browser target
+python scripts/pack_extension.py --target chrome
+python scripts/pack_extension.py --target opera
+python scripts/pack_extension.py --target edge
+python scripts/pack_extension.py --target firefox
 ```
 
-The packaged archive will be saved in `dist/` (e.g. `dist/pdfimport-v1.5.1.zip`).
+The resulting archives will be structured in `dist/`:
+- `dist/chrome/pdfimport-v1.5.1-chrome.zip` (and `pdfimport-v1.5.1.zip`)
+- `dist/opera/pdfimport-v1.5.1-opera.zip` (and `pdfimport-v1.5.1.zip`)
+- `dist/edge/pdfimport-v1.5.1-edge.zip` (and `pdfimport-v1.5.1.zip`)
+- `dist/firefox/pdfimport-v1.5.1-firefox.zip` (and `pdfimport-v1.5.1.zip`)
 
 ---
 
