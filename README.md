@@ -136,10 +136,10 @@ python scripts/pack_extension.py --target firefox
 ```
 
 The resulting archives will be structured in `dist/`:
-- `dist/chrome/pdfimport-v1.6.1-chrome.zip` (and `pdfimport-v1.6.1.zip`)
-- `dist/opera/pdfimport-v1.6.1-opera.zip` (and `pdfimport-v1.6.1.zip`)
-- `dist/edge/pdfimport-v1.6.1-edge.zip` (and `pdfimport-v1.6.1.zip`)
-- `dist/firefox/pdfimport-v1.6.1-firefox.zip` (and `pdfimport-v1.6.1.zip`)
+- `dist/chrome/pdfimport-v1.6.2-chrome.zip` (and `pdfimport-v1.6.2.zip`)
+- `dist/opera/pdfimport-v1.6.2-opera.zip` (and `pdfimport-v1.6.2.zip`)
+- `dist/edge/pdfimport-v1.6.2-edge.zip` (and `pdfimport-v1.6.2.zip`)
+- `dist/firefox/pdfimport-v1.6.2-firefox.zip` (and `pdfimport-v1.6.2.zip`)
 
 ---
 

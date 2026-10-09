@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "short_name": "__MSG_extensionShortName__",
+  "short_name": "PDFImport",
   "default_locale": "en",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "__MSG_extensionDescription__",
   "author": "SidloCZ",
   "homepage_url": "https://github.com/SidloCZ/PDFImport",

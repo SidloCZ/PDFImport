@@ -136,10 +136,10 @@ python scripts/pack_extension.py --target firefox
 ```
 
 Výsledné archivy budou přehledně rozděleny v adresáři `dist/`:
-- `dist/chrome/pdfimport-v1.6.1-chrome.zip` (a `pdfimport-v1.6.1.zip`)
-- `dist/opera/pdfimport-v1.6.1-opera.zip` (a `pdfimport-v1.6.1.zip`)
-- `dist/edge/pdfimport-v1.6.1-edge.zip` (a `pdfimport-v1.6.1.zip`)
-- `dist/firefox/pdfimport-v1.6.1-firefox.zip` (a `pdfimport-v1.6.1.zip`)
+- `dist/chrome/pdfimport-v1.6.2-chrome.zip` (a `pdfimport-v1.6.2.zip`)
+- `dist/opera/pdfimport-v1.6.2-opera.zip` (a `pdfimport-v1.6.2.zip`)
+- `dist/edge/pdfimport-v1.6.2-edge.zip` (a `pdfimport-v1.6.2.zip`)
+- `dist/firefox/pdfimport-v1.6.2-firefox.zip` (a `pdfimport-v1.6.2.zip`)
 
 ---
 
