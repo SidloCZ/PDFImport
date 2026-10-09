@@ -123,6 +123,35 @@ def generate_czech_promo_tiles():
 def generate_english_promo_tiles():
     generate_promo_tiles("en")
 
+
+def generate_opera_tile():
+    """Generates the Opera add-ons promotional tile at its required dimensions."""
+    width, height = 300, 188
+    font_title, font_body, font_small = _load_promo_fonts(24, 13, 10)
+    image = Image.new("RGB", (width, height), color="#f4efe6")
+    draw = ImageDraw.Draw(image)
+    draw.rectangle([5, 5, width - 6, height - 6], outline="#000000", width=3)
+    draw.rectangle([8, 8, width - 9, 22], fill="#ffe600")
+    draw.line([8, 22, width - 9, 22], fill="#000000", width=2)
+    for x, color in [(15, "#ff2a85"), (24, "#ffe600"), (33, "#00f59b")]:
+        draw.ellipse([x, 13, x + 4, 17], fill=color, outline="#000000")
+
+    _paste_logo(draw, image, 22, 42, 64, 2)
+    draw.text((101, 43), "PDF TO AI", font=font_title, fill="#111111")
+    draw.rectangle([101, 75, 266, 96], fill="#ffe600", outline="#000000", width=2)
+    draw.text((110, 79), "FAST IMPORT", font=font_small, fill="#000000")
+    draw.text((22, 111), "Attach PDFs to AI chat", font=font_body, fill="#111111")
+    draw.text((22, 128), "without manual downloading", font=font_body, fill="#111111")
+
+    draw.rectangle([22, 151, 137, 171], fill="#00d2ff", outline="#000000", width=2)
+    draw.text((30, 155), "ONE CLICK", font=font_small, fill="#000000")
+    draw.rectangle([145, 151, 266, 171], fill="#00f59b", outline="#000000", width=2)
+    draw.text((153, 155), "LOCAL PROCESSING", font=font_small, fill="#000000")
+
+    output_path = os.path.join(ASSETS_DIR, "promo_tile_opera_300x188.png")
+    image.save(output_path, format="PNG")
+    print(f"Generated Opera promo tile: {output_path} (300x188 px)")
+
 def capture_screenshots():
     """Captures clean 1280x800 screenshots of the extension pages."""
     options = Options()
