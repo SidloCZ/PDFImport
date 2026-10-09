@@ -9,88 +9,119 @@ ASSETS_DIR = os.path.join(REPO_ROOT, "assets")
 SCREENSHOTS_DIR = os.path.join(ASSETS_DIR, "screenshots")
 os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
 
-def generate_promo_tile():
-    """Generates a clean, neo-brutalist 440x280 promo tile for Chrome Web Store."""
-    width, height = 440, 280
-    img = Image.new("RGB", (width, height), color="#f4efe6")
-    draw = ImageDraw.Draw(img)
-
-    # Outer border (Neo-brutalist 4px black)
-    draw.rectangle([6, 6, width - 7, height - 7], outline="#000000", width=4)
-
-    # Accent color bar on top (yellow #ffe600)
-    draw.rectangle([10, 10, width - 11, 26], fill="#ffe600")
-    draw.line([10, 26, width - 11, 26], fill="#000000", width=2)
-
-    # Window dots (mac/browser style minimalist)
-    draw.ellipse([18, 15, 23, 20], fill="#ff2a85", outline="#000000")
-    draw.ellipse([28, 15, 33, 20], fill="#ffe600", outline="#000000")
-    draw.ellipse([38, 15, 43, 20], fill="#00f59b", outline="#000000")
-
-    # Paste Logo
-    logo_path = os.path.join(REPO_ROOT, "icons", "icon128.png")
-    if os.path.exists(logo_path):
-        logo = Image.open(logo_path).convert("RGBA")
-        logo_resized = logo.resize((96, 96), Image.Resampling.LANCZOS)
-        # Neo-brutalist shadow box behind logo
-        draw.rectangle([38, 78, 138, 178], fill="#000000")
-        draw.rectangle([34, 74, 134, 174], fill="#ffffff", outline="#000000", width=3)
-        img.paste(logo_resized, (36, 76), logo_resized)
-
-    # Typography using system sans-serif fonts
-    font_title = None
-    font_sub = None
-    font_badge = None
-    
+def _load_promo_fonts(title_size, body_size, small_size):
     font_paths = [
-        "C:\\Windows\\Fonts\\arialbd.ttf",
         "C:\\Windows\\Fonts\\segoeuib.ttf",
+        "C:\\Windows\\Fonts\\arialbd.ttf",
         "C:\\Windows\\Fonts\\tahomabd.ttf"
     ]
-    for fp in font_paths:
-        if os.path.exists(fp):
-            font_title = ImageFont.truetype(fp, 36)
-            font_sub = ImageFont.truetype(fp, 15)
-            font_badge = ImageFont.truetype(fp, 13)
-            break
+    for font_path in font_paths:
+        if os.path.exists(font_path):
+            return (
+                ImageFont.truetype(font_path, title_size),
+                ImageFont.truetype(font_path, body_size),
+                ImageFont.truetype(font_path, small_size)
+            )
+    fallback = ImageFont.load_default()
+    return fallback, fallback, fallback
 
-    if not font_title:
-        font_title = ImageFont.load_default()
-        font_sub = ImageFont.load_default()
-        font_badge = ImageFont.load_default()
 
-    # Title with neo-brutal shadow
-    title_x, title_y = 155, 75
-    draw.text((title_x + 2, title_y + 2), "PDFImport", font=font_title, fill="#000000")
-    draw.text((title_x, title_y), "PDFImport", font=font_title, fill="#111111")
+def _paste_logo(draw, image, x, y, size, border_width):
+    logo_path = os.path.join(REPO_ROOT, "icons", "icon128.png")
+    if not os.path.exists(logo_path):
+        return
+    logo = Image.open(logo_path).convert("RGBA").resize((size, size), Image.Resampling.LANCZOS)
+    draw.rectangle([x + border_width, y + border_width, x + size + border_width, y + size + border_width], fill="#000000")
+    draw.rectangle([x, y, x + size, y + size], fill="#ffffff", outline="#000000", width=border_width)
+    image.paste(logo, (x, y), logo)
 
-    # Subtitle badge
-    draw.rectangle([title_x + 3, title_y + 48, title_x + 248, title_y + 72], fill="#000000")
-    draw.rectangle([title_x, title_y + 45, title_x + 245, title_y + 69], fill="#ffe600", outline="#000000", width=2)
-    draw.text((title_x + 10, title_y + 49), "PDF TO AI - FAST IMPORT", font=font_badge, fill="#000000")
 
-    # Features list / badges
-    features = [
-        ("1-Click Transfer", "#00d2ff"),
-        ("Claude - ChatGPT - Gemini - DeepSeek", "#ffffff"),
-        ("Local & Web PDFs", "#00f59b")
-    ]
-    
-    fy = 158
-    for feat_text, feat_color in features:
-        draw.rectangle([title_x + 2, fy + 2, title_x + 247, fy + 24], fill="#000000")
-        draw.rectangle([title_x, fy, title_x + 245, fy + 22], fill=feat_color, outline="#000000", width=2)
-        draw.text((title_x + 8, fy + 3), feat_text, font=font_badge, fill="#000000")
-        fy += 29
+def generate_promo_tiles(language):
+    """Generates localized store tiles at the exact Partner Center dimensions."""
+    copy = {
+        "cs": {
+            "title": "PDF TO AI",
+            "badge": "FAST IMPORT",
+            "headline": "Připojte PDF k AI chatu bez ručního stahování",
+            "features": ["Jedno kliknutí nebo Alt+G", "Online i místní PDF soubory", "Komprese a extrakce textu", "Zpracování přímo v prohlížeči"],
+            "small_badges": ["PDF do AI jedním kliknutím", "Online i místní PDF", "Bez ručního stahování"],
+            "footer": "LOKÁLNÍ ZPRACOVÁNÍ · BEZ ANALYTIKY · BEZ VLASTNÍCH SERVERŮ",
+            "small_footer": "LOKÁLNÍ ZPRACOVÁNÍ · BEZ SLEDOVÁNÍ"
+        },
+        "en": {
+            "title": "PDF TO AI",
+            "badge": "FAST IMPORT",
+            "headline": "Attach PDFs to AI chat without manual downloading",
+            "features": ["One click or Alt+G", "Online and local PDF files", "Compression and text extraction", "Processing in your browser"],
+            "small_badges": ["Send PDFs to AI in one click", "Online and local PDFs", "No manual downloading"],
+            "footer": "LOCAL PROCESSING · NO ANALYTICS · NO PRIVATE SERVERS",
+            "small_footer": "LOCAL PROCESSING · NO TRACKING"
+        }
+    }[language]
+    font_title, font_body, font_small = _load_promo_fonts(36, 17, 13)
 
-    # Bottom bar badge
+    width, height = 440, 280
+    image = Image.new("RGB", (width, height), color="#f4efe6")
+    draw = ImageDraw.Draw(image)
+    draw.rectangle([6, 6, width - 7, height - 7], outline="#000000", width=4)
+    draw.rectangle([10, 10, width - 11, 26], fill="#ffe600")
+    draw.line([10, 26, width - 11, 26], fill="#000000", width=2)
+    for x, color in [(18, "#ff2a85"), (28, "#ffe600"), (38, "#00f59b")]:
+        draw.ellipse([x, 15, x + 5, 20], fill=color, outline="#000000")
+
+    _paste_logo(draw, image, 34, 74, 100, 3)
+    draw.text((155, 73), copy["title"], font=font_title, fill="#111111")
+    draw.rectangle([155, 120, 400, 147], fill="#ffe600", outline="#000000", width=2)
+    draw.text((165, 125), copy["badge"], font=font_small, fill="#000000")
+    badges = list(zip(copy["small_badges"], ["#00d2ff", "#00f59b", "#ffffff"]))
+    for index, (label, color) in enumerate(badges):
+        y = 158 + index * 29
+        draw.rectangle([157, y + 2, 402, y + 24], fill="#000000")
+        draw.rectangle([155, y, 400, y + 22], fill=color, outline="#000000", width=2)
+        draw.text((163, y + 3), label, font=font_small, fill="#000000")
     draw.rectangle([10, height - 32, width - 11, height - 11], fill="#e5ded3")
     draw.line([10, height - 32, width - 11, height - 32], fill="#000000", width=2)
-    draw.text((20, height - 28), "CHROME WEB STORE COMPLIANT - ZERO TRACKING - LOCAL PRIVACY", font=font_badge, fill="#555555")
+    draw.text((20, height - 28), copy["small_footer"], font=font_small, fill="#555555")
+    small_path = os.path.join(ASSETS_DIR, f"promo_tile_{language}_440x280.png")
+    image.save(small_path, format="PNG")
 
-    out_tile = os.path.join(ASSETS_DIR, "promo_tile_440x280.png")
-    img.save(out_tile, format="PNG")
-    print(f"Generated promo tile: {out_tile} ({width}x{height} px)")
+    width, height = 1400, 560
+    image = Image.new("RGB", (width, height), color="#f4efe6")
+    draw = ImageDraw.Draw(image)
+    draw.rectangle([12, 12, width - 13, height - 13], outline="#000000", width=6)
+    draw.rectangle([20, 20, width - 21, 48], fill="#ffe600")
+    draw.line([20, 48, width - 21, 48], fill="#000000", width=3)
+    for x, color in [(34, "#ff2a85"), (52, "#ffe600"), (70, "#00f59b")]:
+        draw.ellipse([x, 28, x + 9, 37], fill=color, outline="#000000")
+
+    _paste_logo(draw, image, 95, 130, 250, 6)
+    title_font, body_font, small_font = _load_promo_fonts(76, 31, 24)
+    draw.text((420, 122), copy["title"], font=title_font, fill="#111111")
+    draw.rectangle([424, 225, 845, 275], fill="#ffe600", outline="#000000", width=3)
+    draw.text((443, 236), copy["badge"], font=body_font, fill="#000000")
+    draw.text((420, 315), copy["headline"], font=body_font, fill="#111111")
+    features = list(zip(copy["features"], ["#00d2ff", "#00f59b", "#ffffff", "#ffe600"]))
+    for index, (label, color) in enumerate(features):
+        x = 420 + (index % 2) * 425
+        y = 380 + (index // 2) * 62
+        draw.rectangle([x + 4, y + 4, x + 390, y + 45], fill="#000000")
+        draw.rectangle([x, y, x + 386, y + 41], fill=color, outline="#000000", width=3)
+        draw.text((x + 16, y + 8), label, font=small_font, fill="#000000")
+    draw.rectangle([20, height - 64, width - 21, height - 21], fill="#e5ded3")
+    draw.line([20, height - 64, width - 21, height - 64], fill="#000000", width=3)
+    draw.text((42, height - 55), copy["footer"], font=small_font, fill="#555555")
+    large_path = os.path.join(ASSETS_DIR, f"promo_tile_{language}_1400x560.png")
+    image.save(large_path, format="PNG")
+    print(f"Generated {language} promo tile: {small_path} (440x280 px)")
+    print(f"Generated {language} promo tile: {large_path} (1400x560 px)")
+
+
+def generate_czech_promo_tiles():
+    generate_promo_tiles("cs")
+
+
+def generate_english_promo_tiles():
+    generate_promo_tiles("en")
 
 def capture_screenshots():
     """Captures clean 1280x800 screenshots of the extension pages."""
