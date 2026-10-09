@@ -1,4 +1,4 @@
-# Chrome Web Store & Opera Add-ons Store Listings
+# Chrome Web Store, Microsoft Edge Add-ons & Opera Add-ons Store Listings
 
 Tento dokument obsahuje oficiální texty pro zápis v obchodech s doplňky (Chrome Web Store, Opera Add-ons).
 
@@ -103,3 +103,225 @@ PDF to AI klade důraz na maximální bezpečnost. Rozšíření zpracovává so
    - Spusťte: `python scripts/pack_extension.py`
    - V sekci **Balíček (Package)** nahrajte nový `dist/chrome/pdfimport-v1.6.1.zip`.
 5. Klikněte na **Odeslat ke kontrole (Submit for review)**.
+
+---
+
+## 4. Společné údaje pro Chrome a Edge
+
+### Kategorie
+
+Vyberte:
+
+```text
+Productivity
+```
+
+### Website
+
+```text
+https://github.com/SidloCZ/PDFImport
+```
+
+### Support contact detail
+
+```text
+https://github.com/SidloCZ/PDFImport/issues
+```
+
+### Privacy policy URL
+
+```text
+https://github.com/SidloCZ/PDFImport/blob/main/PRIVACY_POLICY.md
+```
+
+### Search terms / tags
+
+Použijte nejvýše těchto sedm výrazů. Každý má nejvýše dvě slova a neobsahuje seznam konkurenčních značek:
+
+**English:**
+```text
+PDF import
+AI chat
+PDF assistant
+PDF summary
+PDF reader
+PDF tools
+PDF analysis
+```
+
+**Čeština:**
+```text
+PDF import
+AI chat
+PDF asistent
+shrnutí PDF
+čtení PDF
+PDF nástroje
+analýza PDF
+```
+
+### Promo assets
+
+| Language | Small promotional tile | Large promotional tile |
+|---|---|---|
+| English | `assets/promo_tile_en_440x280.png` | `assets/promo_tile_en_1400x560.png` |
+| Czech | `assets/promo_tile_cs_440x280.png` | `assets/promo_tile_cs_1400x560.png` |
+
+Požadované rozměry jsou přesně `440 x 280 px` a `1400 x 560 px`.
+
+---
+
+## 5. Privacy practices a oprávnění
+
+Texty jsou připravené v angličtině, protože je vyžaduje a posuzuje tým obchodu.
+
+### Single purpose description
+
+```text
+PDF to AI – Fast Import lets users directly attach open or linked PDF documents to their chosen AI chat interface with one click or a keyboard shortcut, without manually downloading and re-uploading files.
+```
+
+### `activeTab` justification
+
+```text
+Used after a user action from the toolbar, keyboard shortcut, or context menu to inspect the current tab and detect the active PDF document or PDF viewer.
+```
+
+### `tabs` justification
+
+```text
+Used to find and reuse an existing AI chat tab, or open and activate a new tab when needed.
+```
+
+### `storage` justification
+
+```text
+Used to save user preferences such as the selected AI platform, custom AI URL, tab reuse setting, language, and prompt templates.
+```
+
+### `unlimitedStorage` justification
+
+```text
+Used to temporarily hold PDF data and extracted text during client-side transfer and processing. Temporary data is removed after the operation completes.
+```
+
+### `notifications` justification
+
+```text
+Used to display local status messages and warnings about PDF size limits, required permissions, or failed transfers.
+```
+
+### `scripting` justification
+
+```text
+Used after a user action to inspect the active tab and detect embedded PDF viewers or resolve the direct PDF document URL.
+```
+
+### `contextMenus` justification
+
+```text
+Used to provide right-click actions for importing the current PDF or a PDF linked on the page.
+```
+
+### `offscreen` justification
+
+```text
+Used for client-side processing of local file URLs and PDF optimization, including compression and text extraction, without a backend server.
+```
+
+### `file:///*` justification
+
+```text
+Required to access local PDF files only when the user explicitly imports a PDF opened from the local computer.
+```
+
+### Host permission justification
+
+```text
+Required to fetch PDF documents from websites and local file URLs after the user explicitly requests an import. Host access also allows the extension to interact with supported AI chat pages so the selected PDF can be attached. The extension does not collect browsing history or send data to any developer-controlled server.
+```
+
+### Remote code
+
+Vyberte:
+
+```text
+No, I am not using remote code
+```
+
+Leave the remote-code justification empty if it is optional. All extension code and bundled PDF libraries are included in the package; the extension does not load or execute remote code.
+
+### Data usage
+
+Leave all user-data categories unchecked. The extension does not collect data for developer-controlled storage, analytics, or tracking. The PDF is sent to the AI service only after an explicit user action and only to the service selected by the user.
+
+If the form shows certification statements, check all three only when they accurately reflect the submitted build:
+
+- The extension does not sell user data or transfer it to the developer's servers.
+- The extension does not use user data for purposes unrelated to its single purpose.
+- The extension does not use user data for creditworthiness or lending decisions.
+
+---
+
+## 6. Certification notes for Chrome and Edge
+
+When the submission form asks whether testers need credentials or other information, select:
+
+```text
+Yes, I need to provide credentials, accounts, or other info for testers
+```
+
+Use these notes, staying below the 2,000-character limit:
+
+```text
+No developer-provided credentials are required. The extension does not have its own account system or backend.
+
+To test the complete workflow, reviewers should use their own account on one supported web-based AI chat service. The selected service may require the reviewer to sign in separately. The extension only transfers the PDF after the user explicitly starts the import.
+
+Test steps:
+1. Open the extension options and select an AI chat service.
+2. Sign in to that service using the reviewer's own account.
+3. Open an online PDF or a local PDF file.
+4. Start the import with Alt+G, the extension toolbar button, or the context menu.
+5. Verify that the selected AI chat opens and the PDF is attached.
+
+For local files, enable Allow access to file URLs in the browser's extension settings. Large PDFs can be tested using the optimization dialog, which offers compression or text extraction.
+
+No credentials are embedded in the extension, and no credentials or document data are sent to the developer. All document processing is performed locally in the browser. The document is sent only to the AI service selected by the user.
+```
+
+---
+
+## 7. Microsoft Edge Add-ons submission
+
+1. Open the Microsoft Partner Center listing for **PDF to AI – Fast Import**.
+2. Complete **Properties** with the category, website, and support URL from section 4.
+3. Complete **Privacy** using the single-purpose and permission texts from section 5.
+4. Leave all data categories unchecked, select **No** for remote code, and add the certification notes from section 6.
+5. Add the English and Czech descriptions from section 2.
+6. Upload the language-specific promo tiles from section 4.
+7. Upload the current package:
+
+```text
+dist/edge/pdfimport-v1.6.1.zip
+```
+
+8. Save the draft and publish it for certification.
+
+---
+
+## 8. Chrome Web Store privacy submission
+
+For Chrome, use the same privacy and permission disclosures from sections 5 and 6. For a new package, build the current archives with:
+
+```bash
+python scripts/pack_extension.py
+```
+
+Then upload:
+
+```text
+dist/chrome/pdfimport-v1.6.1.zip
+```
+
+The extension was previously rejected under the **Yellow Argon** reference because the listing contained a long comma-separated list of AI brand names. Keep descriptions and search terms focused on the extension's function rather than listing competing services.
